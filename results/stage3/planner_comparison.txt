@@ -1,0 +1,16 @@
+Best-response escapes out of 12 paired states, 'any of 3 planner configs': original -> corrected
+(cells with no escapes under either planner shown as '.')
+s=1.2 a=1/4  1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:10->12 2:12->12 5/2:12->12
+s=1.2 a=1    1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:7->7   2:11->11 5/2:12->12
+s=1.2 a=2    1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:.      2:4->4   5/2:12->12
+s=1.5 a=1/4  1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:.      2:12->12 5/2:12->12
+s=1.5 a=1    1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:.      2:11->11 5/2:12->12
+s=1.5 a=2    1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:.      2:.      5/2:8->9  
+s=2.0 a=1/4  1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:.      2:4->12  5/2:12->12
+s=2.0 a=1    1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:.      2:8->11  5/2:12->12
+s=2.0 a=2    1:.      21/20:.      11/10:.      6/5:.      7/5:.      8/5:.      2:.      5/2:10->10
+
+states escaping only with corrected planner: 14; only with original: 0
+br_h2_b32_d24 escapes original 131 corrected 161
+br_h4_b96_d24 escapes original 177 corrected 192
+br_h4_b64_d48 escapes original 144 corrected 195

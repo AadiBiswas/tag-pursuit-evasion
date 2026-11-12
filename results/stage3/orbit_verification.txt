@@ -1,0 +1,12 @@
+s=1.2 m=1 alpha=1.01*1.4343: captured=False periods=1999 min_sep/eps=1.01000 D drift=2.28e-13
+s=1.2 m=1 alpha=0.99*1.4343: captured=True t=0.42 min_sep/eps=1.00000 D drift=nan
+s=1.2 m=16 alpha=1.01*1.3889: captured=False periods=1999 min_sep/eps=1.01000 D drift=5.40e-14
+s=1.2 m=16 alpha=0.99*1.3889: captured=True t=0.44 min_sep/eps=1.00000 D drift=nan
+s=1.5 m=1 alpha=1.01*1.6301: captured=False periods=1999 min_sep/eps=1.01000 D drift=3.59e-13
+s=1.5 m=1 alpha=0.99*1.6301: captured=True t=0.45 min_sep/eps=1.00000 D drift=nan
+s=1.5 m=16 alpha=1.01*1.5396: captured=False periods=1999 min_sep/eps=1.01000 D drift=5.57e-14
+s=1.5 m=16 alpha=0.99*1.5396: captured=True t=0.48 min_sep/eps=1.00000 D drift=nan
+s=2.0 m=1 alpha=1.01*1.7806: captured=False periods=1999 min_sep/eps=1.01000 D drift=7.34e-13
+s=2.0 m=1 alpha=0.99*1.7806: captured=True t=0.46 min_sep/eps=1.00000 D drift=nan
+s=2.0 m=16 alpha=1.01*1.6540: captured=False periods=1999 min_sep/eps=1.01000 D drift=4.22e-14
+s=2.0 m=16 alpha=0.99*1.6540: captured=True t=0.50 min_sep/eps=1.00000 D drift=nan

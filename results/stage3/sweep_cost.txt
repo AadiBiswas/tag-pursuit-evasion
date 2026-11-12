@@ -1,0 +1,1 @@
+5184 games, 1788 CPU-seconds (not reproducible)

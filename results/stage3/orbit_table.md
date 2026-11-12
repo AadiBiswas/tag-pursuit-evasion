@@ -1,0 +1,32 @@
+| s | P | m | runner period | alpha* (opt) | D_i / (R_E tau_C) | closure residual | clearance at 1.01 alpha*, eps units | 2000 periods at 1.01 alpha* | 0.99 alpha* |
+|---|---|---|---|---|---|---|---|---|---|
+| 1.2 | 1 | 1 | tau_C/1 | 1.43427 | 0.9342 | 2.0e-13 | 1.01000 | no capture | captured t=0.42 |
+| 1.2 | 1 | 2 | tau_C/2 | 1.40123 | 0.9421 | 6.7e-13 | 1.01000 | no capture | captured t=0.50 |
+| 1.2 | 1 | 4 | tau_C/4 | 1.39752 | 0.9407 | 8.2e-14 | 1.01000 | no capture | captured t=0.47 |
+| 1.2 | 1 | 8 | tau_C/8 | 1.39278 | 0.9392 | 7.1e-14 | 1.01000 | no capture | captured t=0.45 |
+| 1.2 | 1 | 16 | tau_C/16 | 1.38892 | 0.9399 | 5.4e-14 | 1.01000 | no capture | captured t=0.44 |
+| 1.2 | 2 | 1 | tau_C/1 | 1.43427 | 0.9342, 0.9342 | 2.5e-14 | 1.01000 | no capture | captured t=0.42 |
+| 1.2 | 2 | 2 | tau_C/2 | 1.40123 | 0.9421, 0.9421 | 8.8e-14 | 1.01000 | no capture | captured t=0.50 |
+| 1.2 | 2 | 4 | tau_C/4 | 1.39752 | 0.9407, 0.9407 | 1.0e-13 | 1.01000 | no capture | captured t=0.47 |
+| 1.2 | 2 | 8 | tau_C/8 | 1.39278 | 0.9392, 0.9392 | 3.4e-14 | 1.01000 | no capture | captured t=0.45 |
+| 1.2 | 2 | 16 | tau_C/16 | 1.38892 | 0.9399, 0.9399 | 6.9e-15 | 1.01000 | no capture | captured t=0.44 |
+| 1.5 | 1 | 1 | tau_C/1 | 1.63008 | 1.0208 | 3.6e-13 | 1.01000 | no capture | captured t=0.45 |
+| 1.5 | 1 | 2 | tau_C/2 | 1.56953 | 1.0427 | 6.2e-12 | 1.01000 | no capture | captured t=0.52 |
+| 1.5 | 1 | 4 | tau_C/4 | 1.55947 | 1.0400 | 2.7e-13 | 1.01000 | no capture | captured t=0.51 |
+| 1.5 | 1 | 8 | tau_C/8 | 1.54739 | 1.0377 | 9.8e-14 | 1.01000 | no capture | captured t=0.50 |
+| 1.5 | 1 | 16 | tau_C/16 | 1.53962 | 1.0409 | 5.6e-14 | 1.01000 | no capture | captured t=0.48 |
+| 1.5 | 2 | 1 | tau_C/1 | 1.63008 | 1.0208, 1.0208 | 3.0e-14 | 1.01000 | no capture | captured t=0.45 |
+| 1.5 | 2 | 2 | tau_C/2 | 1.56953 | 1.0427, 1.0427 | 3.2e-13 | 1.01000 | no capture | captured t=0.52 |
+| 1.5 | 2 | 4 | tau_C/4 | 1.55947 | 1.0400, 1.0400 | 4.5e-13 | 1.01000 | no capture | captured t=0.51 |
+| 1.5 | 2 | 8 | tau_C/8 | 1.54739 | 1.0377, 1.0377 | 2.0e-14 | 1.01000 | no capture | captured t=0.50 |
+| 1.5 | 2 | 16 | tau_C/16 | 1.53962 | 1.0409, 1.0409 | 1.3e-14 | 1.01000 | no capture | captured t=0.48 |
+| 2.0 | 1 | 1 | tau_C/1 | 1.78061 | 1.2140 | 7.3e-13 | 1.01000 | no capture | captured t=0.46 |
+| 2.0 | 1 | 2 | tau_C/2 | 1.70087 | 1.2572 | 7.8e-13 | 1.01000 | no capture | captured t=0.53 |
+| 2.0 | 1 | 4 | tau_C/4 | 1.68468 | 1.2544 | 1.2e-12 | 1.01000 | no capture | captured t=0.52 |
+| 2.0 | 1 | 8 | tau_C/8 | 1.66613 | 1.2531 | 3.9e-12 | 1.01000 | no capture | captured t=0.51 |
+| 2.0 | 1 | 16 | tau_C/16 | 1.65396 | 1.2605 | 4.2e-14 | 1.01000 | no capture | captured t=0.50 |
+| 2.0 | 2 | 1 | tau_C/1 | 1.78061 | 1.2140, 1.2140 | 4.6e-14 | 1.01000 | no capture | captured t=0.46 |
+| 2.0 | 2 | 2 | tau_C/2 | 1.70087 | 1.2572, 1.2572 | 4.6e-13 | 1.01000 | no capture | captured t=0.53 |
+| 2.0 | 2 | 4 | tau_C/4 | 1.68468 | 1.2544, 1.2544 | 8.6e-14 | 1.01000 | no capture | captured t=0.52 |
+| 2.0 | 2 | 8 | tau_C/8 | 1.66613 | 1.2531, 1.2531 | 1.9e-14 | 1.01000 | no capture | captured t=0.51 |
+| 2.0 | 2 | 16 | tau_C/16 | 1.65396 | 1.2605, 1.2605 | 2.2e-14 | 1.01000 | no capture | captured t=0.50 |

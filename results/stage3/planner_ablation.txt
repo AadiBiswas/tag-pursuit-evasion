@@ -1,0 +1,76 @@
+Planner started on a known escape orbit's own state (aligned clocks; escape exists by construction).
+orbit 'sym' = Prop 3 symmetric pass (runner a = 1); orbit 4 = optimized 4-leg orbit (runner a = 1/4).
+columns: hold_action / complete_partial_plans
+
+s=1.2 orbit=4 alpha_C=1.4255 (= 1.02 x threshold 1.3975)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.38 | on/off: caught t=2.26 | off/on: caught t=5.22 | on/on: caught t=6.67
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.19 | on/off: caught t=2.19 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.2 orbit=sym alpha_C=1.4630 (= 1.02 x threshold 1.4343)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.2 orbit=4 alpha_C=1.4674 (= 1.05 x threshold 1.3975)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=3.83 | on/off: caught t=2.50 | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.40 | on/off: caught t=2.40 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.2 orbit=sym alpha_C=1.5060 (= 1.05 x threshold 1.4343)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.2 orbit=4 alpha_C=1.6072 (= 1.15 x threshold 1.3975)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=7.29 | on/off: caught t=4.20 | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=4.17 | on/off: caught t=4.17 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.2 orbit=sym alpha_C=1.6494 (= 1.15 x threshold 1.4343)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.2 orbit=4 alpha_C=1.8168 (= 1.30 x threshold 1.3975)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.2 orbit=sym alpha_C=1.8645 (= 1.30 x threshold 1.4343)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=4 alpha_C=1.5907 (= 1.02 x threshold 1.5595)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.17 | on/off: caught t=2.28 | off/on: caught t=7.17 | on/on: caught t=8.64
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.20 | on/off: caught t=2.13 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=sym alpha_C=1.6627 (= 1.02 x threshold 1.6301)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=4 alpha_C=1.6374 (= 1.05 x threshold 1.5595)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.29 | on/off: caught t=2.41 | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.33 | on/off: caught t=2.25 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=sym alpha_C=1.7116 (= 1.05 x threshold 1.6301)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=4 alpha_C=1.7934 (= 1.15 x threshold 1.5595)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.70 | on/off: caught t=2.84 | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.74 | on/off: caught t=2.66 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=sym alpha_C=1.8746 (= 1.15 x threshold 1.6301)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=4 alpha_C=2.0273 (= 1.30 x threshold 1.5595)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=1.5 orbit=sym alpha_C=2.1191 (= 1.30 x threshold 1.6301)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=4 alpha_C=1.7184 (= 1.02 x threshold 1.6847)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.33 | on/off: caught t=2.28 | off/on: caught t=6.10 | on/on: caught t=6.12
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.22 | on/off: caught t=2.22 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=sym alpha_C=1.8162 (= 1.02 x threshold 1.7806)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.81 | on/off: caught t=2.81 | off/on: caught t=2.81 | on/on: caught t=2.81
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=4 alpha_C=1.7689 (= 1.05 x threshold 1.6847)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.42 | on/off: caught t=2.42 | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.31 | on/off: caught t=2.31 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=sym alpha_C=1.8696 (= 1.05 x threshold 1.7806)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=4.52 | on/off: caught t=4.52 | off/on: caught t=4.52 | on/on: caught t=4.52
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=4 alpha_C=1.9374 (= 1.15 x threshold 1.6847)
+    small (24 dirs, beam 32, 2 periods): off/off: caught t=2.75 | on/off: caught t=2.75 | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=2.63 | on/off: caught t=2.63 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=sym alpha_C=2.0477 (= 1.15 x threshold 1.7806)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=4 alpha_C=2.1901 (= 1.30 x threshold 1.6847)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: caught t=11.85 | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: caught t=3.10 | on/off: caught t=3.10 | off/on: escaped 60 periods | on/on: escaped 60 periods
+s=2.0 orbit=sym alpha_C=2.3148 (= 1.30 x threshold 1.7806)
+    small (24 dirs, beam 32, 2 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods
+    large (48 dirs, beam 64, 4 periods): off/off: escaped 60 periods | on/off: escaped 60 periods | off/on: escaped 60 periods | on/on: escaped 60 periods

@@ -1,0 +1,7 @@
+a=1/4, planner br_h4_b64_d48, sweep initial states; escapes out of 12
+s=1.5 alpha_C=8/5 runner clock random : 0
+s=1.5 alpha_C=8/5 runner clock aligned: 12
+s=1.2 alpha_C=7/5 runner clock random : 0
+s=1.2 alpha_C=7/5 runner clock aligned: 12
+s=2.0 alpha_C=8/5 runner clock random : 0
+s=2.0 alpha_C=8/5 runner clock aligned: 0

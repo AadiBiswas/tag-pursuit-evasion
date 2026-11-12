@@ -55,7 +55,25 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
   touches the eps-ball, so that grid point is decided by rounding -- don't read anything into BP at alpha = 1.
 - Preliminary sweep + findings: `results/stage2/note.md`.
 
-## Open questions for Stage 3
+## 2026-11-12 — Stage 3
+
+- H1 was false as stated. PP's guarantee extends to alpha_C <= 2s/(1+s). The proof is pathwise; the key is the overshoot inequality D_k + D_{k+1} <= L + rho.
+- The symmetric-pass orbit (exact, closed form) bounds PP's threshold from above for aligned runners. Multi-leg orbits do better. Once the legs are fixed their closure equation is *linear* in D, so they can be certified in exact rationals. 15 certificates are in results/stage3/certified_orbits.json, with an independent checker in tests/test_certificates.py.
+- Auditing which properties of PP the capture proof uses led to the hybrid chaser: brake while D > s*eps, PP below that. It captures iff alpha_C <= s, and is bounded-speed only.
+- Best-response planner: beam search with an exact PP rollout. Two defects were found by starting it on states where escape provably exists:
+  - no "hold velocity" action, because headings are relative to the rotating line of sight;
+  - ranking partial plans by their prefix.
+  Both are fixed, with switches kept for the ablation. The rollout ranking is the main fix. Even fixed, the planner fails at about 2% margins with small search settings, so it is a lower bound on the runner and never evidence of capture.
+- as_time now forces Python ints: numpy-int Fractions overflowed silently (separate commit).
+- Ties at thresholds (BP at alpha = 1, hybrid at alpha = s) are exact tangencies, so the float engine can go either way there and tests avoid those exact points. Thm 1's own threshold is *not* a tie: its capture is strict.
+- Clock phase is first-order. The same states gave 12/12 escapes with aligned clocks and 0/12 with random phases.
+
+## Open questions for Stage 4
+- One-pass reachability / viability kernel in D for aligned runners. This would close or shrink [2s/(1+s), alpha_c(s, m)].
+- Any escape from PP for runners whose clock is not aligned with the chaser's?
+- Is kappa* (best chaser) finite?
+
+## Open questions for Stage 3 (as posed after Stage 2; answered above)
 - Best-response runner against PP near alpha_C = 1 (H1). The perpendicular orbit seen in Stage 2 is the
   obvious first candidate for an invariant evasion set.
 - Is intercept's edge over PP a guarantee-level improvement anywhere, or only against predictable runners?

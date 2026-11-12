@@ -1,0 +1,21 @@
+{
+  "description": "Stage 3: PP threshold. Periodic-orbit optimization + best-response sweep across [2s/(1+s), alpha_sym(s)]",
+  "seed": 2027,
+  "orbit_speed_ratios": [1.2, 1.5, 2.0],
+  "orbit_periods": [1, 2],
+  "orbit_legs": [1, 2, 4, 8, 16],
+  "orbit_starts": 40,
+
+  "D0": 10.0,
+  "speed_ratios": [1.2, 1.5, 2.0],
+  "alpha_C": ["1", "21/20", "11/10", "6/5", "7/5", "8/5", "2", "5/2"],
+  "agility_ratio_a": ["1/4", "1", "2"],
+  "n_states": 12,
+  "phase_grid": 32,
+  "extra_periods": 40,
+  "planner_configs": {
+    "br_h2_b32_d24": {"n_dirs": 24, "beam": 32, "horizon_chaser_periods": 2, "max_depth": 12},
+    "br_h4_b96_d24": {"n_dirs": 24, "beam": 96, "horizon_chaser_periods": 4, "max_depth": 16},
+    "br_h4_b64_d48": {"n_dirs": 48, "beam": 64, "horizon_chaser_periods": 4, "max_depth": 16}
+  }
+}
