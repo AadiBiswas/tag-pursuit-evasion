@@ -27,11 +27,13 @@ def pure_pursuit(R):
 
 
 def flee(R):
-    def policy(obs):
-        d = obs.pos_self - obs.pos_opp
-        n = np.linalg.norm(d)
-        return R * d / n if n > 0 else np.zeros_like(d)
-    return policy
+    pursue = pure_pursuit(R)
+    return lambda obs: -pursue(obs)
+
+
+def separation(res, t):
+    xc, xe = res.positions_at(t)
+    return np.linalg.norm(xe - xc)
 
 
 def random_script(rng, R, n, full_speed=False):
@@ -45,9 +47,7 @@ def prop1_bound(res, R_C, R_E, tau_C, phi_C):
     t1 = float(phi_C)
     if res.capture_time <= t1:
         return t1
-    xc, xe = res.positions_at(t1)
-    D1 = np.linalg.norm(xe - xc)
-    K = math.ceil(max(D1 - R_C * tau_C, 0.0) / ((R_C - R_E) * tau_C))
+    K = math.ceil(max(separation(res, t1) - R_C * tau_C, 0.0) / ((R_C - R_E) * tau_C))
     return t1 + (K + 1) * tau_C
 
 
@@ -71,17 +71,17 @@ def test_prop1_pure_pursuit_captures_within_bound(R_C, tau_C, tau_E):
                       initial_velocity=[R_E, 0.0] if phi_E else None)
         D0 = rng.uniform(1.5, 20)
         x_E0 = D0 * np.array([math.cos(ang + 1), math.sin(ang + 1)])
-        H = float(phi_C) + (D0 + (R_C + R_E) * float(phi_C)) / ((R_C - R_E)) + 5 * tau_Cf + 5
+        H = float(phi_C) + (D0 + (R_C + R_E) * float(phi_C)) / (R_C - R_E) + 5 * tau_Cf + 5
         n_E = int(H / float(F(tau_E))) + 3
         runners = [flee(R_E), random_script(rng, R_E, n_E), random_script(rng, R_E, n_E, True),
                    Constant([0.0, R_E]), Constant([0.0, 0.0])]
         for runner in runners:
-            res = simulate(C, E, [0, 0], x_E0, eps, F(repr(H)), pure_pursuit(R_C), runner)
+            res = simulate(C, E, [0, 0], x_E0, eps, H, pure_pursuit(R_C), runner)
             assert res.captured, (trial, runner)
             assert res.capture_time <= prop1_bound(res, R_C, R_E, tau_Cf, phi_C) + 1e-9
 
 
-def test_prop1_time_is_near_lower_bound_against_straight_flee():
+def test_prop1_collinear_flee_hits_lower_bound():
     # Runner flees along the LOS; any chaser needs >= (D0 - eps)/(R_C - R_E).
     R_C, R_E, eps, D0 = 1.5, 1.0, 1.0, 20.0
     res = simulate(AgentSpec(R_C, "1"), AgentSpec(R_E, "1"), [0, 0], [D0, 0], eps, 100,
@@ -103,11 +103,10 @@ def test_tangent_sidestep_min_distance(R_C, R_E, D):
     sig, dmin = min_separation([D, 0], np.array(v_tan) - [R_C, 0], tau)
     assert sig == pytest.approx(D / R_C) and dmin == pytest.approx(D / s)
 
-    tau_f = F(repr(tau))
-    C, E = AgentSpec(R_C, tau_f), AgentSpec(R_E, tau_f)
+    C, E = AgentSpec(R_C, tau), AgentSpec(R_E, tau)
     for eps, hit in [(D / s * (1 - 1e-6), False), (D / s * (1 + 1e-6), True)]:
         assert R_E * tau > eps
-        res = simulate(C, E, [0, 0], [D, 0], eps, tau_f, pure_pursuit(R_C), Constant(v_tan))
+        res = simulate(C, E, [0, 0], [D, 0], eps, tau, pure_pursuit(R_C), Constant(v_tan))
         assert res.captured == hit
         if hit:
             assert res.capture_time == pytest.approx(D / R_C, rel=1e-2)
@@ -126,7 +125,7 @@ def test_escape_lemma(R_C):
             res = simulate(C, E, [0, 0], [D0, 0], eps, 30, pol, flee(R_E))
             assert not res.captured
             # separation at runner decision times is non-decreasing
-            seps = [np.linalg.norm(np.subtract(*res.positions_at(float(F(e["t"])))[::-1]))
+            seps = [separation(res, F(e["t"]))
                     for e in res.events if e["kind"] == "decision" and e["agent"] == "E"]
             assert all(b >= a - 1e-12 for a, b in zip(seps, seps[1:]))
 

@@ -16,7 +16,7 @@ Positions and capture offsets are float64.
 
 import json
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from fractions import Fraction
 
 import numpy as np
@@ -24,7 +24,8 @@ import numpy as np
 from .kinematics import first_contact
 
 ROLES = ("C", "E")
-SPEED_TOL = 1e-12  # relative; lets R * unit_vector through despite rounding
+# Slack for R * unit_vector rounding: relative for R >= 1, absolute 1e-12 below.
+SPEED_TOL = 1e-12
 
 
 def as_time(x):
@@ -109,7 +110,6 @@ class Result:
     x_C: np.ndarray
     x_E: np.ndarray
     n_intervals: int = 0
-    extra: dict = field(default_factory=dict)
 
     def positions_at(self, t):
         t = float(t)
@@ -235,14 +235,15 @@ def simulate(chaser, runner, x_C0, x_E0, eps, horizon, chaser_policy, runner_pol
                            "velocity": a.vel.tolist(), "pos": a.anchor_x.tolist()})
             a.k += 1
             a.next = t + a.spec.period
-        if deciders and t > 0:
+        if t > 0:  # t = 0 already has its knot
             knot(t)
 
         t_next = min(agents["C"].next, agents["E"].next, H)
         dt = t_next - t
         xc, xe = agents["C"].pos(t), agents["E"].pos(t)
-        vc = agents["C"].vel if agents["C"].vel is not None else np.zeros(d)
-        ve = agents["E"].vel if agents["E"].vel is not None else np.zeros(d)
+        # Both velocities are set by now: AgentSpec forces fresh-start agents
+        # to decide at t = 0, before the first interval.
+        vc, ve = agents["C"].vel, agents["E"].vel
         n += 1
         s = first_contact(xe - xc, ve - vc, eps, float(dt))
         if s is not None:

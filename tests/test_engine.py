@@ -1,4 +1,7 @@
+import subprocess
+import sys
 from fractions import Fraction as F
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -22,8 +25,6 @@ class Recorder:
         return self.inner(obs)
 
 
-# --- time handling --------------------------------------------------------
-
 def test_as_time_reads_floats_as_decimals():
     assert as_time(0.1) == F(1, 10)
     assert 3 * as_time(0.1) == as_time(0.3)
@@ -31,8 +32,6 @@ def test_as_time_reads_floats_as_decimals():
     with pytest.raises(ValueError):
         as_time(float("inf"))
 
-
-# --- movement ---------------------------------------------------------------
 
 def test_straight_line_motion_is_exact():
     C = AgentSpec(1.0, "1/3")
@@ -80,8 +79,6 @@ def test_dimension_agnostic_3d_head_on():
     assert res.capture_time == pytest.approx(4.5)
 
 
-# --- clocks ---------------------------------------------------------------
-
 def test_asynchronous_clock_lattices():
     C, E = AgentSpec(1.0, "1/3"), AgentSpec(1.0, "1/2")
     res = simulate(C, E, [0, 0], [100, 0], 0.5, 2, Constant([0, 0]), Constant([0, 0]))
@@ -109,8 +106,6 @@ def test_phases():
     np.testing.assert_allclose(res.positions_at(1)[0], [0.25, 0], atol=1e-14)
     np.testing.assert_allclose(res.positions_at(1)[1], [50, 0.75], atol=1e-14)
 
-
-# --- initialization -------------------------------------------------------
 
 def test_fresh_start_vs_precommitted():
     rec = Recorder([[0, 0]])
@@ -146,8 +141,6 @@ def test_bad_specs():
         AgentSpec(-1.0, 1)
 
 
-# --- information / simultaneity ---------------------------------------------
-
 def test_simultaneous_decisions_do_not_leak():
     # C every 1/3, E every 1/2 -> both decide at t = 0 and t = 1.
     c_vel = [[0.1 * k, 0] for k in range(10)]
@@ -180,8 +173,6 @@ def test_observation_is_read_only():
                  vandal, Constant([0, 0]))
 
 
-# --- speed constraints ------------------------------------------------------
-
 def test_speed_modes():
     C, E = AgentSpec(2.0, 1), AgentSpec(1.0, 1)
     run = lambda vc, mode: simulate(C, E, [0, 0], [50, 0], 0.5, 1, Constant(vc),
@@ -207,8 +198,6 @@ def test_wrong_shape_velocity():
         simulate(AgentSpec(1.0, 1), AgentSpec(1.0, 1), [0, 0], [5, 0], 0.5, 1,
                  Constant([0, 0, 0]), Constant([0, 0]))
 
-
-# --- capture detection ------------------------------------------------------
 
 def test_initial_capture():
     res = simulate(AgentSpec(1.0, 1), AgentSpec(1.0, 1), [0, 0], [0.5, 0], 1.0, 5,
@@ -254,8 +243,6 @@ def test_max_events_stop():
     assert res.stop_reason == "max_events" and res.n_intervals == 100
 
 
-# --- reproducibility ----------------------------------------------------------
-
 def random_game(seed):
     rng = np.random.default_rng(seed)
 
@@ -276,3 +263,14 @@ def test_runs_are_bitwise_reproducible():
     np.testing.assert_array_equal(a.x_C, b.x_C)
     np.testing.assert_array_equal(a.x_E, b.x_E)
     assert random_game(8).log_json() != a.log_json()
+
+
+def test_reproducible_across_processes_and_hash_seeds():
+    # Same game in fresh interpreters with different PYTHONHASHSEED. Catches
+    # anything that leaks set/dict-of-str ordering or id()-based state into a run.
+    code = ("import sys; sys.path[:0] = ['tests', 'src']; "
+            "from test_engine import random_game; print(random_game(7).log_json())")
+    outs = {subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True,
+                           cwd=Path(__file__).parents[1], env={"PYTHONHASHSEED": seed}).stdout
+            for seed in ("1", "2", "12345")}
+    assert len(outs) == 1 and outs.pop() == random_game(7).log_json() + "\n"

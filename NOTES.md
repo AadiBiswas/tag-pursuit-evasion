@@ -17,22 +17,30 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
   agent would get information it shouldn't. Float inputs are read via `repr` (0.1 → 1/10).
   Positions and capture offsets stay float64.
 - **Capture check.** Closed-form earliest root of `|r0 + s w| = eps` on each inter-event interval.
-  First version used the textbook discriminant; a test with `|r0|/eps = 1e9` showed `|r0|^2 - eps^2`
-  loses eps entirely. Now computed via closest approach (perpendicular distance accurate to ~ulp(|r0|))
-  and the entry root as `(n-eps)(n+eps) / (a (s_min + h))`. Grazing contact (closest approach exactly eps)
-  counts as capture in exact arithmetic but is floating-point sensitive — measure zero, accepted.
+  The textbook discriminant is unusable at large scale: `|r0|^2 - eps^2` rounds to `|r0|^2` once
+  `|r0|/eps` is ~1e8 (caught by a test at 1e9). We go through the closest approach instead, whose
+  perpendicular distance is accurate to ~ulp(|r0|), and get the entry root as `(n-eps)(n+eps) / (a(s_min+h))`
+  so near-immediate contact doesn't cancel either. Grazing contact (closest approach exactly eps) counts
+  as capture in exact arithmetic but is floating-point sensitive — measure zero, accepted.
 - **Simultaneous moves.** All deciders' observations are frozen (read-only array copies) from the t^- state
   before any policy is called; then chaser is queried, then runner; then both velocities are applied.
   Policies that share hidden mutable state could still collude — not guarded against, not our threat model.
 - **Position anchoring.** Each agent's position is `anchor + v * (t - t_anchor)` with the anchor reset at its
   own decisions; error accumulates per decision, not per event.
-- **Speed validation.** Velocities above `R` by more than 1e-12 relative raise (no silent clipping — that
-  would change the model). Within tolerance they are used as given.
+- **Speed validation.** Velocities above `R` by more than `1e-12 * max(1, R)` raise (no silent clipping —
+  that would change the model). Within tolerance they are used as given.
 - **Precommitment.** `first_decision` (phi) allowed in `[0, period]`; phi > 0 requires `initial_velocity`.
   Spec §A.2 had `[0, tau)`; phi = tau is "decided at 0^-", harmless and convenient.
 - **Horizon.** Closed: capture exactly at H counts. No decisions are taken at t = H.
 - **Termination guard.** `max_events` (default 1e6) with `stop_reason="max_events"`; needed once
   reactive policies can produce long games.
+
+## Known issues
+
+- **Velocity aliasing (latent, not triggered by anything in the repo).** The engine stores the array a
+  policy returns without copying, and `Constant`/`Scripted` return their internal arrays. A policy that
+  later mutates a returned array in place would change an agent's committed velocity retroactively.
+  Fix is a copy in `_check_velocity`; deferred so the 2026-11-11 style pass stays behavior-neutral.
 
 ## Open questions for Stage 2
 - See the Stage 1 report: which reactive baselines first, and whether to run the F experiment before or
