@@ -4,6 +4,21 @@ Status legend used throughout:
 **[Proved]** full argument written here, still needs your independent check ·
 **[Sketch]** argument outlined, gaps named · **[Conjecture]** · **[Heuristic]** · **[Decision]** needs your call.
 
+## Revision log
+
+**Rev 0 (2026-11-11).** The original Stage 0 spec. Its text is kept below unchanged.
+
+**Rev 1 (2026-11-11).** Decisions after review. Each affected section carries a marked **Rev 1** note, and the original reasoning is left in place.
+
+1. **Speed model.** The primary model is now $\|\mathbf v_i\| \le R_i$. At each decision time the agent chooses a full velocity vector, direction and magnitude, and holds it until its next decision. Exact speed $\|\mathbf v_i\| = R_i$ is kept as a variant (`speed_mode="exact"`).
+2. **Case 4 is retained.** We document that it is degenerate in unbounded space. Added: an interception lemma (§B.1a), a full outcome characterization for $s \le 1$ (§B.1b), and reachable sets. The bounded arena is deferred and not implemented.
+3. **Agility is a fixed periodic cadence for now.** The distinction between a fixed schedule and a maximum available frequency is now explicit (§A.4 note, H3).
+4. **Qualifications on the hypotheses.**
+   - H1: surviving one interval does not imply indefinite evasion.
+   - §A.6: uniform guarantees are separated from state-conditioned results.
+   - H5: the 2D/3D equivalence stays a conjecture.
+5. **Citations remain unverified** (§D).
+
 ---
 
 ## A. Formal game definition
@@ -43,12 +58,23 @@ $$
 
 So the minimum separation on an inter-event interval has a closed form: minimize a quadratic in $\sigma$ over $[0, \Delta]$. **The capture check is exact, with no time-stepping error.** This is the main reason the event-driven engine can be mathematically clean.
 
+> **Rev 1 — primary speed model.** Replace $\dot{\mathbf x}_i = R_i\mathbf u_i$, $|\mathbf u_i| = 1$ with
+> $$\dot{\mathbf x}_i = \mathbf v_i(t),\qquad \|\mathbf v_i\| \le R_i,\qquad \mathbf v_i \text{ constant between consecutive decisions of agent } i.$$
+> There is no intra-interval control: no acceleration, no braking mid-interval, no turning mid-interval. An agent may stop ($\mathbf v_i = 0$), but only at a decision time. The state stores velocities $\mathbf v_i$ instead of headings $\mathbf u_i$. Everything in A.3 above stays true with $R_E\mathbf u_E - R_C\mathbf u_C$ replaced by $\mathbf w = \mathbf v_E - \mathbf v_C$, which may now be $0$.
+> The exact-speed variant $\|\mathbf v_i\| = R_i$ is retained for robustness checks.
+
 ### A.4 Information and strategies
 
 - **Observation:** at each of its decision times, an agent observes the full current state $S(t^-)$, including the opponent's committed heading *and its clock phase*, plus the full history.
 - **Strategy:** a nonanticipative map from observed history to $S^{d-1}$, evaluated only at the agent's own decision times.
 - **Simultaneous decisions** ($t \in \mathcal{T}_C \cap \mathcal{T}_E$): both agents choose from the same information $S(t^-)$, and neither sees the other's new heading. This can recur for commensurate clocks (e.g. $a = 2$ with aligned phases), so it is not a measure-zero corner case for the sweep you proposed.
 - **Consequence worth stating up front:** when agent $i$ decides and agent $j$ is mid-commitment, agent $i$ knows $j$'s exact path until $j$'s next decision. *Agility is therefore an information advantage:* the more agile agent is more often the "last mover." I think this is the right lens for the whole paper.
+
+> **Rev 1 — what "agility" means in Stage 1.** Two readings must not be conflated.
+> - **(Fixed cadence; the current model.)** Agent $i$ decides *exactly* at $\varphi_i + k\tau_i$. Here $A_i = 1/\tau_i$ is a schedule, not a capability. Raising $A_i$ from $1/\tau$ to $1/\tau'$ enlarges the agent's set of feasible control signals **only if** the new lattice contains the old one ($\tau = m\tau'$ with matching phase). Two non-nested schedules, such as $\tau = 1$ and $\tau' = 0.7$, give *incomparable* action sets. Neither agent can imitate the other.
+> - **(Maximum frequency; the physically meaningful reading.)** Agent $i$ may decide at any times it likes, subject to a minimum gap $\tau_i$ between decisions. A larger $A_i$ then gives a superset of feasible schedules. So *any* guaranteed outcome is weakly monotone in $A_i$, trivially.
+>
+> Under fixed cadence, an apparent "more agility hurts" effect is therefore a statement about schedule geometry or resonance, **not** evidence that agility is harmful. Results must be labeled with the reading they use. Flexible scheduling is deferred and not implemented in Stage 1.
 
 ### A.5 Outcomes
 
@@ -86,6 +112,14 @@ $$
 
 $\alpha_C$ is "how many capture radii the runner can drift during one chaser blink." The theory below says guaranteed-capture questions for $s>1$ depend only on $(s, \alpha_C, \alpha_E)$, because $D_0$ and $H$ drop out. That is a smaller sufficient parameterization under the infinite-horizon/guarantee assumption, which is what you asked for. Keep $(s,a,\lambda,b,h)$ for finite-horizon experiments.
 
+> **Rev 1 — qualification.** The sentence above is too broad. It is correct only for **uniform** questions: "does the chaser guarantee capture from *every* initial state?" In those, $D_0$, headings and phases are quantified over rather than fixed, and $H = \infty$. Proposition 1 is such a uniform statement.
+>
+> For **state-conditioned** results, the full normalized state cannot be discarded. These are questions like "is capture guaranteed from *this* state?", "what is the capture time?", or "does the runner escape from here?" The state that must be kept is: $D_0/\varepsilon$; the initial velocities relative to the LOS, which are now direction *and* magnitude $\|\mathbf v_i(0)\|/R_i \in [0,1]$; the phases $\varphi_i/\tau_i$; whether each agent starts fresh ($\varphi_i = 0$) or precommitted; and $h$ if the horizon is finite.
+>
+> Example: Proposition 1's time bound depends on $D_0$ and $\varphi_C$. B.1b's Case 4 outcome depends on all of the initial state.
+>
+> Revised state dimension: 2D needs 2 angles and 2 speed fractions for the initial velocities, plus 2 phases and $D_0/\varepsilon$. 3D needs 3 angles, with the rest the same. Whether a smaller sufficient set exists for a *specific* state-conditioned question has to be shown question by question.
+
 ---
 
 ## B. Mathematical sanity checks
@@ -110,6 +144,69 @@ So separation at the next runner decision is $\ge D > \varepsilon$, and inductio
   - If $\varphi_E(0) = 0$, the runner is never caught.
 - This answers RQ2 almost completely, and the answer is unexciting. **[Decision]** See §B.5.
 
+> **Rev 1 — re-checked under $\|\mathbf v\|\le R$. [Proved]** The proof uses only two facts: the runner can choose $\mathbf v_E = R_E\hat{\mathbf u}$, which is admissible in both speed models; and every chaser path satisfies $|\mathbf x_C(t_0+\sigma) - \mathbf x_C(t_0)| \le R_C\sigma$, which holds for any piecewise-constant velocity with $\|\mathbf v_C\|\le R_C$. So the lemma holds unchanged, in any dimension.
+>
+> One edge case is worth recording. If $D = \varepsilon$ exactly at the runner's decision, capture has already occurred, because the definition uses $\le$. The lemma needs $D > \varepsilon$ strictly.
+
+### B.1a Interception lemma (finite initial commitment) **[Proved]** — *Rev 1, new*
+
+**Setting.**
+- The runner moves with a known constant velocity $\mathbf v_E$, with $\|\mathbf v_E\| \le R_E$, on $[0, T]$, starting from $\mathbf e_0$. Its path is $\mathbf e(t) = \mathbf e_0 + \mathbf v_E t$.
+- The chaser starts at $\mathbf c_0$ and is free to choose a velocity at $t = 0$.
+- $\|\mathbf e_0 - \mathbf c_0\| > \varepsilon$.
+
+**Claim.** In the primary model, there is a chaser control with capture by time $T$ **iff**
+$$\exists\, t\in[0,T]:\quad \|\mathbf e_0 + \mathbf v_E t - \mathbf c_0\| \ \le\ R_C t + \varepsilon. \tag{★}$$
+If (★) holds, a *single constant velocity* chosen at $t=0$ achieves capture.
+
+*Proof.*
+- (⇒) Suppose some admissible chaser path captures at $t \le T$. Any path with speed $\le R_C$ satisfies $\|\mathbf x_C(t) - \mathbf c_0\| \le R_C t$. So
+  $$\|\mathbf e(t) - \mathbf c_0\| \le \|\mathbf e(t) - \mathbf x_C(t)\| + \|\mathbf x_C(t) - \mathbf c_0\| \le \varepsilon + R_C t.$$
+  This direction holds for **every** chaser class with speed bounded by $R_C$: any decision schedule, even continuous control. Chaser agility therefore cannot enlarge the set of interceptable lines.
+- (⇐) Let $t^\*$ satisfy (★), and $\mathbf p = \mathbf e(t^\*) - \mathbf c_0$. Then $t^\* > 0$, since $\|\mathbf p\| > \varepsilon$ at $t = 0$.
+  - If $\|\mathbf p\| \le R_C t^\*$, take $\mathbf v_C = \mathbf p / t^\*$. This is admissible, and $\mathbf x_C(t^\*) = \mathbf e(t^\*)$.
+  - Otherwise $R_C t^\* < \|\mathbf p\| \le R_C t^\* + \varepsilon$. Take $\mathbf v_C = R_C\mathbf p/\|\mathbf p\|$. Then $\|\mathbf e(t^\*) - \mathbf x_C(t^\*)\| = \|\mathbf p\| - R_C t^\* \le \varepsilon$.
+  - If the chaser's clock forces re-decisions before $t^\*$, it re-selects the same velocity. ∎
+
+**Exact-speed variant.** (★) is still necessary and sufficient, but the construction changes. Let $f(t) = \|\mathbf e(t) - \mathbf c_0\| - R_C t - \varepsilon$. It is continuous, $f(0) > 0$, and $f(t^\*) \le 0$, so there is an earliest root $t' \le t^\*$. The full-speed choice $\mathbf v_C = R_C(\mathbf e(t') - \mathbf c_0)/\|\cdot\|$ gives separation exactly $\varepsilon$ at $t'$.
+
+The earliest root $t'$ is also the **earliest possible capture time** in both models, by the (⇒) bound. So the straight full-speed leg toward $\mathbf e(t')$ is time-optimal.
+
+**Closed form.** Both sides of (★) are nonnegative, so square them. With $\mathbf p_0 = \mathbf e_0 - \mathbf c_0$, (★) at $t$ is equivalent to
+$$(\|\mathbf v_E\|^2 - R_C^2)\,t^2 + 2(\mathbf p_0\!\cdot\!\mathbf v_E - \varepsilon R_C)\,t + \|\mathbf p_0\|^2 - \varepsilon^2 \ \le\ 0.$$
+This is a quadratic inequality on $[0,T]$. Its smallest feasible root is $t'$.
+
+**Precommitted chaser.** Suppose the chaser is committed to $\mathbf v_C(0)$ until $\varphi_C < T$. Let $\mathbf c_1 = \mathbf c_0 + \mathbf v_C(0)\varphi_C$. Capture by $T$ is possible iff either the committed segment already captures, i.e. $\min_{t\in[0,\varphi_C]}\|\mathbf r(t)\| \le \varepsilon$, which is the exact interval check, or
+$$\exists\,t\in[\varphi_C, T]:\ \|\mathbf e(t) - \mathbf c_1\| \le R_C(t-\varphi_C) + \varepsilon.$$
+The proof is the same. If $\varphi_C \ge T$, only the segment check applies.
+
+**Assumptions used:**
+- perfect information, i.e. the chaser knows $\mathbf e_0$ and $\mathbf v_E$;
+- a Euclidean norm;
+- unbounded, obstacle-free space;
+- the runner's velocity is exactly constant on $[0,T]$;
+- a closed capture ball ($\le\varepsilon$);
+- $\|\mathbf e_0 - \mathbf c_0\| > \varepsilon$.
+
+No assumption on dimension is needed.
+
+**Reachable sets (primary model).**
+- *Chaser:* $\{\mathbf c_0 + \mathbf v_C(0)t\}$ for $t \le \varphi_C$. After that, the closed ball $\bar B(\mathbf c_1, R_C(t - \varphi_C))$.
+  - *Proof sketch:* "⊆" is the speed bound. "⊇" holds because each point of the ball is reached at time $t$ by one constant velocity of norm $\le R_C$. That velocity is admissible under bounded speed; under exact speed only the sphere is reached at time $t$, though the interior is reached earlier.
+- *Runner:* the point $\mathbf e(t)$ for $t \le \varphi_E$. After that, $\bar B(\mathbf e(\varphi_E), R_E(t - \varphi_E))$.
+- Capture by $t$ is possible iff the $\varepsilon$-neighbourhoods of the two reachable sets at some time $\le t$ intersect *along a common time*. (★) is exactly this, for a point runner path against a ball.
+
+### B.1b Outcome for $s \le 1$ under optimal play **[Proved, from B.1 + B.1a]** — *Rev 1, new*
+
+Let $R_E \ge R_C$, and suppose the runner is precommitted to $\mathbf v_E(0)$ until $\varphi_E$. Then the chaser can force capture **iff** the precommitted-chaser version of (★) holds with $T = \varphi_E$.
+
+- If it holds, B.1a gives a capture.
+- If it fails, there is no capture on $[0,\varphi_E]$ against any chaser. Taking $t = \varphi_E$ in the failed condition gives $\|\mathbf r(\varphi_E)\| > \varepsilon$. At $\varphi_E$ the runner flees, and B.1 applies.
+- A simultaneous chaser decision at $\varphi_E$ changes nothing.
+- A fresh-start runner ($\varphi_E = 0$) with $D_0 > \varepsilon$ always escapes.
+
+This is the complete answer to Case 4 in the baseline model. RQ2 becomes the geometry of (★) over the initial-state distribution.
+
 ### B.2 Your candidate proposition, verified and strengthened **[Proved]**
 
 **Proposition 1.** Assume $R_C > R_E$ and
@@ -132,6 +229,32 @@ Your hypothesis $R_C\tau_C \le \varepsilon$ implies this one because $R_E < R_C$
 
 The original triangle-inequality idea works. What it was missing is the overshoot case. Under your hypothesis $R_C\tau_C \le \varepsilon$, case (ii) never happens, which is why the proof seemed to need it.
 
+> **Rev 1 — independent re-verification under $\|\mathbf v\| \le R$. [Proved]**
+>
+> *Definition.* PP means that at each chaser decision $t_k$ the chaser chooses $\mathbf v_C = R_C\hat{\mathbf u}_k$ with $\hat{\mathbf u}_k = (\mathbf e - \mathbf c)/D_k$, i.e. **full speed**. This is admissible in both speed models.
+>
+> *What the proof uses about the runner:* $\|\mathbf x_E(t_k+\sigma) - \mathbf x_E(t_k)\| \le R_E\sigma$. This holds for any runner in either model, and also for a runner with continuous control or clairvoyance.
+>
+> Line by line, for each case:
+> - **(i) $D_k \ge R_C\tau_C$.** At the end of the interval the chaser is at $\mathbf c + R_C\tau_C\hat{\mathbf u}_k$, on the segment $[\mathbf c, \mathbf e]$. Its distance to $\mathbf e$ is $D_k - R_C\tau_C \ge 0$. The triangle inequality gives $D_{k+1} \le D_k - R_C\tau_C + R_E\tau_C$.
+>   - *Boundary $D_k = R_C\tau_C$:* then $D_{k+1} \le R_E\tau_C \le \varepsilon$, so capture is detected at or before $t_{k+1}$. That is consistent with the bound.
+> - **(ii) $\varepsilon < D_k < R_C\tau_C$.** Set $\sigma^\* = D_k/R_C \in (0, \tau_C)$. Then $\mathbf x_C(t_k + \sigma^\*) = \mathbf e$, and $\|\mathbf r(t_k+\sigma^\*)\| \le R_E\sigma^\* = D_k R_E/R_C < R_E\tau_C \le \varepsilon$.
+>   - The final inequality is where the hypothesis enters. It is strict in the middle step, so capture happens strictly inside the interval.
+> - **Termination.** Each case-(i) step lowers $D$ by $\delta = (R_C - R_E)\tau_C > 0$. So after at most $K = \lceil (D_1 - R_C\tau_C)^+/\delta\rceil$ such steps we have $D_K \le R_C\tau_C$, and the next interval captures. This gives the same bound as before.
+>
+> *Gaps checked:*
+> - Capture occurring *before* $\varphi_C$ makes the statement vacuous.
+> - $D_1$ is finite: $D_1 \le D_0 + (R_C + R_E)\varphi_C$.
+> - Simultaneous decisions are irrelevant, because the runner bound is pathwise.
+> - $R_C > R_E$ is used only for $\delta > 0$. The runner's agility $\tau_E$ never enters.
+>
+> *Not claimed:*
+> - that $R_E\tau_C \le \varepsilon$ is necessary for PP (that is H1);
+> - that PP is time-optimal against every runner;
+> - anything for PP variants that use less than full speed. For example, "brake to arrive exactly at $\mathbf e$ at $t_{k+1}$" does not obviously satisfy either case and is not covered.
+>
+> Numerical consistency checks are in `tests/test_theory_scenarios.py`. They cover 5 speed/period combinations × 4 runner periods × 15 initial states × 5 runner behaviours, including the overshoot regime $R_C\tau_C > \varepsilon$. They are finitely many cases, not a proof.
+
 **Capture-time bound [Proved, same argument].** Let $D_1 = |\mathbf r(\varphi_C)| \le D_0 + (R_C + R_E)\varphi_C$, and
 $$K = \left\lceil \frac{(D_1 - R_C\tau_C)^+}{(R_C - R_E)\tau_C} \right\rceil.$$
 Then
@@ -153,6 +276,11 @@ Suppose the chaser commits to PP at distance $D$, and the runner sees that commi
 - **That escape window $(s\varepsilon,\ R_C\tau_C)$ is nonempty iff $\alpha_C > 1$**, which is exactly the complement of Proposition 1's hypothesis.
 
 This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). It is only a one-interval statement, so it is **not** yet an escape theorem.
+
+> **Rev 1.**
+> - Under the primary model the runner's tangent velocity is still admissible, because its norm is exactly $R_E$. The single-interval computation is therefore unchanged. It is checked numerically in `test_tangent_sidestep_min_distance`.
+> - Surviving one chaser commitment **does not** imply indefinite evasion. After the pass, the next state, meaning separation, phases and the chaser's new aim, may be worse for the runner. Indefinite evasion needs an invariant set of states that the runner can maintain forever.
+> - The bounded-speed model also gives the *chaser* new options, such as braking to avoid overshooting. So the $\alpha_C > 1$ region may behave differently from the exact-speed model.
 
 ### B.4 Summary table under the baseline model
 
@@ -182,6 +310,12 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 3. **Opponent clock observable?** I assumed yes (perfect information). If not, commitments become partially hidden. That is a meaningfully different game.
 4. **Simultaneous moves.** I use the conservative pure-strategy convention (§A.5). Exact small-game solvers may need mixed strategies at simultaneous nodes; I'll flag it wherever it matters.
 
+> **Rev 1 — resolutions.**
+> 1. Case 4 is retained in the paper. We document the unrestricted-space escape (B.1) and the finite-commitment interception (B.1a/b). The bounded arena is a future option and is not implemented.
+> 2. The primary speed model is $\|\mathbf v\| \le R$, with exact speed kept as a variant.
+> 3. The opponent's clock is observable. Perfect information is unchanged.
+> 4. Simultaneous moves: both agents observe the state at $t^-$, and neither sees the other's new choice. The engine enforces this by freezing all observations before any policy is queried.
+
 ---
 
 ## C. Research hypotheses
@@ -191,6 +325,11 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 - *Why interesting:* together with Proposition 1, it would give an exact threshold $\alpha_C = 1$ for PP against agile runners. That is "if you can't leave the tag radius during one of the chaser's blinks, you lose; otherwise you can play matador."
 - *Falsified by:* a proof that PP captures for some $\alpha_C>1$ against all sufficiently agile runners, or by numerics showing that no runner policy, including best-response search, escapes near $\alpha_C = 1^+$. A heuristic runner failing to escape does **not** falsify it.
 - *Also expected:* for sluggish runners (large $\alpha_E$), PP's capture region extends past $\alpha_C = 1$. That is the agility-vs-speed tradeoff in its clearest form.
+
+> **Rev 1.** The exact PP threshold remains **conjectural**.
+> - The supporting evidence (B.3) is a one-interval survival computation. One-interval survival does not imply indefinite evasion (see the B.3 Rev 1 note).
+> - A proof of H1 needs a runner strategy together with an invariant region of states that PP cannot leave.
+> - H1 is now stated for the primary bounded-speed model, where PP still means full speed. The runner's tangent sidestep is admissible in that model.
 
 **H2 — Smarter chasers beat the PP threshold, but not without bound. [Conjecture]**
 - *Claim:* let $\kappa^\*(s)$ be the supremum of $\alpha_C$ for which *some* chaser strategy guarantees capture against a fully agile runner ($\alpha_E \to 0$). Then $1 < \kappa^\*(s) < \infty$.
@@ -204,6 +343,10 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 - *Why interesting:* it would show that "agility" as decision frequency is not a scalar advantage. Phase structure matters. That directly addresses your requirement not to assume monotonicity.
 - *Falsified by:* a monotonicity proof, or a fine $a$-sweep with best-response opponents showing no non-monotonicity beyond CI width.
 
+> **Rev 1 — what H3 is actually about.** Under the fixed-cadence model, a higher nominal frequency on a non-nested lattice is a *different* action set, not a larger one (see the §A.4 Rev 1 note). Non-monotonicity in $a$ would therefore show that **schedule alignment** matters. It would *not* show that more agility hurts.
+>
+> Under the maximum-frequency reading, monotonicity is immediate. So H3 is a statement about the fixed-cadence model only, and the paper must say so wherever it is reported. Any interpretation of a non-monotone result has to name the reading it uses.
+
 **H4 — Case 4 capture probability depends on agility only through phases, and saturates. [Follows from B.1 + Conjecture on form]**
 - Under B.1, for $s<1$ with initial headings and phases drawn uniformly, $P_{\text{cap}}(s,a,\lambda,b)$ is an integral of a one-shot interception indicator over $(\varphi_C, \varphi_E, \text{headings})$.
 - *Conjecture:* $P_{\text{cap}}$ is increasing in $a$ and converges as $a\to\infty$ to the $\varphi_C = 0$ value, with a gap of $O(1/(\lambda a))$.
@@ -215,6 +358,13 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 - *Conjecture:* $\kappa^\*_{3D}(s) = \kappa^\*_{2D}(s)$ and the H1 threshold is dimension-free, while finite-horizon capture *frequencies* under uniform heading measures differ.
 - *Why interesting:* this is RQ5, and it separates "3D is genuinely harder" from "3D just has a different heading distribution."
 - *Falsified by:* a 3D-only escape maneuver (a non-planar sidestep that beats a chaser who captures in 2D).
+
+> **Rev 1.**
+> - The projection sketch now fits the **primary** model directly. The orthogonal projection of a chaser velocity with $\|\mathbf v_C\| \le R_C$ is admissible in the planar game, on the same clock.
+> - It is still a **sketch**. What remains is to formalize strategies, i.e. nonanticipative maps on observation histories, and to check that the runner's planar strategy is well-defined on projected observations, including projected precommitted velocities.
+> - It would give only $\text{Escape}_{2D}(\text{projected state}) \Rightarrow \text{Escape}_{3D}(\text{state})$.
+> - Any **equivalence** of 2D and 3D guarantees remains a conjecture. In particular, the converse direction has no argument at all.
+> - Exact-speed variant: the projected chaser is *not* admissible there, so the sketch does not apply.
 
 ---
 
@@ -263,7 +413,14 @@ If D.2 turns up Proposition 1 in a sampled-data paper, which is plausible, we ci
 
 ---
 
+> **Rev 1:** no citation has been verified yet. The status above is unchanged.
+
 ## E. Implementation roadmap
+
+> **Rev 1 — Stage 1 as built.**
+> - The package lives at `src/tagsim/`, not in the suggested `dynamics/`/`strategies/`/`game/` folders. Three small modules were enough at this size.
+> - Stage 1 ships scripted policies only. PP and flee exist only as test-local helpers.
+> - Implementation decisions are listed in `NOTES.md`.
 
 Each stage is one small, tested commit. Stages run one at a time.
 
