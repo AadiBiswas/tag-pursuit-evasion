@@ -15,6 +15,10 @@ Ranking (lexicographic, so a large separation can't buy back a capture):
     1. survived the whole planning horizon
     2. later predicted capture time (only matters if everything dies)
     3. larger minimum separation over the horizon
+Partial plans are ranked the same way after completing them by holding their
+last velocity to the end of the horizon. Ranking on the partial prefix alone
+prunes exactly the plans that head *toward* a close tangent pass -- they look
+worse than fleeing right up until the pass that saves them.
 Ties keep the earlier candidate (stable sort), so results are deterministic.
 """
 
@@ -84,7 +88,8 @@ def chaser_decisions(next_opp, tau_C, t_end):
 
 class BestResponseVsPP:
     """Beam-search runner. Actions are n_dirs headings spaced evenly from
-    straight-away-from-the-chaser, times each fraction in `speeds` of R_E.
+    straight-away-from-the-chaser, times each fraction in `speeds` of R_E,
+    plus "hold the current velocity".
     depth=None plans ceil(horizon_chaser_periods * tau_C / tau_E) runner legs,
     capped at max_depth."""
 
@@ -110,25 +115,40 @@ class BestResponseVsPP:
         hit = np.full(1, np.inf)
         msep = np.full(1, np.inf)
         plans = np.zeros((1, 0, 2))
-        A = len(self.offsets) * len(self.speeds)
+        prev = None if obs.vel_self is None else obs.vel_self[None].astype(float)
 
         for j in range(depth):
             away = e - c
             base = np.arctan2(away[:, 1], away[:, 0])
             ang = base[:, None] + self.offsets[None, :]                     # (B, n_dirs)
             dirs = np.stack([np.cos(ang), np.sin(ang)], axis=-1)            # (B, n_dirs, 2)
-            ve = (R_E * self.speeds[None, None, :, None] * dirs[:, :, None, :]).reshape(len(e), A, 2)
-            B = len(e)
-            rep = lambda x: np.repeat(x, A, axis=0)
+            ve = (R_E * self.speeds[None, None, :, None] * dirs[:, :, None, :]).reshape(len(e), -1, 2)
+            # Headings are relative to the *current* line of sight, which rotates, so
+            # "keep going straight" is almost never on the grid. Without it a runner
+            # with 4 decisions per chaser period can't even copy a 1-decision runner.
+            if prev is not None:
+                ve = np.concatenate([ve, prev[:, None, :]], axis=1)
+            B, A = ve.shape[:2]
+
+            def rep(x):
+                return np.repeat(x, A, axis=0)
+
             ve = ve.reshape(B * A, 2)
             ta, tb = t0 + j * tau_E, t0 + (j + 1) * tau_E
             e2, c2, vc2, h, ms = advance(rep(e), rep(c), rep(vc), ve, ta, tb, ctimes, R_C, obs.eps)
             hit2 = np.minimum(rep(hit), h)
             msep2 = np.minimum(rep(msep), ms)
             plans2 = np.concatenate([np.repeat(plans, A, axis=0), ve[:, None, :]], axis=1)
-            alive = np.isinf(hit2)
-            order = np.lexsort((-msep2, -hit2, ~alive))[: self.beam]
+            t_end = t0 + depth * tau_E
+            if tb < t_end:
+                _, _, _, hr, mr = advance(e2, c2, vc2, ve, tb, t_end, ctimes, R_C, obs.eps)
+                score_hit, score_sep = np.minimum(hit2, hr), np.minimum(msep2, mr)
+            else:
+                score_hit, score_sep = hit2, msep2
+            alive = np.isinf(score_hit)
+            order = np.lexsort((-score_sep, -score_hit, ~alive))[: self.beam]
             e, c, vc, hit, msep, plans = e2[order], c2[order], vc2[order], hit2[order], msep2[order], plans2[order]
+            prev = plans[:, -1]
 
         return plans[0], bool(np.isinf(hit[0])), float(msep[0])
 

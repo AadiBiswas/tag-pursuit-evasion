@@ -139,3 +139,15 @@ def test_symmetric_pass_below_its_threshold_is_caught():
     res = simulate(AgentSpec(s, tau), AgentSpec(1.0, tau), [0, 0], [run.D, 0], 1.0, 10 * tau,
                    pure_pursuit, run)
     assert res.captured and res.capture_time < float(tau)
+
+
+def test_finds_known_escape_near_threshold():
+    # Regression for two planner defects found by starting it on a verified orbit
+    # (s = 1.5, a = 1/4, aligned clocks, alpha_C = 1.6 vs alpha*_4 ~ 1.5595):
+    # no "hold velocity" action, and beam ranking on partial plans. Either one
+    # alone made it lose from a state where an escape exists.
+    alpha = F(8, 5)
+    D = 1.04 * float(alpha)  # the m = 4 orbit's separation, in units R_E tau_C
+    res = simulate(AgentSpec(1.5, alpha), AgentSpec(1.0, alpha / 4), [0, 0], [D, 0], 1.0, 30 * alpha,
+                   pure_pursuit, BestResponseVsPP(n_dirs=24, beam=32))
+    assert not res.captured
