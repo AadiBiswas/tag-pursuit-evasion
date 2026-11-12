@@ -56,6 +56,7 @@ The per-cell breakdown with Wilson 95% CIs is in `summary.csv` and `figures/stag
 1. **Braking is never better than pure pursuit here.** On paired states with $\alpha_C > 1$, BP never captured where PP failed, against any runner. PP captured where BP failed in 1,396 / 582 / 834 states against flee / perpendicular / predictive.
    - The mechanism is the one in §B.2a. Overshoot is what lets PP close the final gap; braking removes it.
    - This answers the question of whether braking helps: on this evidence, no. Against flee the answer is proven.
+   - *Clarification added 2026-11-12:* this is empirical dominance on this sweep only. PP does **not** universally dominate BP. A scripted runner that jinks and then cuts back is caught by BP and missed by PP (spec §B.2a Rev 2 clarification; `test_braking_beats_pure_pursuit_on_a_specific_runner`).
 2. **Intercept is the strongest chaser tested, but it doesn't dominate PP.**
    - Paired, at $\alpha_C > 1$: intercept captured where PP didn't in 330 states against perpendicular and 165 against predictive. PP captured where intercept didn't in 2 and 12 states.
    - The advantage is largest against runners whose velocity stays predictable: perpendicular, and a sluggish predictive runner ($a = 4$: 1.00 vs 0.81).

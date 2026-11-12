@@ -292,6 +292,17 @@ In both cases the minimum over $[t_k, t_{k+1}]$ is $\min(D_k, D_{k+1})$. Inducti
 - Under uniform guarantees (§A.6 Rev 1), BP guarantees capture **iff** $\alpha_C \le 1$, for every $s > 1$. This is the exact analogue of H1 for BP, and unlike H1 it is proven. The decisive runner is the trivial one: it flees straight.
 - PP catches that same runner for every $\alpha_C$, because a collinear chaser that is faster cannot pass the runner without touching it.
 - So "fixing" PP's overshoot destroys the mechanism that closes the final gap.
+
+> **Rev 2 clarification (2026-11-12): what §B.2a does *not* show.** The result is about **uniform guarantees by BP**. It does not say that PP dominates BP. Dominance would mean that PP captures every runner strategy that BP captures, and that is **false**.
+>
+> *Counterexample*, checked by hand and as a regression test (`test_braking_beats_pure_pursuit_on_a_specific_runner`):
+> - $R_C = 4$, $R_E = 2$, $\tau_C = 1$, $\tau_E = 1/4$, $\varepsilon = 0.1$.
+> - $\mathbf c_0 = 0$, $\mathbf e_0 = (1, 0)$. Both agents start fresh at $t = 0$.
+> - The runner plays $(0,2)$ on $[0, 1/4)$, then $(-1/2, -1)$ on $[1/4, 1)$.
+> - PP plays $(4,0)$. Its closest approach is $\sqrt{0.2} \approx 0.4472$, at $t = 0.2$: no capture in $[0,1]$.
+> - BP plays $(1,0)$ and meets the runner. The two coincide at $t = 0.75$, so the first contact is at $t = 0.75 - 0.1/\sqrt{3.25} \approx 0.6945$.
+>
+> The Stage 2 statement "BP never captured where PP failed" is an **empirical** observation, valid for those three runners on those 40 paired states. It is not a theorem.
 - The numerical counterpart: the sweep pinned BP-vs-flee separation at $R_E\tau_C$ to relative precision $2\times10^{-11}$ in 1,396 runs.
 
 ### B.3 Where PP's argument breaks: the matador geometry **[Proved, single interval]**

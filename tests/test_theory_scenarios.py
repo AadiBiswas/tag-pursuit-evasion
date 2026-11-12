@@ -221,3 +221,20 @@ def test_interception_infeasible_window():
         for pol in candidates:  # Scripted is stateless (indexes by obs.k), safe to reuse
             res = simulate(AgentSpec(R_C, period), E, [0, 0], e0, eps, T, pol, Constant([0, 0]))
             assert not res.captured
+
+
+def test_braking_beats_pure_pursuit_on_a_specific_runner():
+    # PP is not universally better than braking; it only won every paired state
+    # in the Stage 2 sweep. Here the runner jinks up, then cuts back across the
+    # braking chaser's path: braking (speed d/tau = 1) meets it, PP (speed 4)
+    # has long gone past.
+    C, E = AgentSpec(4.0, 1), AgentSpec(2.0, "1/4")
+    runner = Scripted([[0, 2]] + [[-0.5, -1]] * 3)
+    pp = simulate(C, E, [0, 0], [1, 0], 0.1, 1, pure_pursuit, runner)
+    bp = simulate(C, E, [0, 0], [1, 0], 0.1, 1, braking_pursuit, runner)
+    assert not pp.captured
+    # PP's closest approach is at t = 0.2 on the first runner leg: |(1 - 0.8, 0.4)| = sqrt(0.2)
+    assert min_separation([1, 0], [-4, 2], 0.25)[1] == pytest.approx(math.sqrt(0.2))
+    # braking chaser at (t, 0) vs runner (1.125 - t/2, 0.75 - t): they coincide at
+    # t = 0.75, so first eps-contact is 0.1/|(1.5, 1)| earlier
+    assert bp.captured and bp.capture_time == pytest.approx(0.75 - 0.1 / math.hypot(1.5, 1), abs=1e-12)
