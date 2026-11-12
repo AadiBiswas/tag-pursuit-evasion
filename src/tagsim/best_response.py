@@ -91,14 +91,19 @@ class BestResponseVsPP:
     straight-away-from-the-chaser, times each fraction in `speeds` of R_E,
     plus "hold the current velocity".
     depth=None plans ceil(horizon_chaser_periods * tau_C / tau_E) runner legs,
-    capped at max_depth."""
+    capped at max_depth.
+
+    hold_action / complete_partial_plans switch off the two Stage 3 fixes; with
+    both False this is exactly the original (defective) planner. Kept for the
+    ablation tests and the before/after sweep, not for use."""
 
     def __init__(self, n_dirs=24, speeds=(1.0,), beam=32, depth=None,
-                 horizon_chaser_periods=2, max_depth=12):
+                 horizon_chaser_periods=2, max_depth=12, hold_action=True, complete_partial_plans=True):
         self.offsets = 2 * np.pi * np.arange(n_dirs) / n_dirs
         self.speeds = np.asarray(speeds, dtype=float)
         self.beam, self.depth = beam, depth
         self.horizon_chaser_periods, self.max_depth = horizon_chaser_periods, max_depth
+        self.hold_action, self.complete_partial_plans = hold_action, complete_partial_plans
 
     def plan(self, obs):
         """Returns (velocities of the best plan, survived, predicted min separation)."""
@@ -126,7 +131,7 @@ class BestResponseVsPP:
             # Headings are relative to the *current* line of sight, which rotates, so
             # "keep going straight" is almost never on the grid. Without it a runner
             # with 4 decisions per chaser period can't even copy a 1-decision runner.
-            if prev is not None:
+            if self.hold_action and prev is not None:
                 ve = np.concatenate([ve, prev[:, None, :]], axis=1)
             B, A = ve.shape[:2]
 
@@ -140,7 +145,7 @@ class BestResponseVsPP:
             msep2 = np.minimum(rep(msep), ms)
             plans2 = np.concatenate([np.repeat(plans, A, axis=0), ve[:, None, :]], axis=1)
             t_end = t0 + depth * tau_E
-            if tb < t_end:
+            if self.complete_partial_plans and tb < t_end:
                 _, _, _, hr, mr = advance(e2, c2, vc2, ve, tb, t_end, ctimes, R_C, obs.eps)
                 score_hit, score_sep = np.minimum(hit2, hr), np.minimum(msep2, mr)
             else:

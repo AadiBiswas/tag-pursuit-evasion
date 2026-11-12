@@ -141,13 +141,35 @@ def test_symmetric_pass_below_its_threshold_is_caught():
     assert res.captured and res.capture_time < float(tau)
 
 
-def test_finds_known_escape_near_threshold():
-    # Regression for two planner defects found by starting it on a verified orbit
-    # (s = 1.5, a = 1/4, aligned clocks, alpha_C = 1.6 vs alpha*_4 ~ 1.5595):
-    # no "hold velocity" action, and beam ranking on partial plans. Either one
-    # alone made it lose from a state where an escape exists.
+@pytest.mark.parametrize("hold,complete,escapes", [(False, False, False), (True, False, False),
+                                                    (False, True, False), (True, True, True)])
+def test_both_planner_fixes_needed_near_threshold(hold, complete, escapes):
+    # Regression for the two Stage 3 planner defects, started on a verified escape
+    # orbit (s = 1.5, a = 1/4, aligned clocks, alpha_C = 1.6 vs alpha*_4 ~ 1.5595).
+    # At this (small) search size each fix alone still loses; with a larger search
+    # (48 dirs, beam 64, 4 periods) rollout ranking alone does escape -- see
+    # results/stage3/planner_ablation.txt.
     alpha = F(8, 5)
     D = 1.04 * float(alpha)  # the m = 4 orbit's separation, in units R_E tau_C
     res = simulate(AgentSpec(1.5, alpha), AgentSpec(1.0, alpha / 4), [0, 0], [D, 0], 1.0, 30 * alpha,
-                   pure_pursuit, BestResponseVsPP(n_dirs=24, beam=32))
-    assert not res.captured
+                   pure_pursuit, BestResponseVsPP(n_dirs=24, beam=32, hold_action=hold,
+                                                  complete_partial_plans=complete))
+    assert res.captured != escapes
+
+
+def test_exact_certificate_reproduces_closed_form_orbit():
+    # The symmetric pass as a 1-leg orbit row; exact certification must land on
+    # alpha_sym(s) (to the 4 certified decimals) with exact closure (asserted inside).
+    import sys
+    sys.path.insert(0, "experiments")
+    import stage3
+    from tagsim.best_response import SymmetricPass, best_pass
+    s = 1.5
+    sp = SymmetricPass(s, 1.0, 1.0)
+    w = 2 * sp.D * math.cos(sp.theta)
+    v = np.array([-w * math.cos(sp.theta) + s, w * math.sin(sp.theta)])
+    row = dict(s=s, m=1, headings=[[math.atan2(v[1], v[0])]], speeds=[[min(1.0, np.linalg.norm(v))]])
+    c = stage3.certify(row)
+    a_sym = 1 / math.sqrt(best_pass(s)[1])
+    assert a_sym <= c["alpha_c_float"] <= a_sym + 2e-4
+    assert c["clearance"] == pytest.approx(math.sqrt(best_pass(s)[1]), rel=1e-6)
