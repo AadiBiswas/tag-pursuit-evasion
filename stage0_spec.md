@@ -21,6 +21,11 @@ Status legend used throughout:
 
 **Rev 2 (2026-11-12).** New result from Stage 2: braking pursuit (§B.2a). It satisfies Proposition 1, and $\alpha_C \le 1$ is sharp for it. Nothing earlier was changed. The reason for the addition is that the Stage 2 experiment surfaced the behaviour, and the proof is short and complete.
 
+**Rev 3 (2026-11-12).** Stage 3 theory, from analysing pure pursuit (PP) against a best-responding runner.
+- §B.2b extends PP's capture guarantee to $\alpha_C \le 2s/(1+s)$. This **falsifies H1 as stated**.
+- §B.3a constructs an exact periodic escape orbit for $\alpha_C > \alpha_{\text{sym}}(s)$.
+- Together they bracket PP's threshold. H1's original text is kept, with a Rev 3 note.
+
 ---
 
 ## A. Formal game definition
@@ -305,6 +310,61 @@ In both cases the minimum over $[t_k, t_{k+1}]$ is $\min(D_k, D_{k+1})$. Inducti
 > The Stage 2 statement "BP never captured where PP failed" is an **empirical** observation, valid for those three runners on those 40 paired states. It is not a theorem.
 - The numerical counterpart: the sweep pinned BP-vs-flee separation at $R_E\tau_C$ to relative precision $2\times10^{-11}$ in 1,396 runs.
 
+### B.2b PP captures beyond $\alpha_C = 1$: guarantee up to $2s/(1+s)$ **[Proved]** — *Rev 3, new*
+
+**Proposition 1′.** Let $R_C > R_E$ and
+$$\alpha_C = \frac{R_E\tau_C}{\varepsilon} \ \le\ \frac{2s}{1+s}, \qquad s = R_C/R_E.$$
+Then PP captures every runner. This holds for any runner agility or information (clairvoyance included), any dimension, both speed models, and any initial state and phases. Capture happens by $\varphi_C + (K+2)\tau_C$, with $K$ as in §B.2.
+
+*Proof.* Write $L = R_C\tau_C$ and $\rho = R_E\tau_C$. If $\alpha_C \le 1$, Proposition 1 applies, so assume $\alpha_C > 1$. Then $s\varepsilon < L$, because $s\varepsilon < L \iff \varepsilon < \rho$. As in §B.2:
+- **Case (i), $D_k \ge L$:** $D_{k+1} \le D_k - (L - \rho)$, a fixed positive decrease.
+- **Case (ii), $D_k < L$ (overshoot):**
+  - At $\sigma^\* = D_k/R_C$ the chaser sits on $\mathbf e_k$. The runner is within $D_k/s$ of it, so the interval captures if $D_k \le s\varepsilon$.
+  - Otherwise, at the end of the interval the chaser is $L - D_k$ past $\mathbf e_k$ along $\hat{\mathbf u}_k$, and the runner is within $\rho$ of $\mathbf e_k$. So
+  $$D_{k+1} \le L + \rho - D_k. \tag{†}$$
+
+Suppose an overshoot step $k$ does not capture, so $D_k > s\varepsilon$. Then by (†), $D_{k+1} < L + \rho - s\varepsilon \le s\varepsilon$, where the last inequality is exactly the hypothesis $L + \rho \le 2s\varepsilon$. Since $s\varepsilon < L$, step $k+1$ is again an overshoot with $D_{k+1} \le s\varepsilon$, and it captures.
+
+Case (i) steps end after at most $K$ steps. If $D_K = L$ exactly, case (i) gives $D_{K+1} \le \rho$. With $\rho \le s\varepsilon$ (because $\alpha_C \le 2s/(1+s) < s$) and $\rho < L$, the next interval captures. ∎
+
+*Remarks.*
+- The only new ingredient beyond Proposition 1 is (†): the separation after an overshoot is at most $L + \rho$ minus the separation before it. The runner cannot make two near-misses in a row.
+- $2s/(1+s) \in (1, 2)$. It tends to 1 as $s\to1^+$ and to 2 as $s\to\infty$.
+- The argument is pathwise, like Proposition 1. That is why agility, information and dimension drop out.
+- (†) is wasteful, though. It credits the runner with both the full sidestep $D_k/s$ at mid-interval and the full displacement $\rho$ at the end, and no single path achieves both.
+
+**Checked in code.** `test_extended_threshold` runs on the boundary and 3% inside it, with $s \in \{1.2, 1.5, 3\}$. The runners are flee, perpendicular, predictive, random, and the Stage 3 best-response planner, with random phases and $a \in \{1/4, 1, 2\}$. Every run is captured within the bound. These are finitely many cases.
+
+### B.3a An exact periodic escape from PP **[Proved]** — *Rev 3, new*
+
+**Setting.** Units $R_E = 1$, $R_C = s > 1$. The runner decides at every chaser decision; this holds for $a = 1$ with aligned phase, or for any runner whose lattice contains the chaser's. Define, for $0 < y < s$,
+$$g(y) = y^2 - \frac{y(s^2-1)}{4(s-y)}, \qquad G(s) = \max_{0<y<s} g(y), \qquad \alpha_{\text{sym}}(s) = G(s)^{-1/2}.$$
+
+**Proposition 3.** If $\alpha_C > \alpha_{\text{sym}}(s)$, there is an initial state from which the runner evades PP forever. Specifically: collinear positions, separation $D = y^\*\tau_C$ with $y^\* = \arg\max g$, and both agents deciding at $t = 0$. The separation at every chaser decision equals $D$, and the closest approach in every period is $\tau_C\sqrt{G(s)} > \varepsilon$. The runner moves at exactly full speed, so the orbit is also admissible in the exact-speed model.
+
+*Proof.*
+1. **Frame.** At a chaser decision, place the chaser at the origin with velocity $s\hat{\mathbf x}$ and the runner at $(D, 0)$. The runner holds one velocity $\mathbf v$ for the period. The relative velocity is $\mathbf w = \mathbf v - s\hat{\mathbf x}$; write $\mathbf w = |\mathbf w|(-\cos\theta, \sin\theta)$.
+2. **Return condition.** The relative position $(D,0) + \sigma\mathbf w$ is at distance $D$ again at $\sigma = 2D\cos\theta/|\mathbf w|$. Setting this equal to $\tau_C$ gives $|\mathbf w| = 2D\cos\theta/\tau_C = 2y\cos\theta$, where $y = D/\tau_C$.
+3. **Closest approach.** It occurs at $\sigma = \tau_C/2$, inside the interval, at distance $D\sin\theta$.
+4. **Speed limit.** $|\mathbf v|^2 = |\mathbf w|^2 - 2s|\mathbf w|\cos\theta + s^2 \le 1$ becomes $4\cos^2\theta\, y(s-y) \ge s^2 - 1$. This forces $y < s$, i.e. $D < R_C\tau_C$, the overshoot regime.
+5. **Maximize the miss.** Taking the smallest admissible $\cos^2\theta$ gives $(D\sin\theta)^2 = \tau_C^2\, g(y)$. So a pass that misses by more than $\varepsilon$ exists iff $\tau_C^2 G(s) > \varepsilon^2$, i.e. $\alpha_C > \alpha_{\text{sym}}(s)$.
+6. **Repeat.** At the next chaser decision the separation is again $D$, and PP re-aims along the new line of sight. The same construction, rotated, applies, because PP and the runner's rule are both rotation-equivariant. ∎
+
+**Values** (`best_pass` in `best_response.py`; checked against a 200k-point grid):
+
+| $s$ | 1.05 | 1.2 | 1.5 | 2 | 3 | 10 | $\to\infty$ |
+|---|---|---|---|---|---|---|---|
+| $2s/(1+s)$ (§B.2b, capture) | 1.024 | 1.091 | 1.200 | 1.333 | 1.500 | 1.818 | 2 |
+| $\alpha_{\text{sym}}(s)$ (escape) | 1.225 | 1.434 | 1.630 | 1.781 | 1.896 | 1.990 | 2 |
+
+**Consequences.**
+- For runners that can decide at every chaser decision,
+$$\frac{2s}{1+s} \ \le\ \kappa_{\text{PP}}(s) \ \le\ \alpha_{\text{sym}}(s).$$
+  Here $\kappa_{\text{PP}}$ is the supremum of $\alpha_C$ at which PP's uniform guarantee holds. Both bounds tend to 2 as $s \to \infty$, which pins the limit. **The gap for finite $s$ is open.**
+- **Agility is not what defeats PP.** The orbit needs only $a = 1$, so a runner exactly as agile as the chaser escapes. What matters is $\alpha_C$, the chaser's blink length relative to the tag radius.
+- Whether a *less* agile runner ($a > 1$) can escape for some $\alpha_C$ is open.
+- **Checked in code.** `test_symmetric_pass_evades_forever` runs 3,000 periods at three $(s, \alpha_C)$ pairs with $\ge 4\%$ miss margin. The separation at every decision equals $D$ to $10^{-11}$, and the minimum separation equals the predicted miss to $10^{-9}$.
+
 ### B.3 Where PP's argument breaks: the matador geometry **[Proved, single interval]**
 
 Suppose the chaser commits to PP at distance $D$, and the runner sees that commitment immediately. Over $v \in S^{d-1}$, the relative velocity $\mathbf w = R_E v - R_C\hat{\mathbf u}$ ranges over a sphere of radius $R_E$ centered at $-R_C\hat{\mathbf u}$.
@@ -369,6 +429,12 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 > - The supporting evidence (B.3) is a one-interval survival computation. One-interval survival does not imply indefinite evasion (see the B.3 Rev 1 note).
 > - A proof of H1 needs a runner strategy together with an invariant region of states that PP cannot leave.
 > - H1 is now stated for the primary bounded-speed model, where PP still means full speed. The runner's tangent sidestep is admissible in that model.
+
+> **Rev 3 — H1 is false as stated.**
+> - §B.2b proves PP captures every runner for $1 < \alpha_C \le 2s/(1+s)$, however agile. So the PP threshold is *not* $\alpha_C = 1$.
+> - The single-interval survival in §B.3 is exactly the kind of evidence the Rev 1 note warned about. The runner survives one pass but cannot survive the next one.
+> - **Replacement question (H1′):** where in $[2s/(1+s),\ \alpha_{\text{sym}}(s)]$ is $\kappa_{\text{PP}}(s)$? Does it depend on the runner's agility class?
+> - Stage 3 numerics address H1′ in `results/stage3/note.md`.
 
 **H2 — Smarter chasers beat the PP threshold, but not without bound. [Conjecture]**
 - *Claim:* let $\kappa^\*(s)$ be the supremum of $\alpha_C$ for which *some* chaser strategy guarantees capture against a fully agile runner ($\alpha_E \to 0$). Then $1 < \kappa^\*(s) < \infty$.

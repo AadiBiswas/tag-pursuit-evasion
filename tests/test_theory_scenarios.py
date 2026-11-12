@@ -238,3 +238,35 @@ def test_braking_beats_pure_pursuit_on_a_specific_runner():
     # braking chaser at (t, 0) vs runner (1.125 - t/2, 0.75 - t): they coincide at
     # t = 0.75, so first eps-contact is 0.1/|(1.5, 1)| earlier
     assert bp.captured and bp.capture_time == pytest.approx(0.75 - 0.1 / math.hypot(1.5, 1), abs=1e-12)
+
+
+# Spec §B.2b: PP captures every runner when alpha_C <= 2s/(1+s), within
+# phi_C + (K+2) tau_C. Checked on the boundary itself and just inside it.
+@pytest.mark.parametrize("s", [F(6, 5), F(3, 2), F(3)])
+@pytest.mark.parametrize("shrink", [F(1), F(97, 100)])
+def test_extended_threshold(s, shrink):
+    from tagsim import BestResponseVsPP
+    R_C, R_E, eps = float(s), 1.0, 1.0
+    tau_C = shrink * 2 * s / (1 + s)
+    rng = np.random.default_rng(zlib.crc32(repr(("ext", s, shrink)).encode()))
+    for _ in range(3):
+        phi_C = F(rng.integers(0, 8), 8) * tau_C
+        a = F(rng.choice(["1/4", "1", "2"]))
+        tau_E = a * tau_C
+        ang = rng.uniform(0, 2 * np.pi)
+        C = AgentSpec(R_C, tau_C, first_decision=phi_C,
+                      initial_velocity=[R_C * math.cos(ang), R_C * math.sin(ang)] if phi_C else None)
+        E = AgentSpec(R_E, tau_E)
+        D0 = rng.uniform(2, 12)
+        x_E0 = D0 * np.array([math.cos(ang + 2), math.sin(ang + 2)])
+        H = float(phi_C) + (D0 + (R_C + R_E) * float(phi_C)) / (R_C - R_E) + 6 * float(tau_C) + 5
+        n_E = int(H / float(tau_E)) + 3
+        runners = [flee, Perpendicular(), PredictiveEvasion(), random_script(rng, R_E, n_E),
+                   BestResponseVsPP(n_dirs=16, beam=12)]
+        for runner in runners:
+            res = simulate(C, E, [0, 0], x_E0, eps, H, pure_pursuit, runner)
+            assert res.captured, runner
+            t1 = float(phi_C)
+            if res.capture_time > t1:
+                K = math.ceil(max(separation(res, t1) - R_C * float(tau_C), 0) / ((R_C - R_E) * float(tau_C)))
+                assert res.capture_time <= t1 + (K + 2) * float(tau_C) + 1e-9
