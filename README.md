@@ -8,15 +8,19 @@ and asynchronous, periodic decision clocks, in 2D/3D.
 - `src/tagsim/`: event-driven simulator
   - `kinematics.py`: exact first-contact / closest approach on an interval
   - `engine.py`: clocks, simultaneous-move protocol, event log, trajectories
-  - `policies.py`: scripted policies (Stage 1 has no reactive strategies)
+  - `policies.py`: scripted policies
+  - `strategies.py`: baseline chasers (pure pursuit, braking, intercept) and runners (flee, perpendicular, predictive)
 - `tests/`: pytest suite, including consistency checks against the spec's propositions
+- `experiments/stage2.py`, `configs/stage2.json`: preliminary sweep; outputs in `results/stage2/` (incl. `note.md`)
+  and `figures/stage2/`
 
 ## Setup
 
 ```bash
 python3.12 -m venv .venv
-.venv/bin/pip install -e '.[test]'
+.venv/bin/pip install -e '.[test,experiments]'
 .venv/bin/python -m pytest
+.venv/bin/python experiments/stage2.py run && .venv/bin/python experiments/stage2.py figures
 ```
 
 ## Minimal example

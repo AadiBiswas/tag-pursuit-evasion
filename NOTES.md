@@ -43,6 +43,19 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
   `_check_velocity` now copies. Regression test: `test_committed_velocity_does_not_alias_policy_array`.
   No existing run was affected (200-game log/trajectory hash unchanged).
 
-## Open questions for Stage 2
-- See the Stage 1 report: which reactive baselines first, and whether to run the F experiment before or
-  after a runner best-response (Stage 3).
+## 2026-11-12 — Stage 2
+
+- Strategies in `src/tagsim/strategies.py`, all stateless functions of the Observation; no engine changes.
+  Exact decision rules are in the docstrings. Perpendicular is CCW by default; CW is a separate instance.
+- Intercept extrapolates the runner's committed velocity with no horizon by default; past the runner's next
+  decision that's a guess. Predictive evasion assumes the chaser plays PP after its next decision -- an
+  opponent *model*, wrong by design against braking/intercept.
+- Braking pursuit turned out to have a clean proven story (spec §B.2a): same guarantee as PP for
+  alpha_C <= 1, sharp above it via a trivial straight-line runner. At alpha_C = 1 exactly braking only
+  touches the eps-ball, so that grid point is decided by rounding -- don't read anything into BP at alpha = 1.
+- Preliminary sweep + findings: `results/stage2/note.md`.
+
+## Open questions for Stage 3
+- Best-response runner against PP near alpha_C = 1 (H1). The perpendicular orbit seen in Stage 2 is the
+  obvious first candidate for an invariant evasion set.
+- Is intercept's edge over PP a guarantee-level improvement anywhere, or only against predictable runners?

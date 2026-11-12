@@ -1,0 +1,16 @@
+{
+  "description": "Stage 2 preliminary sweep: 3 chasers x 3 runners on paired initial states, alpha_C on both sides of 1",
+  "eps": 1.0,
+  "R_E": 1.0,
+  "D0": 10.0,
+  "speed_ratios": [1.2, 1.5, 2.0],
+  "alpha_C": ["1/2", "4/5", "1", "5/4", "8/5", "5/2", "4"],
+  "agility_ratio_a": ["1/4", "1", "4"],
+  "n_states": 40,
+  "phase_grid": 32,
+  "seed": 2026,
+  "horizon_factor": 2.0,
+  "speed_mode": "max",
+  "chasers": ["pure_pursuit", "braking", "intercept"],
+  "runners": ["flee", "perpendicular", "predictive"]
+}
