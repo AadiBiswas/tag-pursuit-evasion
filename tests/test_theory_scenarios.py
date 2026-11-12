@@ -4,8 +4,6 @@ These are consistency checks between the engine and the proofs in
 stage0_spec.md. Passing them proves nothing universal; failing one means
 either the engine or the proof is wrong.
 
-Pure pursuit / direct flee are defined here, test-local, on purpose: Stage 1
-ships no reactive strategies.
 """
 
 import math
@@ -15,20 +13,8 @@ from fractions import Fraction as F
 import numpy as np
 import pytest
 
-from tagsim import AgentSpec, Constant, Scripted, min_separation, simulate
-
-
-def pure_pursuit(R):
-    def policy(obs):
-        d = obs.pos_opp - obs.pos_self
-        n = np.linalg.norm(d)
-        return R * d / n if n > 0 else np.zeros_like(d)
-    return policy
-
-
-def flee(R):
-    pursue = pure_pursuit(R)
-    return lambda obs: -pursue(obs)
+from tagsim import (AgentSpec, Constant, Perpendicular, PredictiveEvasion, Scripted, flee,
+                    min_separation, pure_pursuit, simulate)
 
 
 def separation(res, t):
@@ -73,19 +59,38 @@ def test_prop1_pure_pursuit_captures_within_bound(R_C, tau_C, tau_E):
         x_E0 = D0 * np.array([math.cos(ang + 1), math.sin(ang + 1)])
         H = float(phi_C) + (D0 + (R_C + R_E) * float(phi_C)) / (R_C - R_E) + 5 * tau_Cf + 5
         n_E = int(H / float(F(tau_E))) + 3
-        runners = [flee(R_E), random_script(rng, R_E, n_E), random_script(rng, R_E, n_E, True),
+        runners = [flee, random_script(rng, R_E, n_E), random_script(rng, R_E, n_E, True),
                    Constant([0.0, R_E]), Constant([0.0, 0.0])]
         for runner in runners:
-            res = simulate(C, E, [0, 0], x_E0, eps, H, pure_pursuit(R_C), runner)
+            res = simulate(C, E, [0, 0], x_E0, eps, H, pure_pursuit, runner)
             assert res.captured, (trial, runner)
             assert res.capture_time <= prop1_bound(res, R_C, R_E, tau_Cf, phi_C) + 1e-9
+
+
+@pytest.mark.parametrize("R_C,tau_C,tau_E", [(1.5, "1", "1/7"), (1.2, "1/4", "1/20"), (3.0, "1/2", "2")])
+def test_prop1_against_stage2_runners(R_C, tau_C, tau_E):
+    R_E, eps = 1.0, 1.0
+    rng = np.random.default_rng(zlib.crc32(repr(("stage2", R_C, tau_C, tau_E)).encode()))
+    for _ in range(4):
+        phi_C = F(rng.integers(0, 8), 8) * F(tau_C)
+        ang = rng.uniform(0, 2 * np.pi)
+        C = AgentSpec(R_C, tau_C, first_decision=phi_C,
+                      initial_velocity=[R_C * math.cos(ang), R_C * math.sin(ang)] if phi_C else None)
+        E = AgentSpec(R_E, tau_E)
+        D0 = rng.uniform(1.5, 20)
+        x_E0 = D0 * np.array([math.cos(ang + 1), math.sin(ang + 1)])
+        H = float(phi_C) + (D0 + (R_C + R_E) * float(phi_C)) / (R_C - R_E) + 5 * float(F(tau_C)) + 5
+        for runner in (Perpendicular(1), Perpendicular(-1), PredictiveEvasion()):
+            res = simulate(C, E, [0, 0], x_E0, eps, H, pure_pursuit, runner)
+            assert res.captured
+            assert res.capture_time <= prop1_bound(res, R_C, R_E, float(F(tau_C)), phi_C) + 1e-9
 
 
 def test_prop1_collinear_flee_hits_lower_bound():
     # Runner flees along the LOS; any chaser needs >= (D0 - eps)/(R_C - R_E).
     R_C, R_E, eps, D0 = 1.5, 1.0, 1.0, 20.0
     res = simulate(AgentSpec(R_C, "1"), AgentSpec(R_E, "1"), [0, 0], [D0, 0], eps, 100,
-                   pure_pursuit(R_C), Constant([R_E, 0]))
+                   pure_pursuit, Constant([R_E, 0]))
     lower = (D0 - eps) / (R_C - R_E)
     assert lower <= res.capture_time <= prop1_bound(res, R_C, R_E, 1.0, 0)
     assert res.capture_time == pytest.approx(lower)  # collinear: PP is exactly optimal here
@@ -106,7 +111,7 @@ def test_tangent_sidestep_min_distance(R_C, R_E, D):
     C, E = AgentSpec(R_C, tau), AgentSpec(R_E, tau)
     for eps, hit in [(D / s * (1 - 1e-6), False), (D / s * (1 + 1e-6), True)]:
         assert R_E * tau > eps
-        res = simulate(C, E, [0, 0], [D, 0], eps, tau, pure_pursuit(R_C), Constant(v_tan))
+        res = simulate(C, E, [0, 0], [D, 0], eps, tau, pure_pursuit, Constant(v_tan))
         assert res.captured == hit
         if hit:
             assert res.capture_time == pytest.approx(D / R_C, rel=1e-2)
@@ -121,8 +126,8 @@ def test_escape_lemma(R_C):
     for chaser_period in ["1/10", "1/3", "7/9"]:
         C = AgentSpec(R_C, chaser_period)
         n = int(30 / float(F(chaser_period))) + 2
-        for pol in [pure_pursuit(R_C), random_script(rng, R_C, n), random_script(rng, R_C, n, True)]:
-            res = simulate(C, E, [0, 0], [D0, 0], eps, 30, pol, flee(R_E))
+        for pol in [pure_pursuit, random_script(rng, R_C, n), random_script(rng, R_C, n, True)]:
+            res = simulate(C, E, [0, 0], [D0, 0], eps, 30, pol, flee)
             assert not res.captured
             # separation at runner decision times is non-decreasing
             seps = [separation(res, F(e["t"]))
