@@ -13,8 +13,8 @@ from fractions import Fraction as F
 import numpy as np
 import pytest
 
-from tagsim import (AgentSpec, Constant, Perpendicular, PredictiveEvasion, Scripted, flee,
-                    min_separation, pure_pursuit, simulate)
+from tagsim import (AgentSpec, Constant, Perpendicular, PredictiveEvasion, Scripted, braking_pursuit,
+                    flee, min_separation, pure_pursuit, simulate)
 
 
 def separation(res, t):
@@ -84,6 +84,50 @@ def test_prop1_against_stage2_runners(R_C, tau_C, tau_E):
             res = simulate(C, E, [0, 0], x_E0, eps, H, pure_pursuit, runner)
             assert res.captured
             assert res.capture_time <= prop1_bound(res, R_C, R_E, float(F(tau_C)), phi_C) + 1e-9
+
+
+# Spec §B.2a: braking pursuit satisfies Prop 1 with the same bound...
+# Not at alpha_C = 1 exactly: there braking only *touches* the eps-ball (see
+# test_braking_at_alpha_one_is_a_tie), so float rounding decides the outcome.
+@pytest.mark.parametrize("R_C,tau_C", [(1.5, "9/10"), (1.2, "3/4"), (3.0, "1/2")])
+def test_braking_satisfies_prop1(R_C, tau_C):
+    R_E, eps = 1.0, 1.0
+    rng = np.random.default_rng(zlib.crc32(repr(("brake", R_C, tau_C)).encode()))
+    for _ in range(10):
+        tau_E = rng.choice(["1/20", "1/3", "2"])
+        D0 = rng.uniform(1.5, 20)
+        x_E0 = D0 * np.array([math.cos(rng.uniform(0, 7)), math.sin(rng.uniform(0, 7))])
+        H = (D0 + (R_C + R_E) * float(F(tau_C))) / (R_C - R_E) + 5 * float(F(tau_C)) + 5
+        n_E = int(H / float(F(tau_E))) + 3
+        for runner in (flee, Perpendicular(), random_script(rng, R_E, n_E)):
+            res = simulate(AgentSpec(R_C, tau_C), AgentSpec(R_E, tau_E), [0, 0], x_E0, eps, H,
+                           braking_pursuit, runner)
+            assert res.captured
+            assert res.capture_time <= prop1_bound(res, R_C, R_E, float(F(tau_C)), 0) + 1e-9
+
+
+# ...and the condition is sharp for it: a collinear constant-velocity runner
+# keeps separation >= min(D0, R_E tau_C) forever whenever R_E tau_C > eps,
+# for any speed ratio. Pure pursuit catches the same runner.
+@pytest.mark.parametrize("R_C,tau_C", [(1.2, "5/4"), (2.0, "5/4"), (5.0, "4"), (1.5, "1001/1000")])
+def test_braking_sharpness_counterexample(R_C, tau_C):
+    R_E, eps, D0 = 1.0, 1.0, 10.0
+    C, E = AgentSpec(R_C, tau_C), AgentSpec(R_E, 1000)
+    res = simulate(C, E, [0, 0], [D0, 0], eps, 300, braking_pursuit, Constant([R_E, 0]))
+    assert not res.captured
+    # collinear and linear between knots, so the minimum sits on a knot
+    seps = np.linalg.norm(res.x_E - res.x_C, axis=1)
+    assert seps.min() == pytest.approx(R_E * float(F(tau_C)), rel=1e-9)
+    assert simulate(C, E, [0, 0], [D0, 0], eps, 300, pure_pursuit, Constant([R_E, 0])).captured
+
+
+def test_braking_at_alpha_one_is_a_tie():
+    # R_E tau_C == eps: separation bottoms out at exactly eps (capture in exact
+    # arithmetic, a coin flip in floats). Pure pursuit captures strictly inside.
+    C, E = AgentSpec(1.5, 1), AgentSpec(1.0, 1000)
+    res = simulate(C, E, [0, 0], [10, 0], 1.0, 300, braking_pursuit, Constant([1, 0]))
+    seps = np.linalg.norm(res.x_E - res.x_C, axis=1)
+    assert seps.min() == pytest.approx(1.0, abs=1e-12)
 
 
 def test_prop1_collinear_flee_hits_lower_bound():

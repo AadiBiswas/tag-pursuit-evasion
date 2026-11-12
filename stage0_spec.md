@@ -19,6 +19,8 @@ Status legend used throughout:
    - H5: the 2D/3D equivalence stays a conjecture.
 5. **Citations remain unverified** (§D).
 
+**Rev 2 (2026-11-12).** New result from Stage 2: braking pursuit (§B.2a). It satisfies Proposition 1, and $\alpha_C \le 1$ is sharp for it. Nothing earlier was changed. The reason for the addition is that the Stage 2 experiment surfaced the behaviour, and the proof is short and complete.
+
 ---
 
 ## A. Formal game definition
@@ -265,6 +267,32 @@ $$
 **Matching lower bound [Proved].** If the runner's initial heading is along the LOS, or $\varphi_E = 0$, it can flee in a fixed direction. Projecting onto that direction gives, for every chaser,
 $$T^\star \ge \frac{D_0 - \varepsilon}{R_C - R_E}.$$
 So when $\alpha_C \le 1$, PP is time-optimal up to $O(\tau_C)$ against the straight-flee runner. It is **not** claimed to be time-optimal against every runner.
+
+### B.2a Braking pursuit: same guarantee, and the threshold is sharp **[Proved]** — *Rev 2, new*
+
+**Braking pursuit (BP).** At each decision $t_k$ the chaser plays
+$$\mathbf v_C = \min(R_C,\ D_k/\tau_C)\,\hat{\mathbf u}_k.$$
+This lands it exactly on the runner's observed position $\mathbf e_k$ at $t_{k+1}$ whenever $D_k \le R_C\tau_C$. It is admissible only in the bounded-speed model.
+
+**(a) BP satisfies Proposition 1, with the same time bound.**
+- If $D_k \ge R_C\tau_C$, BP coincides with PP, and §B.2 case (i) applies.
+- If $D_k < R_C\tau_C$, then $\mathbf x_C(t_{k+1}) = \mathbf e_k$, so $\|\mathbf r(t_{k+1})\| \le R_E\tau_C \le \varepsilon$.
+
+Note that this reaches the $\varepsilon$-ball only **at the endpoint**, and with equality when $\alpha_C = 1$ and the runner flees straight. Compare PP, which captures strictly inside the interval (§B.2 (ii)). So at $\alpha_C = 1$, BP's capture is a tie that floating point can break either way. The Stage 2 sweep hit this 32 times. ∎
+
+**(b) Sharpness.** Let $R_E\tau_C > \varepsilon$, i.e. $\alpha_C > 1$, with any $s$ and any runner agility. Start both agents fresh and collinear, with $D_0 > \varepsilon$, and let the runner move with constant velocity $R_E\hat{\mathbf u}_0$ along the initial line of sight. Then BP never captures. Separation stays $\ge \min(D_0, R_E\tau_C)$ forever.
+
+*Proof.* All motion is on the line of sight, and separation is affine on each chaser interval.
+- If $D_k \ge R_C\tau_C$, then $D_{k+1} = D_k - (R_C - R_E)\tau_C \ge R_E\tau_C$.
+- If $D_k < R_C\tau_C$, the chaser lands on $\mathbf e_k$ while the runner has moved $R_E\tau_C$ further on. So $D_{k+1} = R_E\tau_C$.
+
+In both cases the minimum over $[t_k, t_{k+1}]$ is $\min(D_k, D_{k+1})$. Induction gives the claim. ∎
+
+**Consequences.**
+- Under uniform guarantees (§A.6 Rev 1), BP guarantees capture **iff** $\alpha_C \le 1$, for every $s > 1$. This is the exact analogue of H1 for BP, and unlike H1 it is proven. The decisive runner is the trivial one: it flees straight.
+- PP catches that same runner for every $\alpha_C$, because a collinear chaser that is faster cannot pass the runner without touching it.
+- So "fixing" PP's overshoot destroys the mechanism that closes the final gap.
+- The numerical counterpart: the sweep pinned BP-vs-flee separation at $R_E\tau_C$ to relative precision $2\times10^{-11}$ in 1,396 runs.
 
 ### B.3 Where PP's argument breaks: the matador geometry **[Proved, single interval]**
 
