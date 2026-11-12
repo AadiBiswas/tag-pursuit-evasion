@@ -1,0 +1,50 @@
+{
+ "s": "4/3",
+ "m": 1,
+ "speed_model": "exact",
+ "units": "R_E = tau_C = 1, so rho = 1 and eps = 1/alpha_C",
+ "frame": "per chaser period: chaser at origin, runner at (D0, 0); x along the line of sight, y = x rotated +90 degrees; runner leg velocities are given in this frame",
+ "clocks": {
+  "tau_C": "1",
+  "tau_E": "1",
+  "phi_C": "0",
+  "phi_E": "0",
+  "note": "runner decides at j/m; every chaser decision (integers) is a runner decision"
+ },
+ "D0": "25/24",
+ "alpha_c": "17/10",
+ "claim": "For every alpha_C >= 17/10 (equivalently eps^2 <= 1/alpha_c^2 in these units), pure pursuit at speed ratio s = 4/3 never captures this runner from this state. Both clocks aligned, runner period tau_C/m.",
+ "legs": [
+  {
+   "index": 0,
+   "t_start": "0",
+   "duration": "1",
+   "runner_velocity": [
+    "0",
+    "1"
+   ],
+   "chaser_velocity": [
+    "4/3",
+    "0"
+   ],
+   "r0": [
+    "25/24",
+    "0"
+   ],
+   "w": [
+    "-4/3",
+    "1"
+   ],
+   "t_min": "1/2",
+   "min_sq_sep": "25/64"
+  }
+ ],
+ "closure": {
+  "r_end": [
+   "-7/24",
+   "1"
+  ],
+  "r_end_norm_sq": "625/576"
+ },
+ "min_sq_clearance": "25/64"
+}

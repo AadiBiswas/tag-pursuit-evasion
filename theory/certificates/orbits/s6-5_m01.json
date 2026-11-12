@@ -1,0 +1,50 @@
+{
+ "s": "6/5",
+ "m": 1,
+ "speed_model": "exact",
+ "units": "R_E = tau_C = 1, so rho = 1 and eps = 1/alpha_C",
+ "frame": "per chaser period: chaser at origin, runner at (D0, 0); x along the line of sight, y = x rotated +90 degrees; runner leg velocities are given in this frame",
+ "clocks": {
+  "tau_C": "1",
+  "tau_E": "1",
+  "phi_C": "0",
+  "phi_E": "0",
+  "note": "runner decides at j/m; every chaser decision (integers) is a runner decision"
+ },
+ "D0": "560555824911558047/600037002247619220",
+ "alpha_c": "14343/10000",
+ "claim": "For every alpha_C >= 14343/10000 (equivalently eps^2 <= 1/alpha_c^2 in these units), pure pursuit at speed ratio s = 6/5 never captures this runner from this state. Both clocks aligned, runner period tau_C/m.",
+ "legs": [
+  {
+   "index": 0,
+   "t_start": "0",
+   "duration": "1",
+   "runner_velocity": [
+    "59378152848225792/159488577785585017",
+    "148023111061757305/159488577785585017"
+   ],
+   "chaser_velocity": [
+    "6/5",
+    "0"
+   ],
+   "r0": [
+    "560555824911558047/600037002247619220",
+    "0"
+   ],
+   "w": [
+    "-660040702472381142/797442888927925085",
+    "148023111061757305/159488577785585017"
+   ],
+   "t_min": "1/2",
+   "min_sq_sep": "1116568161835703295667984871758188317781342656682925/2296918797767767520016249688842566621063817033677712"
+  }
+ ],
+ "closure": {
+  "r_end": [
+   "10192482389981734579228596064031951/95699048107198669646974923153226740",
+   "148023111061757305/159488577785585017"
+  ],
+  "r_end_norm_sq": "314222832842277321150769529050454209/360044404066309392874072158113408400"
+ },
+ "min_sq_clearance": "1116568161835703295667984871758188317781342656682925/2296918797767767520016249688842566621063817033677712"
+}
