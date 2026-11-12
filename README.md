@@ -9,10 +9,18 @@ and asynchronous, periodic decision clocks, in 2D/3D.
   - `kinematics.py`: exact first-contact / closest approach on an interval
   - `engine.py`: clocks, simultaneous-move protocol, event log, trajectories
   - `policies.py`: scripted policies
-  - `strategies.py`: baseline chasers (pure pursuit, braking, intercept) and runners (flee, perpendicular, predictive)
+  - `strategies.py`: baseline chasers (pure pursuit, braking, hybrid, intercept) and runners (flee, perpendicular, predictive)
+  - `best_response.py`: best-response planner against pure pursuit; the closed-form symmetric-pass orbit
 - `tests/`: pytest suite, including consistency checks against the spec's propositions
 - `experiments/stage2.py`, `configs/stage2.json`: preliminary sweep; outputs in `results/stage2/` (incl. `note.md`)
   and `figures/stage2/`
+- `experiments/stage3.py`, `experiments/policy_separation.py`, `configs/stage3.json`: Stage 3 orbits, certificates,
+  sweeps, figures; outputs in `results/stage3/` and `figures/stage3/`
+- `theory/`: mathematics
+  - `stage3_mathematical_review.md`: full proofs (Theorems 1-5, Lemmas M and S), thresholds, gaps
+  - `theorem_register.md`: index of results, assumptions, proofs and tests
+  - `certificates/`: exact escape certificates and a standalone verifier (`python theory/certificates/verify.py`)
+  - `literature_review.md`, with entries in `references.bib`
 
 ## Setup
 

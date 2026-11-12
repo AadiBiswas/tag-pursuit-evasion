@@ -68,6 +68,14 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
 - Ties at thresholds (BP at alpha = 1, hybrid at alpha = s) are exact tangencies, so the float engine can go either way there and tests avoid those exact points. Thm 1's own threshold is *not* a tie: its capture is strict.
 - Clock phase is first-order. The same states gave 12/12 escapes with aligned clocks and 0/12 with random phases.
 
+## 2026-11-12 — Stage 3.5 (verification)
+
+- **Certificates.** These are now one JSON file per orbit in theory/certificates/, with a stdlib-only verifier (no tagsim, no generator import). The verifier checks speed, schedule, the PP rule, exact closure, closed-interval clearance, 3-period exact recurrence and the recorded values. All 15 pass. Every leg is unit speed, so Theorem 4 holds in the exact-speed model too.
+- **Hand-checkable example.** At s = 4/3, a perpendicular runner from D = 25/24 has closest approach exactly 5/8, so it escapes PP iff alpha > 8/5. It doubles as the "touch" negative test.
+- **Monotonicity.** It was easy once phrased right: if the runner class is closed under open-loop replay, replay the eps-run's controls in the eps'-game. The sweeps are NOT such a family: D(0) = 10 eps moves with alpha in normalised units.
+- **Policy separation.** At s = 2, alpha = 1.9, the symmetric pass beats PP while the hybrid captures everyone. alpha_sym < 2 always (g(s/2) = 1/4 and g'(s/2) = 1/s), so the separation interval is non-empty for all s >= 2.
+- **Literature.** ANP (self-triggered ZOH PP) has endogenous sampling, so it never meets overshoot. Its App. B is our Lemma B(i). BBH: turn-based, equal steps, point capture. Yufereva: sampled simple pursuit with period = capture radius, but equal speeds and compact space. Alonso–Goldstein–Reingold is unread and is the top priority.
+
 ## Open questions for Stage 4
 - One-pass reachability / viability kernel in D for aligned runners. This would close or shrink [2s/(1+s), alpha_c(s, m)].
 - Any escape from PP for runners whose clock is not aligned with the chaser's?

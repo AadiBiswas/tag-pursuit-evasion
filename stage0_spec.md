@@ -32,6 +32,12 @@ Status legend used throughout:
 - The H2 status is updated.
 - Nothing earlier was changed.
 
+**Rev 5 (2026-11-12).** Stage 3.5 verification. Nothing in the model changed. The new material lives in `theory/`:
+- **Theorem 4 certificates.** They are now standalone files in `theory/certificates/`, checked by an independent standard-library verifier. All 15 pass, and all hold in **both** speed models, since every leg has unit speed. This voids the "bounded-speed unless q = 1" caveat.
+- **Monotonicity in $\alpha_C$.** It is proven whenever only $\varepsilon$ varies (review §2.4, Lemma M). So the threshold definitions no longer need the "for every $\alpha' \le \alpha$" clause. Review §2.5 makes the runner-class and initial-state quantifiers explicit, and **no threshold is a function of $s$ alone**.
+- **Policy separation (review §3.5, Theorem 5; bounded-speed model).** For $\alpha_{\rm sym}(s) < \alpha_C \le s$, which includes $s = 2$, $\alpha_C = 1.9$, PP admits an indefinitely evading runner while the §B.2c chaser captures every runner. So PP is not guarantee-optimal (H2).
+- **Index and literature.** The theorem index is `theory/theorem_register.md`. The literature comparison is `theory/literature_review.md`, and it claims no novelty.
+
 ---
 
 ## A. Formal game definition

@@ -2,16 +2,30 @@
 
 *Status as of 2026-11-12. This document is meant to be read on its own. The code references at the end of each section are there for reproduction; they are not needed to follow the mathematics.*
 
+**Revision history.**
+- **Rev 1** (Stage 3): §§1–11 as first written.
+- **Rev 2** (Stage 3.5, 2026-11-12): additions, each marked *Rev 2* where it appears. Rev 1 text is kept, and a note is added wherever Rev 2 supersedes it.
+  - New §2.4: monotonicity in $\alpha_C$ (Lemma M).
+  - New §2.5: precise threshold notation.
+  - New §3.5: Lemma S and Theorem 5, the policy separation.
+  - New §7.3: the independent certificate package and the threshold convention.
+  - Status-table rows added.
+  - Corrections, listed in §7.3.
+  - §10 replaced by `theory/literature_review.md`.
+  - The index of all results is in `theory/theorem_register.md`.
+
 ## Contents
 
 1. Executive summary
 2. Model and definitions
 3. The improved capture theorem (Theorem 1), with complete proof
+   - 2.4 Monotonicity in $\alpha_C$ (Lemma M), 2.5 Threshold notation — *Rev 2*
    - 3.4 A related guarantee for a hybrid chaser (Theorem 3)
+   - 3.5 Policy separation (Lemma S, Theorem 5) — *Rev 2*
 4. The period-1 escape orbit (Theorem 2), with complete proof
 5. Theorem-status table
 6. Numerical results and their limitations
-7. Higher-period and multi-leg orbits; exact certification (Theorem 4)
+7. Higher-period and multi-leg orbits; exact certification (Theorem 4); 7.3 certificate package — *Rev 2*
 8. The remaining capture–escape gap
 9. Implications for H1–H5
 10. Literature status and search checklist
@@ -39,6 +53,11 @@ The question for Stage 3 was where the capture guarantee of full-speed **pure pu
 - A corrected best-response planner never found an escape at a swept $\alpha_C \le 7/5$ when clock phases were random, for any $s$ or $a$.
 - With clocks aligned, it escapes wherever a certified orbit exists. It also finds escapes at random phases and at $a = 2$ for large $\alpha_C$, but nothing proves those.
 - Two defects in the planner were found and fixed by testing it against known orbits (Section 6.2).
+
+**Added in Rev 2 (Stage 3.5).**
+- **Theorem 5 (policy separation).** At $s = 2$ and $\alpha_C = 1.9$, a runner evades PP forever, yet the hybrid chaser captures every runner. A change of chaser strategy alone turns indefinite evasion into guaranteed capture, so PP is not optimal for guaranteed capture (§3.5).
+- **Lemma M.** Capture guarantees are monotone in $\alpha_C$ whenever only $\varepsilon$ varies, so the thresholds are well defined (§2.4–2.5).
+- **Certificates.** All 15 certificates pass a standalone exact verifier and hold in both speed models (§7.3).
 
 **What is open.**
 - For each $s$, the true PP threshold lies in $[\,2s/(1+s),\ \alpha_c(s,m)\,]$ for aligned runners. The remaining gap is about 0.30 at $s = 1.2, 1.5, 2$ (Section 8).
@@ -97,6 +116,92 @@ The two statements are not complementary. Between them lie parameters where neit
 **Threshold.** For PP define
 $$\kappa_{\rm PP}(s; \mathcal R) = \sup\{\alpha_C : \text{PP has a uniform capture guarantee against } \mathcal R \text{ for every } \alpha' \le \alpha_C\}.$$
 Here $\mathcal R$ fixes the runner's speed bound, and its decision-period class: either a fixed ratio $a = \tau_E/\tau_C$, or "any period". Monotonicity of the guarantee in $\alpha_C$ has **not** been proven, which is why the definition takes the supremum over an initial interval.
+
+> *Rev 2.* Monotonicity is now proven (Lemma M, §2.4) whenever only $\varepsilon$ varies and the runner class is closed under open-loop replay. The supremum over an initial interval therefore coincides with the plain supremum. The notation of §2.5 supersedes this definition.
+
+### 2.4 Monotonicity in $\alpha_C$ — *Rev 2*
+
+**Normalised game.** Use units with $R_E = \tau_C = 1$, so $\rho = 1$, $L = s$ and $\varepsilon = 1/\alpha_C$. A **configuration** fixes:
+- $s$ and the speed model;
+- a runner class $\mathcal R$;
+- an initial-state class $\mathcal I$. Its states (positions, committed initial velocities, both phases) are given in these units.
+
+With the configuration fixed, changing $\alpha_C$ changes **only** the capture radius.
+
+**Runner classes used in this document.**
+
+| Class | Definition |
+|---|---|
+| $\mathcal R_{\rm free}$ | Every measurable runner path with speed $\le R_E$. This is larger than the model, and it is the class Theorem 1 actually covers. |
+| $\mathcal R_{\rm all}$ | Every model runner: any period $\tau_E > 0$, any phase, nonanticipative strategies. |
+| $\mathcal R_{a,\Phi}$ | Model runners with $\tau_E = a\tau_C$ and phase offset $\varphi_E - \varphi_C \bmod \tau_E$ in $\Phi$. |
+| $\mathcal R^{\rm al}_m$ | $\mathcal R_{1/m,\{0\}}$: aligned runners with $m$ decisions per chaser period. Every chaser decision is then also a runner decision. |
+
+Inclusions: $\mathcal R^{\rm al}_m \subseteq \mathcal R^{\rm al}_{km} \subseteq \mathcal R_{\rm all} \subseteq \mathcal R_{\rm free}$, for every integer $k \ge 1$.
+
+Strategies are deterministic and nonanticipative, and **may read $\varepsilon$**, since it is part of the observation.
+
+**(R) Open-loop closure.** Each class above is defined only by restrictions on the runner's clock and speed. So it contains every *open-loop* runner, meaning a fixed sequence of velocities at its decision times, that respects those restrictions. A class such as "the Stage 3 planner with fixed settings" does **not** have this property.
+
+**Definition (guarantee).** $G(\sigma_C;\alpha,\mathcal R,\mathcal I)$ holds if, for every $x_0 \in \mathcal I$ with $D(0) > 1/\alpha$ and every $\sigma_E \in \mathcal R$, the game started from $x_0$ ends in capture at a finite time.
+
+> **Lemma M (monotonicity).** Fix a configuration whose $\mathcal R$ satisfies (R), and let $0 < \alpha \le \alpha'$.
+> - (a) Let $\sigma_C$ be a chaser strategy that does not read $\varepsilon$, such as PP or BP. If $G(\sigma_C;\alpha',\mathcal R,\mathcal I)$ holds, then so does $G(\sigma_C;\alpha,\mathcal R,\mathcal I)$.
+> - (b) If some admissible chaser strategy guarantees capture at $\alpha'$, then some admissible chaser strategy guarantees capture at $\alpha$.
+
+*Proof.* Write $\varepsilon = 1/\alpha \ge \varepsilon' = 1/\alpha'$.
+1. **The chaser.** Let $\sigma'_C$ guarantee capture at $\alpha'$. Define $\sigma_C$ as $\sigma'_C$ with the constant $\varepsilon'$ substituted wherever $\sigma'_C$ reads the capture radius. For (a), $\sigma_C = \sigma'_C$.
+   - Admissibility means the speed bound and the decision clock. Neither involves $\varepsilon$, so $\sigma_C$ is admissible at radius $\varepsilon$.
+2. **The run at radius $\varepsilon$.** Take $x_0 \in \mathcal I$ with $D(0) > \varepsilon$, so also $D(0) > \varepsilon'$, and any $\sigma_E \in \mathcal R$.
+   - The dynamics do not depend on the capture radius. Only the stopping rule does.
+   - So let $\xi$ be the trajectory that $(\sigma_C, \sigma_E)$ generates from $x_0$ at radius $\varepsilon$, continued for all $t \ge 0$ while ignoring the stopping rule.
+   - Let $u$ be the sequence of velocities $\sigma_E$ chooses along $\xi$, and let $\tilde\sigma_E$ be the open-loop runner that plays $u$. By (R), $\tilde\sigma_E \in \mathcal R$.
+3. **The run at radius $\varepsilon'$.** Here $(\sigma_C, \tilde\sigma_E)$ from $x_0$ generates exactly $\xi$:
+   - $\sigma_C$ receives the same histories, because it uses $\varepsilon'$ in both games;
+   - $\tilde\sigma_E$ ignores its observations.
+4. **Conclusion.** By the guarantee at $\alpha'$, $\xi$ enters the closed $\varepsilon'$-ball at some finite $T'$. That ball lies inside the $\varepsilon$-ball. So the game at radius $\varepsilon$ ends in capture by $T'$. ∎
+
+**Corollary M.** For a configuration satisfying (R):
+- The sets $A_{\rm PP} = \{\alpha : G({\rm PP};\alpha,\mathcal R,\mathcal I)\}$ and $A^\* = \{\alpha : \exists\,\sigma_C,\ G(\sigma_C;\alpha,\mathcal R,\mathcal I)\}$ are intervals of the form $(0,\kappa)$ or $(0,\kappa]$.
+- So the clause "for every $\alpha' \le \alpha_C$" in the §2.3 definition is redundant, and $\kappa = \sup A$.
+- Enlarging $\mathcal R$ or $\mathcal I$ can only lower $\kappa$.
+
+**What Lemma M does not cover.** It concerns families in which only $\varepsilon$ varies. The Stage 2 and Stage 3 sweeps are not such families:
+- **Initial distance.** They fix $\varepsilon = R_E = 1$ and set $\tau_C = \alpha_C$, with $D(0) = 10\varepsilon$. In normalised units the initial distance is $10/\alpha_C$, so the initial state moves with $\alpha_C$.
+- **Horizon.** The finite horizon also changes with $\alpha_C$.
+- **Runner.** The runner is a single fixed heuristic, so (R) fails.
+
+The corrected-planner escape counts happen to be non-decreasing in $\alpha_C$ in every $(s, a)$ cell, but nothing guarantees that. Changing the agility ratio $a$ or the phase class $\Phi$ changes $\mathcal R$, which is a different axis altogether.
+
+### 2.5 Threshold notation — *Rev 2*
+
+All of the following are defined for a configuration, written $(s;\ \mathcal R,\ \mathcal I)$ together with the speed model, and none is a function of $s$ alone.
+
+- **PP threshold:** $\kappa_{\rm PP}(s;\mathcal R,\mathcal I) = \sup\{\alpha : G({\rm PP};\alpha,\mathcal R,\mathcal I)\}$.
+  - PP is admissible in both speed models.
+  - Every bound proven so far holds in both, so the speed model is suppressed here.
+- **Best-chaser threshold:** $\kappa^\*(s;\mathcal R,\mathcal I,\text{model}) = \sup\{\alpha : \exists$ admissible $\sigma_C$ with $G(\sigma_C;\alpha,\mathcal R,\mathcal I)\}$.
+- **Aligned thresholds:** $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m,\mathcal I)$.
+- **Agility thresholds:** $\kappa_{\rm PP}(s;\mathcal R_{a,\Phi},\mathcal I)$.
+- **Initial-state classes.**
+  - The default is $\mathcal I_{\rm all}$: all states.
+  - Every escape construction uses one specific state. So it bounds $\kappa$ only for classes $\mathcal I$ that contain that state.
+  - For $\mathcal I_{\rm far}(d_0) = \{D(0) \ge d_0\}$, no escape is proven. Reaching an orbit's state from far away has not been shown.
+- **Shorthand.** $\kappa_{\rm PP}(s)$ means $\kappa_{\rm PP}(s;\mathcal R_{\rm all},\mathcal I_{\rm all})$, and is used only when that is what is meant.
+
+**Proven relations.**
+1. **Theorem 1.** $2s/(1+s) \le \kappa_{\rm PP}(s;\mathcal R,\mathcal I)$ for every $\mathcal R \subseteq \mathcal R_{\rm free}$, every $\mathcal I$, and both models. Capture is also guaranteed **at** $\alpha = 2s/(1+s)$.
+2. **Theorems 2 and 4.**
+   - $\kappa_{\rm PP}(s;\mathcal R,\mathcal I) \le \alpha_{\rm sym}(s)$ whenever $\mathcal R \supseteq \mathcal R^{\rm al}_1$ and $\mathcal I$ contains the Theorem 2 state.
+   - $\kappa_{\rm PP}(s;\mathcal R,\mathcal I) \le \hat\alpha(s,m)$ whenever $\mathcal R \supseteq \mathcal R^{\rm al}_m$ and $\mathcal I$ contains the certificate's state.
+   - At $\alpha = \hat\alpha$ itself the orbit is captured by tangency. So these are bounds on the supremum, and the guarantee at $\kappa_{\rm PP}$ itself is undetermined.
+3. **Bracket for $\mathcal R_{\rm all}$.** Because $\mathcal R^{\rm al}_{16} \subseteq \mathcal R_{\rm all}$, for $s \in \{6/5, 3/2, 2\}$:
+$$\frac{2s}{1+s} \le \kappa_{\rm PP}(s;\mathcal R_{\rm all},\mathcal I_{\rm all}) \le \hat\alpha(s,16).$$
+   The Stage 3 statement "for unaligned runners no escape is proven" is correct only for classes that exclude alignment, such as $\mathcal R_{a,\Phi}$ with $0 \notin \Phi$.
+4. **Theorem 3.** $\kappa_{\rm PP} \le \kappa^\*$, and $\kappa^\*(s;\mathcal R_{\rm all},\mathcal I_{\rm all},\text{bounded}) \ge s$. In the exact-speed model, only $\kappa^\* \ge 2s/(1+s)$ is known.
+5. **Theorem 5 (§3.5).** If $\alpha_{\rm sym}(s) < s$, then $\kappa_{\rm PP} < \kappa^\*$ in the bounded-speed model, for any $\mathcal R \supseteq \mathcal R^{\rm al}_1$ with $\mathcal I_{\rm all}$.
+6. **Divisibility.** $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_{km},\mathcal I) \le \kappa_{\rm PP}(s;\mathcal R^{\rm al}_{m},\mathcal I)$. This is consistent with the certified $\hat\alpha(s,m)$ decreasing along $m = 1, 2, 4, 8, 16$.
+7. **Lemma S (§3.5).** $\alpha_{\rm sym}(s) \ge 2s/(1+s) > 1$, by relations 1 and 2: an escape strictly below the Theorem 1 bound would contradict Theorem 1.
 
 ---
 
@@ -238,6 +343,89 @@ The construction needs the specific start $D(0) \in (s\varepsilon, L]$. From a f
 - $H$ uses $\varepsilon$ and speeds below $R_C$, so it is not admissible in the exact-speed model. In that model the best proven guarantee remains Theorem 1.
 - Theorem 3 does not contradict Theorem 2. At $s = 2$ and $\alpha_C = 1.9 > \alpha_{\rm sym}(2)$, the symmetric-pass runner of Theorem 2 escapes PP but is captured by $H$. This is checked in `test_hybrid_captures_up_to_alpha_s`.
 
+### 3.5 Policy separation (Theorem 5) — *Rev 2*
+
+> **A change of chasing strategy alone can turn a game that admits indefinite evasion into one with guaranteed capture.** The speeds, decision clocks and capture radius stay the same.
+
+> **Lemma S.** For every $s > 1$, $\tfrac14 < G(s) \le \big(\tfrac{1+s}{2s}\big)^2$. Equivalently,
+> $$\frac{2s}{1+s} \le \alpha_{\rm sym}(s) < 2.$$
+
+*Proof.*
+- **Upper bound on $\alpha_{\rm sym}$.**
+  - Since $\frac{d}{dy}\frac{y}{s-y} = \frac{s}{(s-y)^2}$, we have $g'(y) = 2y - \frac{s(s^2-1)}{4(s-y)^2}$.
+  - At $y = s/2 \in (0,s)$: $g(s/2) = \frac{s^2}{4} - \frac{s}{2}\cdot\frac{s^2-1}{2s} = \frac14$ and $g'(s/2) = s - \frac{s^2-1}{s} = \frac1s > 0$.
+  - So $g > \frac14$ just to the right of $s/2$. Hence $G(s) > \frac14$, i.e. $\alpha_{\rm sym}(s) < 2$.
+- **Lower bound.** Suppose $\alpha_{\rm sym}(s) < 2s/(1+s)$. Pick $\alpha_C$ strictly between the two. Theorem 2 then gives an escape from PP at $\alpha_C \le 2s/(1+s)$, which contradicts Theorem 1. ∎
+
+(The lower bound can be strict. Only the weak inequality is needed here.)
+
+> **Theorem 5 (policy separation; bounded-speed model).** Let $s > 1$ and $\alpha_{\rm sym}(s) < \alpha_C \le s$. Let $\mathcal R$ be any runner class with $\mathcal R^{\rm al}_1 \subseteq \mathcal R \subseteq \mathcal R_{\rm free}$, for example $\mathcal R_{\rm all}$, and take $\mathcal I = \mathcal I_{\rm all}$.
+> - **(a) PP does not guarantee capture.** There is an initial state and a runner in $\mathcal R^{\rm al}_1$ that PP never captures.
+> - **(b) $H$ guarantees capture.** The hybrid chaser $H$ of Theorem 3 captures every runner in $\mathcal R_{\rm free}$, from every initial state with $D(0) > \varepsilon$, by time $\varphi_C + (K+2)\tau_C$.
+>
+> Consequently
+> $$\kappa_{\rm PP}(s;\mathcal R,\mathcal I_{\rm all}) \;\le\; \alpha_{\rm sym}(s) \;<\; \alpha_C \;\le\; s \;\le\; \kappa^\*(s;\mathcal R,\mathcal I_{\rm all},\text{bounded}).$$
+>
+> **When the interval is non-empty.** The interval $(\alpha_{\rm sym}(s), s]$ is non-empty for every $s \ge 2$, by Lemma S.
+> - Numerically, $\alpha_{\rm sym}(s) < s$ exactly when $s > s_0 \approx 1.7078$. This value was computed, not proven.
+> - For $\mathcal R \supseteq \mathcal R^{\rm al}_m$, the certificates widen the interval to $(\hat\alpha(s,m), s]$. For example it is $(1.6540, 2]$ at $s = 2$ with $m = 16$.
+
+*Proof.*
+
+**(a)** Theorem 2 applies, because $\alpha_C > \alpha_{\rm sym}(s)$. Its runner decides only at the chaser's decision times, so it belongs to $\mathcal R^{\rm al}_1$. Its initial state belongs to $\mathcal I_{\rm all}$, and PP never captures it.
+
+**(b)** This is Theorem 3, part 1. The argument is restated here so that this section stands alone. It uses Lemmas A and B and Corollary C of §3.2.
+
+*Setting up.* If $\alpha_C \le 1$, then $s\varepsilon \ge L$. So $H$ plays PP whenever $D_k \le L$, and plays BP at full speed (which equals PP) whenever $D_k > L$. Proposition 1 then applies. So assume $1 < \alpha_C \le s$. Then:
+- $s\varepsilon = L/\alpha_C < L$;
+- $\rho = \alpha_C\varepsilon \le s\varepsilon$.
+
+*Each step.* Consider a chaser decision $t_k$ with no capture yet, so $D_k > \varepsilon$.
+- **$D_k > L$.** BP has speed $\min(R_C, D_k/\tau_C) = R_C$, so it plays PP. Lemma B(i) gives $D_{k+1} \le D_k - (L-\rho)$.
+- **$s\varepsilon < D_k \le L$.** BP has speed $D_k/\tau_C \le R_C$, which is admissible in the bounded-speed model.
+  - The chaser arrives exactly at $\mathbf e_k$ at $t_{k+1}$.
+  - By Lemma A, $D_{k+1} \le \rho \le s\varepsilon$.
+- **$\varepsilon < D_k \le s\varepsilon$.** $H$ plays PP, and $D_k < L$. By Lemma B(ii)(a), at $t_k + D_k/R_C$ the chaser is at $\mathbf e_k$ and the runner is within $D_k/s \le \varepsilon$ of it. This is capture.
+
+*Putting the steps together.*
+- The first case can repeat at most $K = \lceil (D_1 - L)^+/(L-\rho) \rceil$ times.
+- After that, $D \le L$. Either $D \le s\varepsilon$ already, giving capture within one period, or one braking step brings it to $\le s\varepsilon$ and the next period captures.
+- Before the first chaser decision, the runner and chaser move for at most $\varphi_C$, and $D_1 \le D(0) + (R_C + R_E)\varphi_C$.
+
+None of this uses the runner's schedule, phase or information. Only Lemma A concerns the runner. ∎
+
+**Corollary 5.1 (the instance $s = 2$, $\alpha_C = 19/10$).** In the bounded-speed model, with $R_C = 2R_E$ and $R_E\tau_C = 1.9\,\varepsilon$:
+1. **PP is evaded forever** by the following explicit runner. Take $y = 6/5$. Then
+   $$g(6/5) = \tfrac{36}{25} - \tfrac{9}{8} = \tfrac{63}{200} > \tfrac{100}{361} = \alpha_C^{-2},$$
+   since $63\cdot 361 = 22743 > 20000$. Also $\cos^2\theta = \frac{3}{4\cdot(6/5)(4/5)} = \frac{25}{32} \in (0,1)$.
+   - Start at separation $D = \tfrac65 R_E\tau_C$, with both agents deciding at $t = 0$.
+   - At each chaser decision the runner plays, in the frame $(\hat{\mathbf u}_k, \hat{\mathbf n}_k)$, the velocity
+   $$\mathbf v_E = R_E\left(\tfrac18,\ \tfrac{3\sqrt7}{8}\right), \qquad \|\mathbf v_E\|^2 = R_E^2\cdot\tfrac{1 + 63}{64} = R_E^2.$$
+   - This is the Theorem 2 rule: $R_C\hat{\mathbf u} + (2D\cos\theta/\tau_C)(-\cos\theta,\ \sin\theta) = (2 - \tfrac{15}{8},\ \tfrac{3\sqrt 7}{8})$ in units of $R_E$.
+   - Its closest approach in every period is $\sqrt{63/200}\,R_E\tau_C \approx 0.5612\,R_E\tau_C = 1.0664\,\varepsilon$.
+   - The exact rational certificate `theory/certificates/orbits/s2-1_m01.json` (valid for $\alpha_C \ge 1.7807$) proves the same thing with rational velocities.
+2. **The hybrid chaser $H$ captures every runner** from every initial state, by $\varphi_C + (K+2)\tau_C$, because $\alpha_C = 1.9 \le 2 = s$.
+3. **Therefore** $\kappa_{\rm PP}(2;\mathcal R,\mathcal I_{\rm all}) < 1.9 < \kappa^\*(2;\mathcal R,\mathcal I_{\rm all},\text{bounded})$ for every $\mathcal R \supseteq \mathcal R^{\rm al}_1$.
+
+**Why this shows PP is not optimal for guaranteed capture.**
+- *Definition.* Call a chaser strategy *guarantee-optimal* for a configuration if it guarantees capture at every $\alpha_C$ at which **some** admissible chaser does; that is, if $A_{\sigma_C} = A^\*$.
+- *Application.* By Theorem 5, $1.9 \in A^\* \setminus A_{\rm PP}$ at $s = 2$. So PP is not guarantee-optimal for any configuration with $\mathcal R \supseteq \mathcal R^{\rm al}_1$ and $\mathcal I = \mathcal I_{\rm all}$ in the bounded-speed model.
+- *Strength of the conclusion.* This is a statement about uniform guarantees. It does not say PP does worse against every runner or from every start. It says that at these parameters PP admits an indefinitely evading runner, while $H$ admits none.
+
+**The mechanism.**
+- When $D_k \le L$, PP flies *through* the observed point $\mathbf e_k$ and ends $L - D_k$ beyond it. The symmetric pass is built so that this overshoot hands back exactly the separation $D$ the runner started with.
+- $H$ removes the overshoot in the middle range $s\varepsilon < D \le L$. It brakes onto $\mathbf e_k$, which leaves at most $\rho \le s\varepsilon$ of separation. From there a full-speed pass leaves the runner a sidestep budget of only $D/s \le \varepsilon$, and that is capture.
+
+**What is not claimed.**
+- **$H$ is not claimed to be optimal.** Theorem 3 part 2 shows that $H$ itself fails above $\alpha_C = s$. Other chasers may succeed there, and $\kappa^\*$ may exceed $s$. Whether $\kappa^\*$ is even finite is open.
+- **No separation is claimed in the exact-speed model.** There $H$ is not admissible, because it brakes.
+- **The PP escape is proven only from a specific initial state with aligned clocks.** The theorem quantifies over $\mathcal I_{\rm all}$ and over runner classes containing $\mathcal R^{\rm al}_1$, and over nothing narrower.
+
+*Evidence and reproduction.*
+- `tests/test_theory_scenarios.py::test_hybrid_captures_up_to_alpha_s` runs the $(2, 19/10)$ case: the symmetric-pass runner escapes PP for 200 periods and is captured by $H$ within the Theorem 3 bound.
+- `test_policy_separation_instance_exact` checks the rational facts of Corollary 5.1 exactly.
+- The figure `figures/stage3/policy_separation.{png,pdf}` comes from `experiments/policy_separation.py`, which makes two deterministic engine runs. Its numbers are in `results/stage3/policy_separation.txt`: PP's minimum separation over 40 periods is $1.0670\,\varepsilon$ (the optimal $y$, not $6/5$), and $H$ captures at $t = 1.295\,\tau_C$.
+
 ---
 
 ## 4. Theorem 2 — the period-1 symmetric-pass escape
@@ -345,6 +533,9 @@ The "Spec" column gives the label used in `stage0_spec.md`.
 | BP threshold (B.2a) | BP captures every runner iff $\alpha_C \le 1$. | Bounded-speed model | Proof; witness is straight flee. | BP specifically. | H2 |
 | BP is not dominated by PP (B.2a, clarification) | There is a runner that BP catches and PP misses. | $R_C=4$, $R_E=2$, $\tau_C=1$, $\tau_E=1/4$, $\varepsilon=0.1$; explicit scripted runner | Hand computation plus regression test. | A single example. | H2 |
 | **Thm 3** (new; spec Rev 4 §B.2c) | The hybrid BP/PP chaser captures every runner iff $\alpha_C \le s$. | Bounded-speed model; chaser knows $\varepsilon$ | Proof, §3.4; engine checks just inside and just outside the bound. | Not admissible with exact speed. Only a lower bound on the best chaser. | H2 |
+| **Lemma M** (Rev 2) | Guarantees are monotone in $\alpha_C$ when only $\varepsilon$ varies; thresholds are suprema of intervals. | Runner class closed under open-loop replay; fixed speeds, clocks, phases and initial-state class | Proof, §2.4. | Not about families that move $D(0)$ or the horizon with $\alpha_C$, as the sweeps do. | — |
+| **Lemma S** (Rev 2) | $2s/(1+s) \le \alpha_{\rm sym}(s) < 2$. | $s > 1$ | Proof, §3.5. | — | H1, H2 |
+| **Thm 5** (Rev 2) | Policy separation: for $\alpha_{\rm sym}(s) < \alpha_C \le s$, PP admits an indefinitely evading runner, while $H$ captures every runner. Instance: $s = 2$, $\alpha_C = 1.9$. | Bounded-speed model; runner class contains aligned runners; all initial states | Proof, §3.5; exact instance check; engine check; figure. | $H$ not claimed optimal; nothing claimed in the exact-speed model. | H2 |
 | Scale invariance (lemma) | If neither strategy uses $\varepsilon$, scaling space and time by $\lambda$ maps trajectories to trajectories. So the outcome depends on $\alpha_C$ only through comparing $\varepsilon$ with the closed loop's scale-free closest approach. | Policies independent of $\varepsilon$ | Proof: immediate. | Not for $H$ or the planner. | — |
 
 ### 5.2 Constructively demonstrated
@@ -352,7 +543,7 @@ The "Spec" column gives the label used in `stage0_spec.md`.
 | Result (Spec label) | Statement | Assumptions | Evidence | Limitations | H |
 |---|---|---|---|---|---|
 | **Thm 2 (B.3a, "Prop 3")** | Exact periodic escape from PP for $\alpha_C > \alpha_{\rm sym}(s)$. | Runner lattice contains the chaser's; specified initial state | Proof, §4; engine run of 3,000 periods with drift $< 10^{-11}$. | Against PP only. Aligned clocks only. | H1, H2, H5 |
-| **Thm 4** (new; Rev 4 §B.3b) | Exact periodic escape from PP for $\alpha_C \ge \alpha_c(s,m)$, for the 15 pairs in §7. | $\tau_E = \tau_C/m$, aligned | **Computer-assisted proof in exact rational arithmetic**; re-checked by independent code. | Specific $(s, m)$ only, not a formula in $s$. | H1 |
+| **Thm 4** (new; Rev 4 §B.3b) | Exact periodic escape from PP for $\alpha_C \ge \alpha_c(s,m)$, for the 15 pairs in §7. | $\tau_E = \tau_C/m$, aligned | **Computer-assisted proof in exact rational arithmetic**; re-checked by independent code. *Rev 2:* standalone standard-library verifier `theory/certificates/verify.py`, with negative tests; all legs have unit speed, so both speed models are covered. | Specific $(s, m)$ only, not a formula in $s$. Specific initial state; aligned clocks. | H1 |
 
 ### 5.3 Numerically supported
 
@@ -369,7 +560,7 @@ The "Spec" column gives the label used in `stage0_spec.md`.
 | Claim | Status |
 |---|---|
 | **H1′:** for aligned runners with $m \to \infty$, $\kappa_{\rm PP}(s)$ equals the limit of the periodic-orbit thresholds. Equivalently, the optimal evasion of PP is period-1. | Supported only by the numerics in 5.3. |
-| The guarantee region of PP is an interval in $\alpha_C$ (monotonicity). | Unproven. |
+| The guarantee region of PP is an interval in $\alpha_C$ (monotonicity). | Unproven. *Rev 2: proven (Lemma M), moved to 5.1.* |
 | Runners not aligned with the chaser's clock can escape PP at some finite $\alpha_C$. | Planner evidence at $\alpha_C \ge 8/5$; no construction. |
 | $\kappa^\*(s) < \infty$ for the best chaser (upper half of H2). | Open. Theorem 3 gives $\kappa^\* \ge s$. |
 
@@ -544,6 +735,65 @@ $$D^\* = \frac{(X - s)^2 + Y^2}{2(s - X)} \qquad (X < s).$$
 
 What this does **not** give is the optimum over legs. A certified $\alpha_c$ is an upper bound on the threshold, and it is tight only to the extent that the optimiser found the true optimum.
 
+### 7.3 Independent certificate package — *Rev 2*
+
+The 15 certificates of Theorem 4 now live in `theory/certificates/` as self-contained files.
+- **What a file records.** Each file records:
+  - the exact $s$ and $m$;
+  - the clock schedule ($\tau_E = \tau_C/m$, both phases 0);
+  - $D_0$;
+  - every leg's rational velocity, start time and duration;
+  - PP's velocity;
+  - the relative trajectory $\mathbf r_0 + t\mathbf w$ on each leg;
+  - the exact minimiser and minimum on the closed leg interval;
+  - the closure vector and the claimed $\alpha_c$.
+- **Verifier.** `theory/certificates/verify.py` uses only the Python standard library and shares no code with the simulator, the optimiser or the generator. It recomputes everything from the primary data, accepting a certificate only if all of the following hold:
+  1. **Speed.** $\|V_j\| \le 1$.
+  2. **Schedule.** The leg times match the runner clock.
+  3. **Pursuit.** The chaser's velocity is PP's, computed from positions with an exact rational square root.
+  4. **Integration.** The legs are re-integrated exactly.
+  5. **Closure.** The orbit closes exactly.
+  6. **Clearance.** Every leg's closed-interval minimum exceeds $1/\alpha_c^2$ strictly.
+  7. **Recurrence.** The runner policy, rotated into each period's frame, is executed for 3 periods in absolute coordinates with exact rational frames.
+  8. **Records.** Every recorded derived value matches.
+- **Result.** **15/15 verified.**
+- **Negative tests.** `tests/test_certificate_package.py` covers:
+  - overspeed;
+  - a false exact-speed claim;
+  - non-closure;
+  - entering the ball;
+  - an exact touch mid-leg;
+  - four kinds of schedule violation;
+  - a tampered record.
+
+  Each is rejected for the stated reason. Output is byte-identical across processes and hash seeds.
+
+**Proof from the data.** Checks 1–6 establish one capture-free period that returns to separation $D_0$ with both agents deciding. The isometry-equivariance argument of §4.2, step 5, then gives exact recurrence for every period. That argument is spelled out for the leg-schedule policy in `theory/certificates/README.md`. Check 7 independently executes that policy.
+
+**Threshold convention.**
+- For a certified orbit with exact minimum squared clearance $c$, write $\hat\alpha = 1/\sqrt c$. The orbit escapes iff $\alpha_C > \hat\alpha$; at $\alpha_C = \hat\alpha$ it touches the closed ball, which counts as capture.
+- The stored $\alpha_c$ is $\hat\alpha$ rounded **up** to four decimals, with $1/\alpha_c^2 < c$ verified strictly. So "escape for every $\alpha_C \ge \alpha_c$" is correct with equality included.
+- The sharper "escape for every $\alpha_C > \hat\alpha$" is also proven.
+
+| $s$ | $m$ | $\hat\alpha(s,m)$ (10 digits) | certified $\alpha_c$ |
+|---|---|---|---|
+| 6/5 | 1 / 2 / 4 / 8 / 16 | 1.4342676433 / 1.4012340270 / 1.3975219111 / 1.3927787386 / **1.3889168761** | 1.4343 / 1.4013 / 1.3976 / 1.3928 / **1.3890** |
+| 3/2 | 1 / 2 / 4 / 8 / 16 | 1.6300837216 / 1.5695293557 / 1.5594714977 / 1.5473856808 / **1.5396185998** | 1.6301 / 1.5696 / 1.5595 / 1.5474 / **1.5397** |
+| 2 | 1 / 2 / 4 / 8 / 16 | 1.7806140964 / 1.7008681679 / 1.6846806900 / 1.6661329315 / **1.6539612377** | 1.7807 / 1.7009 / 1.6847 / 1.6662 / **1.6540** |
+
+The $m = 1$ rational orbits reproduce $\alpha_{\rm sym}(s)$ to 10 digits.
+
+**Corrections made in Rev 2.**
+1. **Theorem 4 holds in both speed models.** §8 said it was "a bounded-speed statement unless every $q = 1$". Every leg of all 15 certificates has $\|V_j\| = 1$ exactly; the verifier checks this, and the files record `speed_model: exact`.
+2. **Monotonicity in $\alpha_C$ is now proven** for configurations satisfying (R) (Lemma M, §2.4). It was previously listed as open (§2.3, §5.4).
+3. **"No escape is proven for runners whose clock is not aligned"** is true only for classes that exclude alignment. For $\mathcal R_{\rm all}$, which contains the aligned runners, PP's threshold is bracketed (§2.5, item 3).
+4. **"$\alpha_{\rm sym}(s) \in (1,2)$" is now proven** (Lemma S). It was previously asserted without proof.
+
+**A worked example small enough to check by hand.** It is in `theory/certificates/examples/`.
+- Take $s = 4/3$ and a runner that moves perpendicular to the line of sight at full speed, from $D_0 = 25/24$.
+- The closest approach is exactly $5/8$, at mid-period, and the orbit closes exactly.
+- So PP is evaded for every $\alpha_C > 8/5$, and at $\alpha_C = 8/5$ capture occurs by tangency.
+
 ---
 
 ## 8. The remaining capture–escape gap
@@ -563,7 +813,7 @@ Let $\mathcal R_m$ be the runners with $\tau_E = \tau_C/m$, whose phase is part 
   - For runners with a fixed phase offset, or with $\tau_E/\tau_C \notin 1/\mathbb N$, no escape is proven. The planner at random phases first escapes at $\alpha_C \in \{8/5, 2\}$, and it also escapes at $a = 2$ for $\alpha_C \ge 2$.
   - So $\kappa_{\rm PP}$ genuinely depends on the runner class, and possibly on the phase. It is **not** a function of $s$ alone without specifying these.
 - **Speed model.**
-  - Theorems 1, 2 and 4 hold in both speed models, with one caveat: the certified legs may have $q < 1$, so Theorem 4 is a bounded-speed statement unless every $q = 1$.
+  - Theorems 1, 2 and 4 hold in both speed models, with one caveat: the certified legs may have $q < 1$, so Theorem 4 is a bounded-speed statement unless every $q = 1$. *Rev 2: every leg of every certificate has $q = 1$ exactly, so the caveat is void (§7.3).*
   - Theorem 3 needs bounded speed.
 - **Chaser class.** All escape constructions are against PP. Theorem 3's chaser captures every Theorem 2 or Theorem 4 runner with $\alpha_C \le s$.
 
@@ -585,6 +835,8 @@ Let $\mathcal R_m$ be the runners with $\tau_E = \tau_C/m$, whose phase is part 
 ---
 
 ## 10. Literature status and search checklist
+
+> *Rev 2.* This section is superseded by `theory/literature_review.md`, which reads the primary sources and records what was and was not accessible. The Rev 1 text below is kept for history.
 
 Nothing below has been verified beyond the level stated.
 
@@ -627,7 +879,9 @@ All commands run from the repository root, with Python 3.12, NumPy, SciPy and Ma
 
 | What | Command | Output |
 |---|---|---|
-| Tests (129) | `python -m pytest` | — |
+| Tests (129 at Rev 1; 147 at Rev 2) | `python -m pytest` | — |
+| Certificate verification (Rev 2) | `python theory/certificates/verify.py` | stdout; `theory/certificates/SUMMARY.md` with `--summary` |
+| Policy-separation figure (Rev 2) | `python experiments/policy_separation.py` | `figures/stage3/policy_separation.{png,pdf}`, `results/stage3/policy_separation.txt` |
 | Periodic-orbit optimisation | `python experiments/stage3.py orbits` | `results/stage3/orbits.json` |
 | Certificates | `python experiments/stage3.py certify` | `results/stage3/certified_orbits.json` |
 | Closure table | `python experiments/stage3.py closure` | `results/stage3/orbit_table.md` |
@@ -645,3 +899,4 @@ Figures:
 - `planner_comparison`: before and after the two planner fixes.
 - `escape_orbits`: Theorem 2 and certified orbits in absolute coordinates, plus the perpendicular fixed point.
 - `separation_vs_time`: continuous-time separation in units of $\varepsilon$.
+- `policy_separation` (Rev 2): the same runner and start against PP (escape) and the hybrid chaser (capture), at $s = 2$, $\alpha_C = 1.9$.
