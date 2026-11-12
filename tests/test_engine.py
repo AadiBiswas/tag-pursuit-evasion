@@ -163,6 +163,18 @@ def test_sequential_decision_sees_latest_commitment():
     assert half.next_opp == F(2, 3)
 
 
+def test_committed_velocity_does_not_alias_policy_array():
+    buf = np.array([1.0, 0.0])
+
+    def runner(obs):
+        buf[:] = [0.0, 1.0]  # scribble on the chaser's returned array at t = 1/2
+        return [0, 0]
+
+    E = AgentSpec(1.0, "1/2", first_decision="1/2", initial_velocity=[0, 0])
+    res = simulate(AgentSpec(1.0, 1), E, [0, 0], [50, 0], 0.1, 1, lambda obs: buf, runner)
+    np.testing.assert_array_equal(res.x_C[-1], [1, 0])
+
+
 def test_observation_is_read_only():
     def vandal(obs):
         obs.pos_opp[0] = 0.0

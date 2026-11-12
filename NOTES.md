@@ -35,12 +35,13 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
 - **Termination guard.** `max_events` (default 1e6) with `stop_reason="max_events"`; needed once
   reactive policies can produce long games.
 
-## Known issues
+## Fixed issues
 
-- **Velocity aliasing (latent, not triggered by anything in the repo).** The engine stores the array a
-  policy returns without copying, and `Constant`/`Scripted` return their internal arrays. A policy that
-  later mutates a returned array in place would change an agent's committed velocity retroactively.
-  Fix is a copy in `_check_velocity`; deferred so the 2026-11-11 style pass stays behavior-neutral.
+- **Velocity aliasing** (fixed 2026-11-11, after the style pass). The engine stored the array a policy
+  returned without copying, and `Constant`/`Scripted` hand back their internal arrays, so an in-place edit
+  by any policy rewrote an agent's committed velocity — and, through position anchoring, its past path.
+  `_check_velocity` now copies. Regression test: `test_committed_velocity_does_not_alias_policy_array`.
+  No existing run was affected (200-game log/trajectory hash unchanged).
 
 ## Open questions for Stage 2
 - See the Stage 1 report: which reactive baselines first, and whether to run the F experiment before or

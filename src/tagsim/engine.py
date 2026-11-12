@@ -145,7 +145,9 @@ class _Agent:
 
 
 def _check_velocity(v, spec, mode, d, who):
-    v = np.asarray(v, dtype=float)
+    # Copy: the committed velocity must not alias the policy's array, or an
+    # in-place edit later rewrites the agent's path, past included.
+    v = np.array(v, dtype=float)
     if v.shape != (d,) or not np.all(np.isfinite(v)):
         raise ValueError(f"{who}: velocity must be a finite vector of shape ({d},), got {v!r}")
     speed = float(np.linalg.norm(v))
