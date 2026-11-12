@@ -1,0 +1,175 @@
+"""Representative scenarios for the Stage 0 propositions.
+
+These are consistency checks between the engine and the proofs in
+stage0_spec.md. Passing them proves nothing universal; failing one means
+either the engine or the proof is wrong.
+
+Pure pursuit / direct flee are defined here, test-local, on purpose: Stage 1
+ships no reactive strategies.
+"""
+
+import math
+import zlib
+from fractions import Fraction as F
+
+import numpy as np
+import pytest
+
+from tagsim import AgentSpec, Constant, Scripted, min_separation, simulate
+
+
+def pure_pursuit(R):
+    def policy(obs):
+        d = obs.pos_opp - obs.pos_self
+        n = np.linalg.norm(d)
+        return R * d / n if n > 0 else np.zeros_like(d)
+    return policy
+
+
+def flee(R):
+    def policy(obs):
+        d = obs.pos_self - obs.pos_opp
+        n = np.linalg.norm(d)
+        return R * d / n if n > 0 else np.zeros_like(d)
+    return policy
+
+
+def random_script(rng, R, n, full_speed=False):
+    ang = rng.uniform(0, 2 * np.pi, n)
+    sp = R if full_speed else R * rng.uniform(0, 1, n)
+    return Scripted(np.c_[sp * np.cos(ang), sp * np.sin(ang)])
+
+
+def prop1_bound(res, R_C, R_E, tau_C, phi_C):
+    """phi_C + (K+1) tau_C, K = ceil((D1 - R_C tau_C)^+ / ((R_C - R_E) tau_C))."""
+    t1 = float(phi_C)
+    if res.capture_time <= t1:
+        return t1
+    xc, xe = res.positions_at(t1)
+    D1 = np.linalg.norm(xe - xc)
+    K = math.ceil(max(D1 - R_C * tau_C, 0.0) / ((R_C - R_E) * tau_C))
+    return t1 + (K + 1) * tau_C
+
+
+# Proposition 1: R_C > R_E and R_E * tau_C <= eps  =>  PP captures within the bound.
+# Several of these have R_C * tau_C > eps, i.e. the overshoot regime that the
+# original R_C tau_C <= eps hypothesis excluded.
+@pytest.mark.parametrize("R_C,tau_C", [(1.5, "1"), (1.5, "4/5"), (1.1, "1"), (3.0, "1/2"), (1.2, "1/4")])
+@pytest.mark.parametrize("tau_E", ["1/20", "1/7", "3/10", "2"])
+def test_prop1_pure_pursuit_captures_within_bound(R_C, tau_C, tau_E):
+    R_E, eps = 1.0, 1.0
+    tau_Cf = float(F(tau_C))
+    assert R_E * tau_Cf <= eps
+    rng = np.random.default_rng(zlib.crc32(repr((R_C, tau_C, tau_E)).encode()))
+    for trial in range(15):
+        phi_C = F(rng.integers(0, 8), 8) * F(tau_C)
+        ang = rng.uniform(0, 2 * np.pi)
+        C = AgentSpec(R_C, tau_C, first_decision=phi_C,
+                      initial_velocity=[R_C * math.cos(ang), R_C * math.sin(ang)] if phi_C else None)
+        phi_E = F(rng.integers(0, 8), 8) * F(tau_E)
+        E = AgentSpec(R_E, tau_E, first_decision=phi_E,
+                      initial_velocity=[R_E, 0.0] if phi_E else None)
+        D0 = rng.uniform(1.5, 20)
+        x_E0 = D0 * np.array([math.cos(ang + 1), math.sin(ang + 1)])
+        H = float(phi_C) + (D0 + (R_C + R_E) * float(phi_C)) / ((R_C - R_E)) + 5 * tau_Cf + 5
+        n_E = int(H / float(F(tau_E))) + 3
+        runners = [flee(R_E), random_script(rng, R_E, n_E), random_script(rng, R_E, n_E, True),
+                   Constant([0.0, R_E]), Constant([0.0, 0.0])]
+        for runner in runners:
+            res = simulate(C, E, [0, 0], x_E0, eps, F(repr(H)), pure_pursuit(R_C), runner)
+            assert res.captured, (trial, runner)
+            assert res.capture_time <= prop1_bound(res, R_C, R_E, tau_Cf, phi_C) + 1e-9
+
+
+def test_prop1_time_is_near_lower_bound_against_straight_flee():
+    # Runner flees along the LOS; any chaser needs >= (D0 - eps)/(R_C - R_E).
+    R_C, R_E, eps, D0 = 1.5, 1.0, 1.0, 20.0
+    res = simulate(AgentSpec(R_C, "1"), AgentSpec(R_E, "1"), [0, 0], [D0, 0], eps, 100,
+                   pure_pursuit(R_C), Constant([R_E, 0]))
+    lower = (D0 - eps) / (R_C - R_E)
+    assert lower <= res.capture_time <= prop1_bound(res, R_C, R_E, 1.0, 0)
+    assert res.capture_time == pytest.approx(lower)  # collinear: PP is exactly optimal here
+
+
+# B.3 matador geometry: one PP commitment, runner takes the tangent sidestep.
+# Min separation is exactly D/s at sigma = D/R_C. This is a single-interval
+# fact, not an escape theorem.
+@pytest.mark.parametrize("R_C,R_E,D", [(2.0, 1.0, 4.0), (1.3, 1.0, 5.0)])
+def test_tangent_sidestep_min_distance(R_C, R_E, D):
+    s = R_C / R_E
+    v_tan = [R_E**2 / R_C, R_E * math.sqrt(R_C**2 - R_E**2) / R_C]
+    assert np.linalg.norm(v_tan) == pytest.approx(R_E)
+    tau = 1.5 * D / R_C  # long commitment: R_E tau > eps for the eps used below
+    sig, dmin = min_separation([D, 0], np.array(v_tan) - [R_C, 0], tau)
+    assert sig == pytest.approx(D / R_C) and dmin == pytest.approx(D / s)
+
+    tau_f = F(repr(tau))
+    C, E = AgentSpec(R_C, tau_f), AgentSpec(R_E, tau_f)
+    for eps, hit in [(D / s * (1 - 1e-6), False), (D / s * (1 + 1e-6), True)]:
+        assert R_E * tau > eps
+        res = simulate(C, E, [0, 0], [D, 0], eps, tau_f, pure_pursuit(R_C), Constant(v_tan))
+        assert res.captured == hit
+        if hit:
+            assert res.capture_time == pytest.approx(D / R_C, rel=1e-2)
+
+
+# B.1 escape lemma: R_E >= R_C, runner flees from its first decision with D > eps.
+@pytest.mark.parametrize("R_C", [1.0, 0.8])
+def test_escape_lemma(R_C):
+    R_E, eps, D0 = 1.0, 1.0, 1.2
+    rng = np.random.default_rng(3)
+    E = AgentSpec(R_E, "1/3")
+    for chaser_period in ["1/10", "1/3", "7/9"]:
+        C = AgentSpec(R_C, chaser_period)
+        n = int(30 / float(F(chaser_period))) + 2
+        for pol in [pure_pursuit(R_C), random_script(rng, R_C, n), random_script(rng, R_C, n, True)]:
+            res = simulate(C, E, [0, 0], [D0, 0], eps, 30, pol, flee(R_E))
+            assert not res.captured
+            # separation at runner decision times is non-decreasing
+            seps = [np.linalg.norm(np.subtract(*res.positions_at(float(F(e["t"])))[::-1]))
+                    for e in res.events if e["kind"] == "decision" and e["agent"] == "E"]
+            assert all(b >= a - 1e-12 for a, b in zip(seps, seps[1:]))
+
+
+# Interception lemma (Case 4 window): runner on a known line until T,
+# chaser free at t=0. Capture by T iff exists t in [0,T]:
+#     |e0 + v_E t - c0| <= R_C t + eps.
+def earliest_root(e0, vE, R_C, eps, T):
+    """Earliest t in [0,T] where the condition holds (squared quadratic), or None."""
+    a = vE @ vE - R_C**2
+    b = 2 * (e0 @ vE - eps * R_C)
+    c = e0 @ e0 - eps**2
+    if c <= 0:
+        return 0.0
+    roots = np.roots([a, b, c]) if a != 0 else np.array([-c / b])
+    ok = sorted(r.real for r in np.atleast_1d(roots) if abs(r.imag) < 1e-12 and 0 <= r.real <= T)
+    return ok[0] if ok else None
+
+
+def test_interception_constructive_capture():
+    e0, vE, R_C, R_E, T = np.array([3.0, 0.0]), np.array([0.0, 0.8]), 0.9, 1.0, 5.0
+    eps = 0.6
+    t_star = earliest_root(e0, vE, R_C, eps, T)
+    assert t_star is not None
+    p = e0 + vE * t_star
+    v_C = R_C * p / np.linalg.norm(p)
+    C = AgentSpec(R_C, 10)
+    E = AgentSpec(R_E, 5, first_decision=5, initial_velocity=vE)
+    res = simulate(C, E, [0, 0], e0, eps, 5, Constant(v_C), Constant([0, 0]))
+    assert res.captured and res.capture_time == pytest.approx(t_star, abs=1e-9)
+    assert res.capture_time <= T
+
+
+def test_interception_infeasible_window():
+    # eps = 0.4: |e(t)| - 0.9 t - 0.4 is decreasing and still 0.1 > 0 at t = T = 5
+    e0, vE, R_C, R_E, T, eps = np.array([3.0, 0.0]), np.array([0.0, 0.8]), 0.9, 1.0, 5, 0.4
+    assert earliest_root(e0, vE, R_C, eps, T) is None
+    rng = np.random.default_rng(11)
+    E = AgentSpec(R_E, 5, first_decision=5, initial_velocity=vE)
+    p = e0 + vE * T
+    candidates = [Constant(R_C * p / np.linalg.norm(p))]
+    candidates += [random_script(rng, R_C, 60) for _ in range(100)]
+    for period in ["1/10", "5"]:
+        for pol in candidates:  # Scripted is stateless (indexes by obs.k), safe to reuse
+            res = simulate(AgentSpec(R_C, period), E, [0, 0], e0, eps, T, pol, Constant([0, 0]))
+            assert not res.captured
