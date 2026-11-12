@@ -270,3 +270,43 @@ def test_extended_threshold(s, shrink):
             if res.capture_time > t1:
                 K = math.ceil(max(separation(res, t1) - R_C * float(tau_C), 0) / ((R_C - R_E) * float(tau_C)))
                 assert res.capture_time <= t1 + (K + 2) * float(tau_C) + 1e-9
+
+
+def hybrid_chaser(obs):
+    # Review §3.4: brake onto the observed point while D > s*eps, full-speed PP once D <= s*eps.
+    d = np.linalg.norm(obs.pos_opp - obs.pos_self)
+    s = obs.spec_self.max_speed / obs.spec_opp.max_speed
+    return pure_pursuit(obs) if d <= s * obs.eps else braking_pursuit(obs)
+
+
+@pytest.mark.parametrize("s,alpha", [(F(2), F(19, 10)), (F(3, 2), F(147, 100)), (F(6, 5), F(119, 100))])
+def test_hybrid_captures_up_to_alpha_s(s, alpha):
+    # alpha_C <= s: every runner caught within phi_C + (K+2) tau_C. (Not tested at
+    # alpha_C = s itself: there straight flee makes the last step an exact tangency,
+    # capture in exact arithmetic but decided by rounding in floats.) Includes the
+    # symmetric-pass runner, which provably beats pure pursuit when alpha > alpha_sym(s).
+    from tagsim.best_response import SymmetricPass, best_pass
+    R_C, eps = float(s), 1.0
+    tau = alpha
+    sp = SymmetricPass(R_C, 1.0, float(tau))
+    rng = np.random.default_rng(zlib.crc32(repr(("hyb", s, alpha)).encode()))
+    runners = [flee, Perpendicular(), PredictiveEvasion(), random_script(rng, 1.0, 400), sp]
+    if float(alpha) > 1 / math.sqrt(best_pass(R_C)[1]):
+        assert not simulate(AgentSpec(R_C, tau), AgentSpec(1.0, tau), [0, 0], [sp.D, 0], eps, 200 * tau,
+                            pure_pursuit, sp).captured
+    for runner in runners:
+        for x0 in ([sp.D, 0], [7, 3]):
+            res = simulate(AgentSpec(R_C, tau), AgentSpec(1.0, tau / 2 if runner is not sp else tau),
+                           [0, 0], x0, eps, 400 * tau, hybrid_chaser, runner)
+            assert res.captured, runner
+            L, rho = R_C * float(tau), float(tau)
+            K = math.ceil(max(np.hypot(*x0) - L, 0) / (L - rho))
+            assert res.capture_time <= (K + 2) * float(tau) + 1e-9
+
+
+def test_hybrid_sharp_above_alpha_s():
+    # alpha_C > s: collinear straight flee pins separation at R_E tau_C > s eps, braking forever.
+    s, tau = 2.0, F(21, 10)
+    res = simulate(AgentSpec(s, tau), AgentSpec(1.0, 1000), [0, 0], [10, 0], 1.0, 400, hybrid_chaser, Constant([1, 0]))
+    assert not res.captured
+    assert np.linalg.norm(res.x_E - res.x_C, axis=1).min() == pytest.approx(float(tau), rel=1e-9)

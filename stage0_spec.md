@@ -26,6 +26,12 @@ Status legend used throughout:
 - §B.3a constructs an exact periodic escape orbit for $\alpha_C > \alpha_{\text{sym}}(s)$.
 - Together they bracket PP's threshold. H1's original text is kept, with a Rev 3 note.
 
+**Rev 4 (2026-11-12).** Stage 3 consolidation. Full proofs and the theorem-status table are in `theory/stage3_mathematical_review.md`, which numbers the results as follows: Prop 1′ = Thm 1, Prop 3 = Thm 2. New here:
+- §B.2c: a hybrid braking/pursuit chaser captures every runner iff $\alpha_C \le s$. This is a proof, and it settles the lower half of H2.
+- §B.3b: exact-rational certification of multi-leg escape orbits (Thm 4).
+- The H2 status is updated.
+- Nothing earlier was changed.
+
 ---
 
 ## A. Formal game definition
@@ -365,6 +371,38 @@ $$\frac{2s}{1+s} \ \le\ \kappa_{\text{PP}}(s) \ \le\ \alpha_{\text{sym}}(s).$$
 - Whether a *less* agile runner ($a > 1$) can escape for some $\alpha_C$ is open.
 - **Checked in code.** `test_symmetric_pass_evades_forever` runs 3,000 periods at three $(s, \alpha_C)$ pairs with $\ge 4\%$ miss margin. The separation at every decision equals $D$ to $10^{-11}$, and the minimum separation equals the predicted miss to $10^{-9}$.
 
+### B.2c A hybrid chaser captures up to $\alpha_C = s$ **[Proved]** — *Rev 4, new*
+
+**Chaser $H$.** At each decision, $H$ plays BP if $D_k > s\varepsilon$ and PP otherwise.
+
+**Statement.** In the bounded-speed model, $H$ captures every runner iff $\alpha_C \le s$.
+
+**Proof idea.**
+- BP lands exactly on the observed point, so the next separation is at most $\rho = R_E\tau_C$.
+- If $\rho \le s\varepsilon$, the next PP pass captures, by §B.2 case (ii).
+- If $\alpha_C > s$, a collinear straight-line runner pins the separation at $\rho > s\varepsilon$, and $H$ brakes forever.
+- At $\alpha_C = s$, capture is by exact tangency against that runner.
+
+The full proof is in the review, §3.4. This gives $\kappa^\*(s) \ge s$ for the best chaser. Theorem 3 needs speeds below $R_C$, so it does not apply in the exact-speed model.
+
+The result came out of asking which properties of PP the proof of §B.2b uses. Within this model, with constant velocity per period, that proof applies to PP only.
+
+### B.3b Certified multi-leg escape orbits **[Computer-assisted proof, exact rational arithmetic]** — *Rev 4, new*
+
+**Key fact.** Once the runner's legs within a period are fixed, the closure condition "separation returns to $D$" is **linear** in $D$. So rational leg velocities give an exact rational closing separation $D^\*$, and exact rational clearances.
+
+**Result.** For $s \in \{6/5, 3/2, 2\}$ and $m \in \{1, 2, 4, 8, 16\}$, a runner with $\tau_E = \tau_C/m$, aligned with the chaser, escapes PP for all $\alpha_C \ge \alpha_c(s,m)$. The best values are:
+
+| $s$ | $\alpha_c(s, 16)$ |
+|---|---|
+| 6/5 | 1.3890 |
+| 3/2 | 1.5397 |
+| 2 | 1.6540 |
+
+These improve on $\alpha_{\text{sym}}(s)$.
+
+**Data and checks.** The certificate data are in `results/stage3/certified_orbits.json`, and `tests/test_certificates.py` re-checks them independently. Details are in the review, §7.
+
 ### B.3 Where PP's argument breaks: the matador geometry **[Proved, single interval]**
 
 Suppose the chaser commits to PP at distance $D$, and the runner sees that commitment immediately. Over $v \in S^{d-1}$, the relative velocity $\mathbf w = R_E v - R_C\hat{\mathbf u}$ ranges over a sphere of radius $R_E$ centered at $-R_C\hat{\mathbf u}$.
@@ -441,6 +479,11 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 - *Heuristic:* a chaser can time its approach so that its next decision lands with $D \le s\varepsilon$, where the sidestep fails. The runner can perturb the post-interval distance by about $\pm R_E\tau_C$, and once that exceeds the window width $(s-1)\varepsilon$, timing should fail.
 - *Why interesting:* $\kappa^\*(s)$ is literally "how much sluggishness can a given speed advantage buy back" (RQ1 and RQ4).
 - *Falsified by:* a proof that $\kappa^\* = 1$ (PP is optimal), or that $\kappa^\* = \infty$ for some $s$.
+
+> **Rev 4 — status.**
+> - Lower half **proven**. In the bounded-speed model $\kappa^\*(s) \ge s$ (§B.2c). In the exact-speed model $\kappa^\*(s) \ge 2s/(1+s)$, from PP itself (§B.2b).
+> - The heuristic in H2 was the wrong mechanism. The gain over $\alpha_C = 1$ comes from PP's own two-pass structure, and from braking onto the observed point, not from timing the approach.
+> - Finiteness of $\kappa^\*$ is **open**.
 
 **H3 — Agility is monotone under refinement but not in general. [Partly provable + Conjecture]**
 - *Provable [Sketch]:* if the runner's decision lattice contains another runner's lattice ($\tau_E' = \tau_E/k$ with aligned phase), the more frequent runner can mimic the less frequent one. So the guaranteed-escape region is monotone along such chains.
