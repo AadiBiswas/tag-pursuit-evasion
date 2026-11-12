@@ -13,7 +13,7 @@ from fractions import Fraction as F
 import numpy as np
 import pytest
 
-from tagsim import (AgentSpec, Constant, Perpendicular, PredictiveEvasion, Scripted, braking_pursuit,
+from tagsim import (AgentSpec, Constant, Perpendicular, PredictiveEvasion, Scripted, braking_pursuit, hybrid_pursuit,
                     flee, min_separation, pure_pursuit, simulate)
 
 
@@ -272,11 +272,7 @@ def test_extended_threshold(s, shrink):
                 assert res.capture_time <= t1 + (K + 2) * float(tau_C) + 1e-9
 
 
-def hybrid_chaser(obs):
-    # Review §3.4: brake onto the observed point while D > s*eps, full-speed PP once D <= s*eps.
-    d = np.linalg.norm(obs.pos_opp - obs.pos_self)
-    s = obs.spec_self.max_speed / obs.spec_opp.max_speed
-    return pure_pursuit(obs) if d <= s * obs.eps else braking_pursuit(obs)
+hybrid_chaser = hybrid_pursuit  # review §3.4
 
 
 @pytest.mark.parametrize("s,alpha", [(F(2), F(19, 10)), (F(3, 2), F(147, 100)), (F(6, 5), F(119, 100))])
@@ -310,3 +306,29 @@ def test_hybrid_sharp_above_alpha_s():
     res = simulate(AgentSpec(s, tau), AgentSpec(1.0, 1000), [0, 0], [10, 0], 1.0, 400, hybrid_chaser, Constant([1, 0]))
     assert not res.captured
     assert np.linalg.norm(res.x_E - res.x_C, axis=1).min() == pytest.approx(float(tau), rel=1e-9)
+
+
+def test_policy_separation_instance_exact():
+    # Review §3.5, Corollary 5.1: s = 2, alpha_C = 19/10, y = 6/5. All exact.
+    s, alpha, y = F(2), F(19, 10), F(6, 5)
+    g = y * y - y * (s * s - 1) / (4 * (s - y))
+    assert g == F(63, 200) and g > 1 / alpha ** 2          # Theorem 2 applies: PP is evaded
+    cos2 = (s * s - 1) / (4 * y * (s - y))
+    assert cos2 == F(25, 32) and 0 < cos2 < 1
+    # frame velocity (1/8, 3 sqrt7 / 8): |v|^2 = 1/64 + 63/64, and it is the Theorem 2 rule
+    assert F(1, 64) + F(9 * 7, 64) == 1
+    assert s - 2 * y * cos2 == F(1, 8)                      # R_C - (2 D cos theta) cos theta, tau_C = R_E = 1
+    assert (2 * y) ** 2 * cos2 * (1 - cos2) == F(63, 64)    # squared n-component
+    assert alpha <= s                                       # Theorem 3: the hybrid chaser captures everyone
+
+
+def test_lemma_s_bounds():
+    from tagsim.best_response import best_pass
+    for s in (1.01, 1.2, 1.5, 1.7, 2.0, 3.0, 10.0, 100.0):
+        a_sym = 1 / math.sqrt(best_pass(s)[1])
+        assert 2 * s / (1 + s) <= a_sym < 2
+    # the witness in the proof: g(s/2) = 1/4 exactly, g'(s/2) = 1/s
+    for s in (F(6, 5), F(2), F(7)):
+        y = s / 2
+        assert y * y - y * (s * s - 1) / (4 * (s - y)) == F(1, 4)
+        assert 2 * y - s * (s * s - 1) / (4 * (s - y) ** 2) == 1 / s

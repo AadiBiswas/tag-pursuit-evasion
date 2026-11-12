@@ -1,0 +1,5 @@
+s = 2.0, alpha_C = 19/10 (eps = R_E = 1, tau_C = tau_E = 19/10, aligned clocks)
+alpha_sym(2) = 1.7806140964 < alpha_C <= s = 2
+runner: Theorem 2 symmetric pass, D = 2.306606, predicted closest approach 1.067048
+pure pursuit: no capture in 40 periods, min separation 1.067048 (> eps = 1)
+hybrid chaser: captured at t = 2.460980 = 1.2953 tau_C (Theorem 3 bound phi_C + (K+2) tau_C with K = 0: 3.8000)

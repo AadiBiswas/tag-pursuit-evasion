@@ -36,6 +36,15 @@ def braking_pursuit(obs):
     return speed * d / dist
 
 
+def hybrid_pursuit(obs):
+    """Theorem 3 chaser (review §3.4): brake onto the observed point while
+    d > s*eps, full-speed pure pursuit once d <= s*eps. Captures every runner
+    iff alpha_C <= s (bounded-speed model only: braking goes below R_C)."""
+    d = np.linalg.norm(obs.pos_opp - obs.pos_self)
+    s = obs.spec_self.max_speed / obs.spec_opp.max_speed
+    return pure_pursuit(obs) if d <= s * obs.eps else braking_pursuit(obs)
+
+
 def contact_time(p0, v, R, eps):
     """Earliest t >= 0 with |p0 + v t| <= R t + eps, or None.
 
