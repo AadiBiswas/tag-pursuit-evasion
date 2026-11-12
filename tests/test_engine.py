@@ -33,6 +33,15 @@ def test_as_time_reads_floats_as_decimals():
         as_time(float("inf"))
 
 
+def test_as_time_strips_numpy_integers():
+    # F(np.int64(3), 8) keeps an int64 numerator that later wraps on overflow
+    t = as_time(F(np.int64(3), 8))
+    assert type(t.numerator) is int and type(t.denominator) is int
+    spec = AgentSpec(1.0, F(np.int64(10001), np.int64(10003)), first_decision=F(np.int64(3), 8),
+                     initial_velocity=[0, 0])
+    assert type(spec.period.numerator) is int and type(spec.first_decision.numerator) is int
+
+
 def test_straight_line_motion_is_exact():
     C = AgentSpec(1.0, "1/3")
     E = AgentSpec(1.0, "1/2")

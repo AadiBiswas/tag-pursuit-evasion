@@ -38,7 +38,10 @@ def as_time(x):
         if not math.isfinite(x):
             raise ValueError(f"time must be finite, got {x}")
         return Fraction(repr(x))
-    return Fraction(x)
+    f = Fraction(x)
+    # Fraction happily keeps numpy int64 parts, which then overflow (silently,
+    # wrapping) a few multiplications later. Force Python ints.
+    return Fraction(int(f.numerator), int(f.denominator))
 
 
 def _readonly(v):
