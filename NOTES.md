@@ -99,6 +99,14 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
   - The Lipschitz bound "a segment's distance moves at most as much as its endpoints" makes the B&B cheap at 5D. It will not scale to m = 4 (9D).
 - **Dimension.** Two legs in 3D flatten to the plane by an intermediate-value argument on a chord (bounded speed). With exact speed, 3D genuinely adds options, but only ones planar bounded-speed runners already have.
 
+## 2026-11-13 — Stage 4C (two-leg optimality)
+
+- **Translation is the right deformation.** Shift the period start, keep the controls; each leg's clearance moves at rate x/c of its closest point (distance to a segment is convex in the shift). Leg 1 is always in front, so a non-closing maximizer needs leg 2 binding *behind* the chaser. That is exactly the 4B counterexample's configuration, which is why it never shows up at the optimum.
+- **The proof is two exact computations.** First: localize all near-optimal up-steps in a 0.06-wide box (15M / 28M nodes, 8 / 16 min). Second: interval-check x2 > 0 on the box, which took a single box. Together they prove G_up = G_lev at s = 3/2 and s = 2.
+- **The optimum.** Full speed, closing, only leg 2 binds (early interior tangency); leg 1 slack, closest at the midpoint. This is an 80-digit Newton solve in Decimal with rational unit vectors (no sympy or mpmath in the venv; not worth adding).
+- **The boundary survival argument needs an extra ingredient.** cos(psi) < 0 for m = 2, so the optimal controls started outside land inside y_L. A neighbouring orbit with a larger closing start must be mixed in. It works under a regularity hypothesis.
+- **Recommendation: stop on two legs.** The general-s proof is an analytic lemma, not more compute. Next is the optimal-chaser problem.
+
 ## Open questions for Stage 4
 - One-pass reachability / viability kernel in D for aligned runners. This would close or shrink [2s/(1+s), alpha_c(s, m)].
 - Any escape from PP for runners whose clock is not aligned with the chaser's?

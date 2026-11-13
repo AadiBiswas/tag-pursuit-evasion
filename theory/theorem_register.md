@@ -1,6 +1,6 @@
 # Theorem register
 
-*Stage 3.5, 2026-11-12. Updated in Stage 4A (Theorems 6, 7) and Stage 4B (Theorems 8, 9).*
+*Stage 3.5, 2026-11-12. Updated in Stage 4A (Theorems 6, 7), Stage 4B (Theorems 8, 9) and Stage 4C (Theorem 10).*
 
 This file indexes every result, giving its assumptions, where its proof is, and which tests check it.
 
@@ -67,6 +67,18 @@ Proofs are in `theory/stage4_multidecision_analysis.md` (M). Tests are in `tests
 | **Thm 9** | $\kappa_{\rm PP}(3/2;\mathcal R_2) \in [1.568873, 1.569530]$ and $\kappa_{\rm PP}(2;\mathcal R_2) \in [1.700102, 1.700869]$. | Both speed models; $d \ge 2$ | M §6.1 | `theory/certificates/two_leg_upper_bound.py` (exact branch-and-bound) plus orbit certificates `*_m02`; `test_upper_bound_*` |
 | Prop 4B.6 | Exact counterexample: for a fixed two-leg control, a strict up-step can have far more clearance than the closing period, so the Stage 4A pathwise mechanism fails for $m = 2$. | $s = 3/2$ | M §6.2 | `test_pathwise_monotonicity_counterexample_exact` |
 
+### Stage 4C: optimality of two-leg evasion
+
+Proofs are in `theory/stage4_two_leg_optimality.md` (O). Tests are in `tests/test_two_leg_optimality.py`.
+
+| ID | Statement | Assumptions | Proof | Tests / certificate |
+|---|---|---|---|---|
+| Lemma 4C.1 | Leg 1's closest point always has $x > 0$ (when its clearance is positive). | — | O §4 | `test_leg1_closest_point_is_in_front` |
+| Lemma 4C.2 | Translation: shifting a period's start outward changes each leg's clearance by at least $b\,x_j/c_j$. A maximiser of $G_{\rm up}(s,m)$ whose binding legs are all in front of the chaser is closing. | Any $m$, any $s$ | O §4 | `test_translation_lemma_tangent_bound` |
+| Cor 4C.3 | A non-closing maximiser of $G_{\rm up}(s,2)$ must have leg 2 binding with $x_2 \le 0$. | — | O §4 | — |
+| **Thm 10** | Conjecture 4B.1 holds for $s = 3/2$ and $2$: $G_{\rm up} = G_{\rm lev}$, and $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(s,2)^{-1/2}$ exactly. At the threshold, no eventually-periodic run survives. | Both speed models; $d \ge 2$ | O §5 | `two_leg_localize.py` (exact; 14.8M and 28.4M nodes); `test_leg2_in_front_on_localization_box`, `test_localization_is_not_vacuous` |
+| Prop 4C.5 | Non-periodic survival at the two-leg threshold, under the regularity hypothesis (R). | (R): verified numerically, not certified | O §7 | `test_boundary_chain_short` |
+
 ## Thresholds currently known
 
 Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\mathcal R_{\rm all}$, $\mathcal I_{\rm all}$, and both speed models.
@@ -95,7 +107,8 @@ Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\m
 
 | Item | Status |
 |---|---|
-| **Conjecture 4B.1**: $G_{\rm up}(2) = G_{\rm lev}(2)$, i.e. $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(2)^{-1/2}$ (1.5695294 at $s = 3/2$, 1.7008682 at $s = 2$). | 7-digit numerical agreement; rigorous to within $2.7\times10^{-4}$ in clearance (Thm 9). |
+| **Conjecture 4B.1**: $G_{\rm up}(2) = G_{\rm lev}(2)$, i.e. $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(2)^{-1/2}$ (1.5695294 at $s = 3/2$, 1.7008682 at $s = 2$). | **Proved for $s = 3/2$ and $2$ (Thm 10).** Open for other $s$ (U1 in O §8). |
+| **U2**: the two-leg optimum has the active set of O §6 (full speed, leg-2 interior tangency, leg 1 slack) and is the unique critical point in $N$. This would make $G_{\rm lev}(s,2)$ the critical value of an explicit rational function, hence algebraic. | Open; 80-digit numerics. |
 | **Failed conjecture (kept)**: for every fixed $m$-leg control, clearance is non-decreasing in $y$ on $(0, D^\*]$. | True for $m = 1$; **false for $m = 2$** (Prop 4B.6). |
 | **Conjecture 4A.1**: for $\alpha_{\rm sym} < \alpha_C \le 2$, $\mathcal K_\infty = (y_-, \infty)$ in $\mathcal G_1$. | Grid evidence at $s = 1.5$ and $2$ (V §6.1). |
 | **Stage 4B question**: does Lemma 4A.7 extend to $m$-leg aligned runners, giving $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m) = G_m(s)^{-1/2}$? | **Partly answered (M):** the pathwise version fails at $m = 2$. The global version, $G_{\rm up} = G_{\rm lev}$, is Conjecture 4B.1, bracketed by Thm 9. |

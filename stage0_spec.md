@@ -53,6 +53,10 @@ Status legend used throughout:
 - **Counterexample.** The Stage 4A pathwise argument fails for $m = 2$.
 - **Wording.** The Stage 4A boundary statements are clarified (trajectory versus policy); no statement is changed.
 
+**Rev 8 (2026-11-13).** Stage 4C, with the model unchanged. Proofs are in `theory/stage4_two_leg_optimality.md`:
+- **Theorem 10.** For the two-decision runner at $s = 3/2$ and $s = 2$, the best non-decreasing period is a closing orbit. The proof combines a translation lemma with an exact localization certificate. So PP's threshold equals the best closing two-leg orbit's: numerically 1.569529355725 and 1.700868167901, rigorously enclosed.
+- **Status.** Open for other $s$. The audit of the Stage 4B certificates found no error.
+
 ---
 
 ## A. Formal game definition
