@@ -32,7 +32,7 @@ Appendix: reproduction.
 | **Audit of 4A** (§2) | No mathematical gap was found. Two wordings were imprecise and are now clarified, not changed. | — |
 | **Lemma 4B.1** (§3) | $\mathcal R_{m_1} \subseteq \mathcal R_{m_2}$ whenever $m_1 \mid m_2$. So guarantees and thresholds are monotone along divisibility. | Bounded-speed and exact-speed models, each separately. Nothing is claimed for non-nested schedules. |
 | **Theorem 8** (§5) | For aligned $m$-decision runners, let $G_{\rm lev}(m)$ be the best squared clearance of a *closing* period and $G_{\rm up}(m)$ that of a *non-decreasing* period. Both suprema are attained. PP guarantees capture, with a uniform decrement and a finite period bound, when $\alpha_C < G_{\rm up}^{-1/2}$. A periodic orbit escapes when $\alpha_C > G_{\rm lev}^{-1/2}$. So $G_{\rm up}^{-1/2} \le \kappa_{\rm PP}(s;\mathcal R^{\rm al}_m) \le G_{\rm lev}^{-1/2}$. | Any $m$. |
-| **Theorem 9** (§6) | Rigorous bracket for $m = 2$: $1.56690 < \kappa_{\rm PP}(3/2;\mathcal R^{\rm al}_2) \le 1.5695294$ and $1.69779 < \kappa_{\rm PP}(2;\mathcal R^{\rm al}_2) \le 1.7008682$. | Both speed models; every $d \ge 2$. |
+| **Theorem 9** (§6) | Rigorous bracket for $m = 2$: $1.568873 < \kappa_{\rm PP}(3/2;\mathcal R^{\rm al}_2) \le 1.5695294$ and $1.700102 < \kappa_{\rm PP}(2;\mathcal R^{\rm al}_2) \le 1.7008682$. | Both speed models; every $d \ge 2$. |
 | **Prop 4B.4** (§4.3) | The two-leg one-period problem in $\mathbb R^d$ reduces exactly to the plane. With exact speed, $d \ge 3$ adds options, but only ones already available to planar bounded-speed runners. | Bounded-speed model for the exact reduction. |
 
 **How Theorem 9 is proven.**
@@ -270,19 +270,19 @@ with $y > 0$ and $U \in \bar B^m$, so $G_{\rm lev} \le G_{\rm up}$. This $G_{\rm
 >
 > | $s$ | Certified $\sqrt{G_{\rm up}(2)} \le T$ | Capture for $\alpha_C <$ | Certified closing orbit $\sqrt{G_{\rm lev}(2)} \ge$ | Escape for $\alpha_C >$ | $m = 1$ threshold $\alpha_{\rm sym}$ |
 > |---|---|---|---|---|---|
-> | 3/2 | 3191/5000 = 0.6382 | 1/T = 1.566907 | 0.6371337 | $\hat\alpha = 1.5695294$ (and every $\alpha_C \ge 981/625$) | 1.6300837 |
-> | 2 | 589/1000 = 0.5890 | 1/T = 1.697793 | 0.5879350 | $\hat\alpha = 1.7008682$ (and every $\alpha_C \ge 17009/10000$) | 1.7806141 |
+> | 3/2 | 3187/5000 = 0.6374 | 1/T = 1.568873 | 0.6371337 | $\hat\alpha = 1.5695294$ (and every $\alpha_C \ge 981/625$) | 1.6300837 |
+> | 2 | 2941/5000 = 0.5882 | 1/T = 1.700102 | 0.5879350 | $\hat\alpha = 1.7008682$ (and every $\alpha_C \ge 17009/10000$) | 1.7806141 |
 >
-> So $\kappa_{\rm PP}(3/2;\mathcal R_2) \in [1.566907,\ 1.569530]$ and $\kappa_{\rm PP}(2;\mathcal R_2) \in [1.697793,\ 1.700869]$.
+> So $\kappa_{\rm PP}(3/2;\mathcal R_2) \in [1.568873,\ 1.569530]$ and $\kappa_{\rm PP}(2;\mathcal R_2) \in [1.700102,\ 1.700869]$, brackets of width $6.6\times10^{-4}$ and $7.7\times10^{-4}$.
 
 *Proof.*
-- The capture side is Theorem 8(b), with $G_{\rm up}(2) \le T^2$ certified as above. The runs took 2,351,423 and 3,942,403 nodes, and every box was discarded.
+- The capture side is Theorem 8(b), with $G_{\rm up}(2) \le T^2$ certified as above. The runs took 10,076,017 nodes ($s = 3/2$) and 16,660,241 nodes ($s = 2$), and every box was discarded. Coarser runs ($T = 3191/5000$ and $589/1000$, with 2.4M and 3.9M nodes) are also recorded.
 - The escape side is Theorem 8(a), with the certified orbits.
 - Prop. 4B.4 extends both to $d \ge 2$. In the exact-speed model the orbits are admissible, being unit speed, and the upper bound still applies by Prop. 4B.4(ii). ∎
 
 **Consistency check.** The certificate correctly *fails* to prove any $T$ below a certified closing orbit's clearance (`test_upper_bound_cannot_cut_below_a_certified_orbit`).
 
-**Tighter runs.** A tighter pair of runs is in `results/stage4b/two_leg_upper_bound_tight.txt` if it completed. The bracket above uses only the runs in `results/stage4b/two_leg_upper_bound.txt`.
+**Records.** Both the coarse and the tight runs are recorded: `results/stage4b/two_leg_upper_bound.txt` and `results/stage4b/two_leg_upper_bound_tight.txt`.
 
 ### 6.2 Counterexample: the Stage 4A mechanism fails for two legs
 
@@ -323,7 +323,7 @@ The search used SLSQP from 300 random starts over $(y, \mathbf u_1, \mathbf u_2)
 
 > **Conjecture 4B.1.** $G_{\rm up}(2) = G_{\rm lev}(2)$ for every $s > 1$, attained only by closing periods. Equivalently $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(2)^{-1/2}$.
 >
-> **Status.** Numerically supported at $s = 3/2$ and $2$ (7 digits), and rigorously true to within $1.1\times10^{-3}$ in clearance (Theorem 9). Not proven.
+> **Status.** Numerically supported at $s = 3/2$ and $2$ (7 digits), and rigorously true to within $2.7\times10^{-4}$ in clearance (Theorem 9). Not proven.
 
 ---
 
@@ -332,7 +332,7 @@ The search used SLSQP from 300 random starts over $(y, \mathbf u_1, \mathbf u_2)
 **$m = 2$, away from the threshold.**
 - By Theorem 8, if Conjecture 4B.1 holds, then for $\alpha_C \ne G_{\rm lev}^{-1/2}$ a surviving initial state exists iff a period-1 (closing) orbit survives.
 - Unconditionally, this is proven outside the interval in Theorem 9. Below it every runner is captured; above it a closing orbit survives.
-- Inside that interval (width about 0.003), it is not known whether some non-periodic run survives where no closing orbit does.
+- Inside that interval (width below $8\times10^{-4}$), it is not known whether some non-periodic run survives where no closing orbit does.
 
 **Increasing separation within a period is not advantageous at the global optimum** (numerically), even though for a fixed control it can be (§6.2).
 
@@ -361,14 +361,14 @@ So **for every $m$ the problem reduces to one question: is $G_{\rm up}(m) = G_{\
 **What does not extend:**
 1. **The pathwise mechanism.** Monotonicity of clearance in $y$ along a fixed control fails already at $m = 2$ (Prop. 4B.6). Any proof of $G_{\rm up} = G_{\rm lev}$ must be global, comparing different controls. This is the essential new difficulty, and it does not shrink as $m$ grows.
 2. **The exhaustive certificate's cost.**
-   - The parameter space has dimension $2m + 1$. At $m = 2$, tolerance $10^{-3}$ needed about $3\times10^6$ boxes.
+   - The parameter space has dimension $2m + 1$. At $m = 2$, a tolerance of $10^{-3}$ needed about $3\times10^6$ boxes, and $2.7\times10^{-4}$ needed about $10^7$–$1.7\times10^7$.
    - First-order bounds in dimension 9 ($m = 4$) are out of reach. Going further would need second-order bounds, or symmetry reductions such as the optimal orbits' reflection symmetry. Neither is proven to be without loss of generality.
 3. **Dimension.** The planar reduction is proven only for $m \le 2$ (Prop. 4B.4).
 
 **Comparison with the certified $m = 4, 8, 16$ orbits.**
 - They give upper bounds only: $\kappa_{\rm PP}(s;\mathcal R_m) \le \hat\alpha(s,m)$. For example, 1.5595, 1.5474 and 1.5396 at $s = 3/2$.
 - These need not be optimal, and the Stage 3 optimiser was not converged in $m$.
-- The only lower bound for $m \ge 4$ is Theorem 1's $2s/(1+s)$ (1.2 at $s = 3/2$), which holds for every runner class. So for $m \ge 4$ the gap is still about 0.34 at $s = 3/2$, against about 0.003 for $m = 2$.
+- The only lower bound for $m \ge 4$ is Theorem 1's $2s/(1+s)$ (1.2 at $s = 3/2$), which holds for every runner class. So for $m \ge 4$ the gap is still about 0.34 at $s = 3/2$, against under $10^{-3}$ for $m = 2$.
 - The nesting lemma makes $\kappa(\mathcal R_m)$ non-increasing along $1, 2, 4, 8, 16$. The certified upper bounds are consistent with this.
 
 ---
@@ -406,6 +406,7 @@ So **for every $m$ the problem reduces to one question: is $G_{\rm up}(m) = G_{\
 |---|---|---|
 | Tests | `python -m pytest tests/test_two_leg.py` | — |
 | Optimisation, counterexample, engine replay | `python experiments/stage4b.py` | `results/stage4b/two_leg.txt`, `two_leg_optima.json` |
-| Upper-bound certificate at $s = 3/2$ (about 1–2 CPU-minutes) | `python theory/certificates/two_leg_upper_bound.py 3/2 3191/5000` | `results/stage4b/two_leg_upper_bound.txt` |
-| Upper-bound certificate at $s = 2$ (about 2 CPU-minutes) | `python theory/certificates/two_leg_upper_bound.py 2 589/1000` | same file |
+| Upper-bound certificate at $s = 3/2$, tight (about 5 CPU-minutes) | `python theory/certificates/two_leg_upper_bound.py 3/2 3187/5000` | `results/stage4b/two_leg_upper_bound_tight.txt` |
+| Upper-bound certificate at $s = 2$, tight (about 9 CPU-minutes) | `python theory/certificates/two_leg_upper_bound.py 2 2941/5000` | same file |
+| Coarse versions (1–2 CPU-minutes each) | `... 3/2 3191/5000` and `... 2 589/1000` | `results/stage4b/two_leg_upper_bound.txt` |
 | Orbit certificates (lower side) | `python theory/certificates/verify.py` | stdout |

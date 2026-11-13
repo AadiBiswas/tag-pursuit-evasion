@@ -64,7 +64,7 @@ Proofs are in `theory/stage4_multidecision_analysis.md` (M). Tests are in `tests
 | Prop 4B.4 | Two legs in $\mathbb R^d$: same one-period options as the plane (bounded speed). Exact-speed options in $d \ge 3$ lie between the planar exact-speed and planar bounded-speed options. | $m \le 2$ | M §4.3 | `test_two_leg_dimension_reduction_bounded_speed` |
 | Lemma 4B.5 | $G_{\rm lev}(m)$ and $G_{\rm up}(m)$ are attained. | — | M §5 | — |
 | **Thm 8** | $G_{\rm up}(m)^{-1/2} \le \kappa_{\rm PP}(s;\mathcal R_m) \le G_{\rm lev}(m)^{-1/2}$. Capture below the lower bound comes with a uniform decrement and a finite period bound. At the threshold, no eventually-periodic run survives. | Any $m$; aligned clocks | M §5 | — |
-| **Thm 9** | $\kappa_{\rm PP}(3/2;\mathcal R_2) \in [1.566907, 1.569530]$ and $\kappa_{\rm PP}(2;\mathcal R_2) \in [1.697793, 1.700869]$. | Both speed models; $d \ge 2$ | M §6.1 | `theory/certificates/two_leg_upper_bound.py` (exact branch-and-bound) plus orbit certificates `*_m02`; `test_upper_bound_*` |
+| **Thm 9** | $\kappa_{\rm PP}(3/2;\mathcal R_2) \in [1.568873, 1.569530]$ and $\kappa_{\rm PP}(2;\mathcal R_2) \in [1.700102, 1.700869]$. | Both speed models; $d \ge 2$ | M §6.1 | `theory/certificates/two_leg_upper_bound.py` (exact branch-and-bound) plus orbit certificates `*_m02`; `test_upper_bound_*` |
 | Prop 4B.6 | Exact counterexample: for a fixed two-leg control, a strict up-step can have far more clearance than the closing period, so the Stage 4A pathwise mechanism fails for $m = 2$. | $s = 3/2$ | M §6.2 | `test_pathwise_monotonicity_counterexample_exact` |
 
 ## Thresholds currently known
@@ -95,7 +95,7 @@ Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\m
 
 | Item | Status |
 |---|---|
-| **Conjecture 4B.1**: $G_{\rm up}(2) = G_{\rm lev}(2)$, i.e. $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(2)^{-1/2}$ (1.5695294 at $s = 3/2$, 1.7008682 at $s = 2$). | 7-digit numerical agreement; rigorous to within $1.1\times10^{-3}$ in clearance (Thm 9). |
+| **Conjecture 4B.1**: $G_{\rm up}(2) = G_{\rm lev}(2)$, i.e. $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(2)^{-1/2}$ (1.5695294 at $s = 3/2$, 1.7008682 at $s = 2$). | 7-digit numerical agreement; rigorous to within $2.7\times10^{-4}$ in clearance (Thm 9). |
 | **Failed conjecture (kept)**: for every fixed $m$-leg control, clearance is non-decreasing in $y$ on $(0, D^\*]$. | True for $m = 1$; **false for $m = 2$** (Prop 4B.6). |
 | **Conjecture 4A.1**: for $\alpha_{\rm sym} < \alpha_C \le 2$, $\mathcal K_\infty = (y_-, \infty)$ in $\mathcal G_1$. | Grid evidence at $s = 1.5$ and $2$ (V §6.1). |
 | **Stage 4B question**: does Lemma 4A.7 extend to $m$-leg aligned runners, giving $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m) = G_m(s)^{-1/2}$? | **Partly answered (M):** the pathwise version fails at $m = 2$. The global version, $G_{\rm up} = G_{\rm lev}$, is Conjecture 4B.1, bracketed by Thm 9. |

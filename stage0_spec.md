@@ -49,7 +49,7 @@ Status legend used throughout:
 **Rev 7 (2026-11-12).** Stage 4B, multi-decision aligned runners, with the model unchanged. Proofs are in `theory/stage4_multidecision_analysis.md`:
 - **Nesting.** Runner classes are nested along divisibility of the number of decisions per chaser period.
 - **Theorem 8.** For $m$ decisions per period, PP's threshold lies between $G_{\rm up}(m)^{-1/2}$ and $G_{\rm lev}(m)^{-1/2}$.
-- **Theorem 9.** For $m = 2$, an exact branch-and-bound certificate brackets PP's threshold to within about 0.003. It lies strictly below the $m = 1$ value.
+- **Theorem 9.** For $m = 2$, an exact branch-and-bound certificate brackets PP's threshold to within $8\times10^{-4}$. It lies strictly below the $m = 1$ value.
 - **Counterexample.** The Stage 4A pathwise argument fails for $m = 2$.
 - **Wording.** The Stage 4A boundary statements are clarified (trajectory versus policy); no statement is changed.
 
