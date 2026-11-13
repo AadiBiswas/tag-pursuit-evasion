@@ -90,6 +90,15 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
   - BBH Prop III.4 is a circling evasion of greedy discrete pursuit: the nearest precedent for our periodic orbits. It is cited.
   - The AGR full text is blocked by bot protection. Someone needs to open RR-1700 in a browser.
 
+## 2026-11-12 — Stage 4B (two runner decisions per chaser period)
+
+- **Audit of 4A.** It holds up. The one real wording issue: the boundary survivor is a *stationary* feedback, y = y* + beta(D - y*), generating a non-periodic D sequence. Recorded as a revision note in the 4A file.
+- **Theorem 8 for any m is formal.** Capture iff no safe non-decreasing period (G_up), escape iff a safe closing period (G_lev). The whole difficulty is whether G_up = G_lev.
+- **The 4A trick dies at m = 2.** With leg 2's closest point behind the chaser, clearance falls as the start moves out, so for a fixed control the best up-step is not the closing one. Exact counterexample, s = 3/2: clearance 0.164 vs 0.0098.
+- **Globally, the closing orbit still wins** (to 7 digits). An exact-rational branch-and-bound over all 5 parameters proves G_up^(1/2) <= 0.6382 / 0.5890 in 2-4M nodes. That gives a bracket of width ~0.003 around the certified m=2 orbits.
+  - The Lipschitz bound "a segment's distance moves at most as much as its endpoints" makes the B&B cheap at 5D. It will not scale to m = 4 (9D).
+- **Dimension.** Two legs in 3D flatten to the plane by an intermediate-value argument on a chord (bounded speed). With exact speed, 3D genuinely adds options, but only ones planar bounded-speed runners already have.
+
 ## Open questions for Stage 4
 - One-pass reachability / viability kernel in D for aligned runners. This would close or shrink [2s/(1+s), alpha_c(s, m)].
 - Any escape from PP for runners whose clock is not aligned with the chaser's?

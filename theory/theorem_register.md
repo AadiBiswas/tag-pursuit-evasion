@@ -1,6 +1,6 @@
 # Theorem register
 
-*Stage 3.5, 2026-11-12. Updated in Stage 4A with Theorems 6 and 7.*
+*Stage 3.5, 2026-11-12. Updated in Stage 4A (Theorems 6, 7) and Stage 4B (Theorems 8, 9).*
 
 This file indexes every result, giving its assumptions, where its proof is, and which tests check it.
 
@@ -53,6 +53,20 @@ All proofs are in `theory/stage4_viability_analysis.md` (V). The tests are in `t
 | **Thm 6** | $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_1,\mathcal I_{\rm all}) = \alpha_{\rm sym}(s)$ exactly. The guarantee set is the **open** interval $(0,\alpha_{\rm sym})$. At $\alpha_{\rm sym}$, evasion is possible but **only non-periodically**: $D_k \downarrow y^\*$. Also $y^\* \in \bigcap_n\mathcal V_n \setminus \mathcal K_\infty$. | $\mathcal G_1$; both speed models; $d \ge 2$ | V §5.1 | `test_below_threshold_every_safe_step_goes_down`, `test_boundary_chain_*` |
 | **Thm 7** | For $\alpha_{\rm sym} < \alpha_C \le 2$: $\mathcal K_\infty \cap (0,y_+) = (y_-,y_+)$. For $\alpha_C < 2$: $y_- \in \bigcap_n\mathcal V_n \setminus \mathcal K_\infty$. For every $\alpha_C > \alpha_{\rm sym}$: $\mathcal K_\infty \subseteq (\Psi^{-1}(\varepsilon), \infty)$. | $\mathcal G_1$ | V §5.2 | `test_period_one_set_matches_g`; high-precision chains in V §5.2 |
 
+### Stage 4B: aligned multi-decision runners
+
+Proofs are in `theory/stage4_multidecision_analysis.md` (M). Tests are in `tests/test_two_leg.py`.
+
+| ID | Statement | Assumptions | Proof | Tests / certificate |
+|---|---|---|---|---|
+| Lemma 4B.1 | Nesting: $\mathcal R_{m_1} \subseteq \mathcal R_{m_2}$ when $m_1 \mid m_2$, in each speed model, so $\kappa$ is non-increasing along divisibility. Strict for $1 \mid 2$. | Aligned clocks. Nothing claimed for non-nested schedules. | M §3 | `test_nesting_m1_orbit_is_an_m2_orbit` |
+| Lemma 4B.2 | The $m$-leg period is a translate of a path independent of $y$. It is non-decreasing iff $y \le D^\*(\bar{\mathbf u}) \le (s+1)/2$. The state reduces to $D$. | — | M §4.1 | — |
+| Prop 4B.4 | Two legs in $\mathbb R^d$: same one-period options as the plane (bounded speed). Exact-speed options in $d \ge 3$ lie between the planar exact-speed and planar bounded-speed options. | $m \le 2$ | M §4.3 | `test_two_leg_dimension_reduction_bounded_speed` |
+| Lemma 4B.5 | $G_{\rm lev}(m)$ and $G_{\rm up}(m)$ are attained. | — | M §5 | — |
+| **Thm 8** | $G_{\rm up}(m)^{-1/2} \le \kappa_{\rm PP}(s;\mathcal R_m) \le G_{\rm lev}(m)^{-1/2}$. Capture below the lower bound comes with a uniform decrement and a finite period bound. At the threshold, no eventually-periodic run survives. | Any $m$; aligned clocks | M §5 | — |
+| **Thm 9** | $\kappa_{\rm PP}(3/2;\mathcal R_2) \in [1.566907, 1.569530]$ and $\kappa_{\rm PP}(2;\mathcal R_2) \in [1.697793, 1.700869]$. | Both speed models; $d \ge 2$ | M §6.1 | `theory/certificates/two_leg_upper_bound.py` (exact branch-and-bound) plus orbit certificates `*_m02`; `test_upper_bound_*` |
+| Prop 4B.6 | Exact counterexample: for a fixed two-leg control, a strict up-step can have far more clearance than the closing period, so the Stage 4A pathwise mechanism fails for $m = 2$. | $s = 3/2$ | M §6.2 | `test_pathwise_monotonicity_counterexample_exact` |
+
 ## Thresholds currently known
 
 Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\mathcal R_{\rm all}$, $\mathcal I_{\rm all}$, and both speed models.
@@ -81,8 +95,10 @@ Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\m
 
 | Item | Status |
 |---|---|
+| **Conjecture 4B.1**: $G_{\rm up}(2) = G_{\rm lev}(2)$, i.e. $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(2)^{-1/2}$ (1.5695294 at $s = 3/2$, 1.7008682 at $s = 2$). | 7-digit numerical agreement; rigorous to within $1.1\times10^{-3}$ in clearance (Thm 9). |
+| **Failed conjecture (kept)**: for every fixed $m$-leg control, clearance is non-decreasing in $y$ on $(0, D^\*]$. | True for $m = 1$; **false for $m = 2$** (Prop 4B.6). |
 | **Conjecture 4A.1**: for $\alpha_{\rm sym} < \alpha_C \le 2$, $\mathcal K_\infty = (y_-, \infty)$ in $\mathcal G_1$. | Grid evidence at $s = 1.5$ and $2$ (V §6.1). |
-| **Stage 4B question**: does Lemma 4A.7 extend to $m$-leg aligned runners, giving $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m) = G_m(s)^{-1/2}$? | Open (V §9). |
+| **Stage 4B question**: does Lemma 4A.7 extend to $m$-leg aligned runners, giving $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m) = G_m(s)^{-1/2}$? | **Partly answered (M):** the pathwise version fails at $m = 2$. The global version, $G_{\rm up} = G_{\rm lev}$, is Conjecture 4B.1, bracketed by Thm 9. |
 | **H1′**: optimal evasion of PP by aligned runners is periodic, so $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m)$ tends to the limit of the periodic-orbit thresholds. | Conjecture |
 | Exact value of $\kappa_{\rm PP}(s;\cdot)$ for any runner class. | **Solved for $\mathcal R^{\rm al}_1$** (Thm 6). Open for $\mathcal R^{\rm al}_m$ with $m \ge 2$ and for $\mathcal R_{\rm all}$; for $\mathcal R_{\rm all}$ the gap is about 0.30 at $s = 1.2, 1.5, 2$. |
 | Any escape from PP for $\mathcal R_{a,\Phi}$ with $0 \notin \Phi$ (unaligned clocks only). | Open. There is planner evidence at $\alpha_C \ge 8/5$. |

@@ -5,6 +5,10 @@
 - Notation follows the review. Its Theorems 1–5 and Lemmas M and S are cited by those names.
 - New results are numbered 4A.x, plus **Theorems 6 and 7**.
 
+> **Revision note (Stage 4B audit, 2026-11-12).** The boundary results were re-derived; no mathematical gap was found (`theory/stage4_multidecision_analysis.md` §2). Two wordings below are imprecise and are clarified here, not changed in place:
+> - **"Only by non-periodic strategies"** means *only by runs whose separation sequence is not eventually periodic*. The surviving runs of Theorem 6(c2) are produced by a **stationary** state-feedback policy, $y(D) = y^\* + \beta(D - y^\*)$, which is exactly the engine runner `BoundaryChain`.
+> - **"The only parameter value at which non-periodic strategies do strictly better"** means: some run that is eventually periodic in $D$ survives iff $\alpha_C > \alpha_{\rm sym}$, while some run survives at all iff $\alpha_C \ge \alpha_{\rm sym}$.
+
 ## Contents
 
 1. Summary
