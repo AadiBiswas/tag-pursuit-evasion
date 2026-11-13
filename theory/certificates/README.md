@@ -96,3 +96,9 @@ Each certificate is therefore an **upper bound** on $\kappa_{\rm PP}(s; \mathcal
 - The end point is $r(1) = (25/24 - 4/3,\ 1) = (-7/24,\ 1)$, with $\|r(1)\|^2 = 625/576 = (25/24)^2$.
 
 So PP never captures this runner for $\alpha_C > 8/5$, and it captures by tangency at $\alpha_C = 8/5$. This is the symmetric pass of Theorem 2 at $y = 25/24$, where $g(y) = 25/64$; it is not the optimal $y$, since $\alpha_{\rm sym}(4/3) = 1.5397$.
+
+## Two-leg up-step bound (Stage 4B)
+
+`two_leg_upper_bound.py S T` proves, in exact rational arithmetic, that every two-leg period (two runner decisions per chaser period, aligned clocks) that does not decrease the separation has closest approach $\le T$. It does this by exhaustive branch-and-bound; the module docstring states the discarding rules.
+
+It is the capture side of Theorem 9 in `theory/stage4_multidecision_analysis.md`. Like `verify.py`, it uses only the standard library.

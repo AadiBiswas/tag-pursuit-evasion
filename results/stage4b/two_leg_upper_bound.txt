@@ -1,0 +1,4 @@
+s = 3/2, T = 3191/5000: up-step clearance <= T PROVEN; 1175712 leaf boxes, 2351423 nodes
+python3 theory/certificates/two_leg_upper_bound.py 3/2 6382/10000  72.04s user 0.08s system 7% cpu 16:12.64 total
+s = 2, T = 589/1000: up-step clearance <= T PROVEN; 1971202 leaf boxes, 3942403 nodes
+python3 theory/certificates/two_leg_upper_bound.py 2 5890/10000  125.66s user 0.34s system 7% cpu 29:11.84 total

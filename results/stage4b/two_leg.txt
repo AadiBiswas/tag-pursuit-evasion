@@ -1,0 +1,16 @@
+Stage 4B two-leg game. Numerical optima are local-search results (300 SLSQP starts),
+not certified global optima; see theory/stage4_multidecision_analysis.md.
+
+s = 1.5 best level  : clearance 0.6371337  alpha 1.5695294  y = 1.04267  speeds = (1.000000, 1.000000)  |r(1)| - y = 0.0e+00  leg clearances = (0.650644, 0.637134)  x of leg-2 closest point = 0.3296
+s = 1.5 best up-step: clearance 0.6371337  alpha 1.5695294  y = 1.04267  speeds = (1.000000, 1.000000)  |r(1)| - y = -2.9e-13  leg clearances = (0.650644, 0.637134)  x of leg-2 closest point = 0.3296
+s = 2.0 best level  : clearance 0.5879350  alpha 1.7008682  y = 1.25717  speeds = (1.000000, 1.000000)  |r(1)| - y = -2.2e-16  leg clearances = (0.606636, 0.587935)  x of leg-2 closest point = 0.2193
+s = 2.0 best up-step: clearance 0.5879350  alpha 1.7008682  y = 1.25717  speeds = (1.000000, 1.000000)  |r(1)| - y = -4.3e-12  leg clearances = (0.606636, 0.587935)  x of leg-2 closest point = 0.2193
+
+Counterexample to pathwise monotonicity (exact): s = 3/2, u1 = (12/13, -5/13), u2 = (-7/25, 24/25), D* = 1913/3064
+  start y = 3/10: closest approach^2 = 4635409/172802500 (= 0.163783), |r(1)|^2 - y^2 = 0.764462
+  start y = D*: closest approach^2 = 97752769/1013929036900 (= 0.009819), |r(1)|^2 - y^2 = 0.000000
+
+engine: certified m=2 orbit s3-2_m02.json at alpha = 1001/1000 * alpha_c: no capture in 200 periods
+engine: certified m=2 orbit s3-2_m02.json at alpha = 999/1000 * alpha_c: captured at 0.554 periods
+engine: certified m=2 orbit s2-1_m02.json at alpha = 1001/1000 * alpha_c: no capture in 200 periods
+engine: certified m=2 orbit s2-1_m02.json at alpha = 999/1000 * alpha_c: captured at 0.549 periods
