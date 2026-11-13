@@ -24,6 +24,7 @@ and asynchronous, periodic decision clocks, in 2D/3D.
   - `stage4_viability_analysis.md`: Stage 4A viability kernels; exact threshold for the aligned one-decision game
   - `stage4_multidecision_analysis.md`: Stage 4B two-decision runners; certified threshold bracket
   - `stage4_two_leg_optimality.md`: Stage 4C proof that the optimal two-leg period is a closing orbit (s = 3/2, 2)
+  - `stage5_optimal_chaser.md`: Stage 5 first pass at the optimal-chaser problem (H2's open upper half)
   - `theorem_register.md`: index of results, assumptions, proofs and tests
   - `certificates/`: exact escape certificates with a standalone verifier (`python theory/certificates/verify.py`), and the
     exact two-leg up-step bound (`two_leg_upper_bound.py`)

@@ -57,6 +57,16 @@ Status legend used throughout:
 - **Theorem 10.** For the two-decision runner at $s = 3/2$ and $s = 2$, the best non-decreasing period is a closing orbit. The proof combines a translation lemma with an exact localization certificate. So PP's threshold equals the best closing two-leg orbit's: numerically 1.569529355725 and 1.700868167901, rigorously enclosed.
 - **Status.** Open for other $s$. The audit of the Stage 4B certificates found no error.
 
+**Rev 9 (2026-11-13).** Stage 5, a first pass at H2's open upper half. Proofs are in
+`theory/stage5_optimal_chaser.md`:
+- **Proposition 11.** Straight-flight runners cannot witness $\kappa^\*(s) < \infty$ for any $s$: a
+  predictive chaser (`Intercept`, already in the codebase from Stage 2) catches them in finite time at
+  every $\alpha_C$, because it reads velocity and $H$ does not.
+- **But `Intercept` does not dominate $H$.** It fails against the symmetric-pass orbit strictly inside
+  $H$'s proven guarantee region. So this is not a route to $\kappa^\* > s$.
+- **Status.** $\kappa^\*(s) \ge s$ stands; finiteness is still open. Recommended next step, if pursued: a
+  genuinely two-sided (chaser-and-runner) construction, not another one-sided best-response search.
+
 ---
 
 ## A. Formal game definition

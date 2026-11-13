@@ -79,6 +79,15 @@ Proofs are in `theory/stage4_two_leg_optimality.md` (O). Tests are in `tests/tes
 | **Thm 10** | Conjecture 4B.1 holds for $s = 3/2$ and $2$: $G_{\rm up} = G_{\rm lev}$, and $\kappa_{\rm PP}(s;\mathcal R_2) = G_{\rm lev}(s,2)^{-1/2}$ exactly. At the threshold, no eventually-periodic run survives. | Both speed models; $d \ge 2$ | O §5 | `two_leg_localize.py` (exact; 14.8M and 28.4M nodes); `test_leg2_in_front_on_localization_box`, `test_localization_is_not_vacuous` |
 | Prop 4C.5 | Non-periodic survival at the two-leg threshold, under the regularity hypothesis (R). | (R): verified numerically, not certified | O §7 | `test_boundary_chain_short` |
 
+### Stage 5: the optimal-chaser problem
+
+Proofs are in `theory/stage5_optimal_chaser.md`. Tests are in `tests/test_optimal_chaser.py`.
+
+| ID | Statement | Assumptions | Proof | Tests |
+|---|---|---|---|---|
+| **Prop 11** | A straight-flying (open-loop, constant-velocity) runner is captured in finite time by a predictive chaser, for every $\alpha_C$. So no such runner can witness $\kappa^\*(s) < \infty$. | $s > 1$ | Stage 5 §2 (Interception Lemma B.1a) | `test_intercept_beats_flee_at_large_alpha` |
+| (negative) | `Intercept` does not dominate $H$: it loses to the symmetric-pass orbit strictly inside $H$'s proven guarantee region ($\alpha_C \le s$). | $s = 2$, $\alpha_C \in \{1.801, 1.99\}$ | Stage 5 §3 | `test_intercept_loses_to_symmetric_pass_below_s` |
+
 ## Thresholds currently known
 
 Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\mathcal R_{\rm all}$, $\mathcal I_{\rm all}$, and both speed models.
@@ -116,7 +125,7 @@ Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\m
 | Exact value of $\kappa_{\rm PP}(s;\cdot)$ for any runner class. | **Solved for $\mathcal R^{\rm al}_1$** (Thm 6). Open for $\mathcal R^{\rm al}_m$ with $m \ge 2$ and for $\mathcal R_{\rm all}$; for $\mathcal R_{\rm all}$ the gap is about 0.30 at $s = 1.2, 1.5, 2$. |
 | Any escape from PP for $\mathcal R_{a,\Phi}$ with $0 \notin \Phi$ (unaligned clocks only). | Open. There is planner evidence at $\alpha_C \ge 8/5$. |
 | Escape from far initial states ($\mathcal I_{\rm far}$): can a runner reach an orbit's state? | Open |
-| $\kappa^\* < \infty$ (H2, upper half). Is $\kappa^\* > s$? | Open |
+| $\kappa^\* < \infty$ (H2, upper half). Is $\kappa^\* > s$? | Open. **Stage 5:** straight flight cannot witness any finite bound (Prop 11), and `Intercept` (the natural predictive upgrade of $H$) does not dominate $H$. Neither moves the bracket; the obstacle is a genuinely two-sided problem against periodic/orbit runners. |
 | Policy separation in the exact-speed model. | Open, because $H$ is inadmissible there. |
 | Exact-speed best chaser beyond $2s/(1+s)$. | Open |
 

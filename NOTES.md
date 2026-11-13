@@ -107,6 +107,12 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
 - **The boundary survival argument needs an extra ingredient.** cos(psi) < 0 for m = 2, so the optimal controls started outside land inside y_L. A neighbouring orbit with a larger closing start must be mixed in. It works under a regularity hypothesis.
 - **Recommendation: stop on two legs.** The general-s proof is an analytic lemma, not more compute. Next is the optimal-chaser problem.
 
+## 2026-11-13 — Stage 5 (optimal-chaser problem, first pass)
+
+- **Straight flight is a dead end as an upper-bound witness.** The Interception Lemma (B.1a) already proves why: for any $s>1$, a chaser that reads the runner's *velocity* and aims at the predicted contact point (`Intercept`, built in Stage 2) catches a straight-flying runner in finite time, for every $\alpha_C$. So $H$'s Theorem 3 failure above $\alpha_C=s$ is an artifact of $H$ ignoring velocity, not a real obstruction to $\kappa^*$.
+- **But `Intercept` doesn't fix it.** It loses to the symmetric-pass orbit even strictly below $\alpha_C = s$, where $H$ is proven to always capture — its "holds its last velocity" model is exactly wrong against a runner that deliberately changes heading every period. So there's no free improvement here; the hard case is still the same orbit-style runner that beats plain PP.
+- **No progress on whether $\kappa^*$ is finite.** The real question is two-sided (chaser rule vs. runner orbit solved together), unlike every certificate built in Stages 3-4C, which fixes one side and optimizes the other. Stopped rather than hand-build that machinery on spec.
+
 ## Open questions for Stage 4
 - One-pass reachability / viability kernel in D for aligned runners. This would close or shrink [2s/(1+s), alpha_c(s, m)].
 - Any escape from PP for runners whose clock is not aligned with the chaser's?
