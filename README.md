@@ -11,13 +11,16 @@ and asynchronous, periodic decision clocks, in 2D/3D.
   - `policies.py`: scripted policies
   - `strategies.py`: baseline chasers (pure pursuit, braking, hybrid, intercept) and runners (flee, perpendicular, predictive)
   - `best_response.py`: best-response planner against pure pursuit; the closed-form symmetric-pass orbit
+  - `viability.py`: exact one-period geometry of the aligned one-decision game
 - `tests/`: pytest suite, including consistency checks against the spec's propositions
 - `experiments/stage2.py`, `configs/stage2.json`: preliminary sweep; outputs in `results/stage2/` (incl. `note.md`)
   and `figures/stage2/`
 - `experiments/stage3.py`, `experiments/policy_separation.py`, `configs/stage3.json`: Stage 3 orbits, certificates,
   sweeps, figures; outputs in `results/stage3/` and `figures/stage3/`
+- `experiments/stage4a.py`: Stage 4A viability prototype; outputs in `results/stage4a/`
 - `theory/`: mathematics
   - `stage3_mathematical_review.md`: full proofs (Theorems 1-5, Lemmas M and S), thresholds, gaps
+  - `stage4_viability_analysis.md`: Stage 4A viability kernels; exact threshold for the aligned one-decision game
   - `theorem_register.md`: index of results, assumptions, proofs and tests
   - `certificates/`: exact escape certificates and a standalone verifier (`python theory/certificates/verify.py`)
   - `literature_review.md`, with entries in `references.bib`

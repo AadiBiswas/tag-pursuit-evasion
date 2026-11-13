@@ -76,6 +76,20 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
 - **Policy separation.** At s = 2, alpha = 1.9, the symmetric pass beats PP while the hybrid captures everyone. alpha_sym < 2 always (g(s/2) = 1/4 and g'(s/2) = 1/s), so the separation interval is non-empty for all s >= 2.
 - **Literature.** ANP (self-triggered ZOH PP) has endogenous sampling, so it never meets overshoot. Its App. B is our Lemma B(i). BBH: turn-based, equal steps, point capture. Yufereva: sampled simple pursuit with period = capture radius, but equal speeds and compact space. Alonso–Goldstein–Reingold is unread and is the top priority.
 
+## 2026-11-12 — Stage 4A (viability, aligned one-decision game)
+
+- **Key simplification.** With one decision each per period, the relative path over a period is ONE straight segment, so everything is plane geometry.
+  - Parametrize full-speed actions by the separation y they hold fixed. Then T_y(D)^2 = D^2 - (s^2-1)(D-y)/(s-y), with clearance D sin(theta_y).
+- **The whole game hangs on one inequality.** An up-step from D has clearance <= Psi(D) <= sqrt(G).
+  - Below alpha_sym, D strictly decreases every period: capture.
+  - Above it, the symmetric pass survives.
+  - At alpha_sym, only a chain that creeps down onto y* survives. Every periodic strategy dies. A cute closed-vs-open-ball effect.
+- **Finite vs infinite horizon really differ**, with explicit points: y* at alpha_sym, and y_- for alpha_sym < alpha < 2. Survival time from y_- grows like log(1/first step).
+- **The grid DP is unreliable near the threshold**, in both directions. It is kept in the write-up as a cautionary result, not hidden.
+- **Literature.**
+  - BBH Prop III.4 is a circling evasion of greedy discrete pursuit: the nearest precedent for our periodic orbits. It is cited.
+  - The AGR full text is blocked by bot protection. Someone needs to open RR-1700 in a browser.
+
 ## Open questions for Stage 4
 - One-pass reachability / viability kernel in D for aligned runners. This would close or shrink [2s/(1+s), alpha_c(s, m)].
 - Any escape from PP for runners whose clock is not aligned with the chaser's?

@@ -38,6 +38,14 @@ Status legend used throughout:
 - **Policy separation (review §3.5, Theorem 5; bounded-speed model).** For $\alpha_{\rm sym}(s) < \alpha_C \le s$, which includes $s = 2$, $\alpha_C = 1.9$, PP admits an indefinitely evading runner while the §B.2c chaser captures every runner. So PP is not guarantee-optimal (H2).
 - **Index and literature.** The theorem index is `theory/theorem_register.md`. The literature comparison is `theory/literature_review.md`, and it claims no novelty.
 
+**Rev 6 (2026-11-12).** Stage 4A, the aligned one-decision game, with the model unchanged. Proofs are in `theory/stage4_viability_analysis.md`:
+- **Theorem 6.** For runners that decide exactly at the chaser's decision instants, PP's threshold is exactly $\alpha_{\rm sym}(s)$:
+  - capture for $\alpha_C < \alpha_{\rm sym}$;
+  - escape for $\alpha_C > \alpha_{\rm sym}$;
+  - at $\alpha_C = \alpha_{\rm sym}$, escape by non-periodic strategies only.
+- **Theorem 7.** The viability kernel below the period-1 set is exact, and the finite-horizon and infinite-horizon survival sets differ at its lower edge.
+- **H1′ status.** For $m = 1$, H1′ (review §5.4) holds away from the single value $\alpha_C = \alpha_{\rm sym}$ and fails at it.
+
 ---
 
 ## A. Formal game definition

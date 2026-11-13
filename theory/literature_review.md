@@ -2,6 +2,12 @@
 
 *Stage 3.5, 2026-11-12. This review is focused, not exhaustive. The search log and access limits are recorded below.*
 
+> **Stage 4A update.** Two sources are updated here:
+> - **Bopardikar–Bullo–Hespanha.** The exact theorem statements have been recovered from page images, and the DOI is verified. Their Prop. III.4 is a circling evasion of a greedy discrete-time pursuer: the closest prior construction to our periodic orbits.
+> - **Alonso–Goldstein–Reingold.** The metadata is verified, but the full text could not be read.
+>
+> Details are in `theory/stage4_viability_analysis.md` §8, and that section supersedes the corresponding entries below. Theorem 2 stays *Potentially distinct*, now with the BBH precedent cited.
+
 **Status labels**, for each contribution of ours:
 - **Previously established** — follows from a source we read.
 - **Potentially distinct** — differs from every source we read, but the search is incomplete.

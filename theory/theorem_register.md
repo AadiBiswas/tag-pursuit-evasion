@@ -1,6 +1,6 @@
 # Theorem register
 
-*Stage 3.5, 2026-11-12.*
+*Stage 3.5, 2026-11-12. Updated in Stage 4A with Theorems 6 and 7.*
 
 This file indexes every result, giving its assumptions, where its proof is, and which tests check it.
 
@@ -39,6 +39,20 @@ This file indexes every result, giving its assumptions, where its proof is, and 
 | Rotation equivariance | PP and the orbit runners commute with orientation-preserving isometries. One period's state therefore maps to the next by a fixed rotation plus translation. | — | Review §4.2, step 5 | CP (3-period exact recurrence) |
 | Scale invariance | With $\varepsilon$-free policies, the outcome depends on $\alpha_C$ only through a scale-free closest approach. | $\varepsilon$-free policies | Review §5.1 | — |
 
+### Stage 4A: the aligned one-decision game $\mathcal G_1$
+
+All proofs are in `theory/stage4_viability_analysis.md` (V). The tests are in `tests/test_viability.py`.
+
+| ID | Statement | Assumptions | Proof | Tests |
+|---|---|---|---|---|
+| Prop 4A.2 | The state at decision times reduces exactly to the separation $D$; open-loop strategies suffice; $\mathbb R^d$ reduces to the plane. | $\mathcal G_1$: aligned clocks, one runner decision per chaser period, PP, unbounded space | V §2 | — |
+| Prop 4A.5 | Exact safe reachable set: the plateau interval (end point inside the disk on diameter $[0, (D,0)]$) together with the full-speed images $T_y(D)$ satisfying $C_y(D) > \varepsilon$. | Bounded-speed model | V §3.3 | `test_reachable_set_formula`, `test_heading_parametrization` |
+| Lemma 4A.6 | $y^\*$ is the unique maximiser of $g$. Every action's level-step clearance is at most $G$, with equality only at full speed and $y^\*$. | — | V §3.4 | `test_y_star_is_unique_maximizer` |
+| Lemma 4A.7 | Up-step bound: any step with $D' \ge D$ has closest approach $\le \Psi(D) \le \sqrt G$. | — | V §3.4 | `test_up_steps_bounded_by_psi` |
+| Lemma 4A.8 | Compactness: for the **non-strict** relation, survival for every finite horizon is equivalent to infinite survival. | — | V §4 | — |
+| **Thm 6** | $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_1,\mathcal I_{\rm all}) = \alpha_{\rm sym}(s)$ exactly. The guarantee set is the **open** interval $(0,\alpha_{\rm sym})$. At $\alpha_{\rm sym}$, evasion is possible but **only non-periodically**: $D_k \downarrow y^\*$. Also $y^\* \in \bigcap_n\mathcal V_n \setminus \mathcal K_\infty$. | $\mathcal G_1$; both speed models; $d \ge 2$ | V §5.1 | `test_below_threshold_every_safe_step_goes_down`, `test_boundary_chain_*` |
+| **Thm 7** | For $\alpha_{\rm sym} < \alpha_C \le 2$: $\mathcal K_\infty \cap (0,y_+) = (y_-,y_+)$. For $\alpha_C < 2$: $y_- \in \bigcap_n\mathcal V_n \setminus \mathcal K_\infty$. For every $\alpha_C > \alpha_{\rm sym}$: $\mathcal K_\infty \subseteq (\Psi^{-1}(\varepsilon), \infty)$. | $\mathcal G_1$ | V §5.2 | `test_period_one_set_matches_g`; high-precision chains in V §5.2 |
+
 ## Thresholds currently known
 
 Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\mathcal R_{\rm all}$, $\mathcal I_{\rm all}$, and both speed models.
@@ -67,8 +81,10 @@ Notation is from Review §2.5. Unless stated otherwise, these bounds are for $\m
 
 | Item | Status |
 |---|---|
+| **Conjecture 4A.1**: for $\alpha_{\rm sym} < \alpha_C \le 2$, $\mathcal K_\infty = (y_-, \infty)$ in $\mathcal G_1$. | Grid evidence at $s = 1.5$ and $2$ (V §6.1). |
+| **Stage 4B question**: does Lemma 4A.7 extend to $m$-leg aligned runners, giving $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m) = G_m(s)^{-1/2}$? | Open (V §9). |
 | **H1′**: optimal evasion of PP by aligned runners is periodic, so $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_m)$ tends to the limit of the periodic-orbit thresholds. | Conjecture |
-| Exact value of $\kappa_{\rm PP}(s;\cdot)$ for any runner class. | Open. The gap is about 0.30 at $s = 1.2, 1.5, 2$. |
+| Exact value of $\kappa_{\rm PP}(s;\cdot)$ for any runner class. | **Solved for $\mathcal R^{\rm al}_1$** (Thm 6). Open for $\mathcal R^{\rm al}_m$ with $m \ge 2$ and for $\mathcal R_{\rm all}$; for $\mathcal R_{\rm all}$ the gap is about 0.30 at $s = 1.2, 1.5, 2$. |
 | Any escape from PP for $\mathcal R_{a,\Phi}$ with $0 \notin \Phi$ (unaligned clocks only). | Open. There is planner evidence at $\alpha_C \ge 8/5$. |
 | Escape from far initial states ($\mathcal I_{\rm far}$): can a runner reach an orbit's state? | Open |
 | $\kappa^\* < \infty$ (H2, upper half). Is $\kappa^\* > s$? | Open |
