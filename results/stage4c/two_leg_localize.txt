@@ -1,0 +1,8 @@
+s = 3/2: N = centre ['104267/100000', '14979/50000', '95407/100000', '-1731/12500', '24759/25000'] +/- 3/100; c_L = 63713367/100000000
+  (X) leg-2 closest point has x > 0 on N: PROVEN (1 sub-boxes)
+  (L) every up-step with clearance >= c_L lies in N: PROVEN (7400716 leaf boxes, 14801431 nodes)
+python3 theory/certificates/two_leg_localize.py 3/2  509.07s user 3.32s system 99% cpu 8:34.15 total
+s = 2: N = centre ['125717/100000', '20169/100000', '19589/20000', '-16967/50000', '94067/100000'] +/- 3/100; c_L = 587935043/1000000000
+  (X) leg-2 closest point has x > 0 on N: PROVEN (1 sub-boxes)
+  (L) every up-step with clearance >= c_L lies in N: PROVEN (14182973 leaf boxes, 28365945 nodes)
+python3 theory/certificates/two_leg_localize.py 2  991.07s user 3.36s system 99% cpu 16:34.61 total

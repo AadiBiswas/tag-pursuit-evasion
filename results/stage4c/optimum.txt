@@ -1,0 +1,25 @@
+Optimal closing two-leg orbit: critical point of the reduced objective F_s(t1, t2) (80-digit Newton).
+Numerics, not a certificate; see theory/stage4_two_leg_optimality.md.
+
+s = 1.5:
+  t1 = 0.73413750379236292158173110937646281532, t2 = 1.14955854107706721422620815039425543744
+  start/closing separation y_L = 1.04267379222039172602561620821643504290
+  clearance c* = 0.63713367090103918432481621771554193413
+  alpha* = 1/c* = 1.56952935572498083415323028189490349491
+  |grad F| = 7.0e-50; Hessian of F (t1,t2) = [-1.340289, 0.173692, -0.244908] (negative definite)
+  leg 1: clearance 0.6506438176, foot parameter 1.064661 (> 1: closest point is the midpoint r(1/2)), x = 0.442464
+  leg 2: clearance 0.6371336709 (binding), foot parameter 0.137790 (interior tangency), x = 0.329581 > 0
+  rotation per period: cos(psi) = P_x / y_L = -0.361357
+  boundary chain at alpha = alpha*: 150 steps from a = 0.01, beta = 0.6327: min(clearance^2 - c*^2) = 3.371e-48 > 0, final a = 6.963e-48, a_(k+1)/a_k in [0.4984, 0.5000]
+
+s = 2:
+  t1 = 0.81505707037452113812687628678359328235, t2 = 1.42381456222828942374459899215234104434
+  start/closing separation y_L = 1.25717237751578509973902087414594967517
+  clearance c* = 0.58793504333380867214255647702666626886
+  alpha* = 1/c* = 1.70086816790105068696068090787062221690
+  |grad F| = 1.0e-50; Hessian of F (t1,t2) = [-0.949429, 0.074889, -0.098965] (negative definite)
+  leg 1: clearance 0.6066363034, foot parameter 1.078302 (> 1: closest point is the midpoint r(1/2)), x = 0.358019
+  leg 2: clearance 0.5879350433 (binding), foot parameter 0.118559 (interior tangency), x = 0.219345 > 0
+  rotation per period: cos(psi) = P_x / y_L = -0.645614
+  boundary chain at alpha = alpha*: 150 steps from a = 0.01, beta = 0.6962: min(clearance^2 - c*^2) = 1.862e-48 > 0, final a = 6.986e-48, a_(k+1)/a_k in [0.4993, 0.5000]
+

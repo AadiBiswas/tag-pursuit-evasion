@@ -102,3 +102,11 @@ So PP never captures this runner for $\alpha_C > 8/5$, and it captures by tangen
 `two_leg_upper_bound.py S T` proves, in exact rational arithmetic, that every two-leg period (two runner decisions per chaser period, aligned clocks) that does not decrease the separation has closest approach $\le T$. It does this by exhaustive branch-and-bound; the module docstring states the discarding rules.
 
 It is the capture side of Theorem 9 in `theory/stage4_multidecision_analysis.md`. Like `verify.py`, it uses only the standard library.
+
+## Two-leg localization (Stage 4C)
+
+`two_leg_localize.py S` proves two things in exact arithmetic:
+- every non-decreasing two-leg period whose clearance is at least the certified orbit's lies in an explicit small box $N$;
+- on $N$, leg 2's closest point is in front of the chaser.
+
+With the translation lemma of `theory/stage4_two_leg_optimality.md`, this proves that the best non-decreasing two-leg period is a closing orbit (Theorem 10).
