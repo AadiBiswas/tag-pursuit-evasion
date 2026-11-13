@@ -1,0 +1,91 @@
+Grid survival horizons N(D) = sup{n : D in V_n}, capped at 200 periods.
+pess/opt = pessimistic/optimistic landing rule (see module docstring). Estimates, not proofs.
+
+s = 1.5: y* = 1.0208454106, alpha_sym = 1.6300837216
+  alpha = 0.9 alpha_sym = 1.467075;  exact period-1 set empty
+    grid  750 x  300  pess: max N =   6 at D = 3.2069; none survive 200
+                     opt:  max N =   6 at D = 3.1806; none survive 200
+    grid 1500 x  600  pess: max N =   6 at D = 3.1956; none survive 200
+                     opt:  max N =   6 at D = 3.1843; none survive 200
+    grid 3000 x 1200  pess: max N =   6 at D = 3.1881; none survive 200
+                     opt:  max N =   6 at D = 3.1825; none survive 200
+  alpha = 0.99 alpha_sym = 1.613783;  exact period-1 set empty
+    grid  750 x  300  pess: max N =  12 at D = 3.1313; none survive 200
+                     opt:  max N =  12 at D = 3.0852; none survive 200
+    grid 1500 x  600  pess: max N =  12 at D = 3.1102; none survive 200
+                     opt:  max N =  13 at D = 3.1313; none survive 200
+    grid 3000 x 1200  pess: max N =  13 at D = 3.1678; none survive 200
+                     opt:  max N =  13 at D = 3.1160; none survive 200
+  alpha = 0.999 alpha_sym = 1.628454;  exact period-1 set empty
+    grid  750 x  300  pess: max N =  19 at D = 3.1229; none survive 200
+                     opt:  max N = 200 at D = 1.0143; survive 200: 639 nodes in [1.0143, 3.5000]
+    grid 1500 x  600  pess: max N =  25 at D = 3.1787; none survive 200
+                     opt:  max N = 200 at D = 1.0143; survive 200: 1273 nodes in [1.0143, 3.5000]
+    grid 3000 x 1200  pess: max N =  28 at D = 3.0931; none survive 200
+                     opt:  max N =  40 at D = 3.1421; none survive 200
+  alpha = 1.0 alpha_sym = 1.630084;  exact period-1 set empty (g touches alpha^-2 at y* only)
+    grid  750 x  300  pess: max N =  21 at D = 3.1267; none survive 200
+                     opt:  max N = 200 at D = 1.0022; survive 200: 650 nodes in [1.0022, 3.5000]
+    grid 1500 x  600  pess: max N =  30 at D = 3.0940; none survive 200
+                     opt:  max N = 200 at D = 1.0060; survive 200: 1291 nodes in [1.0060, 3.5000]
+    grid 3000 x 1200  pess: max N =  43 at D = 3.1103; none survive 200
+                     opt:  max N = 200 at D = 1.0128; survive 200: 2547 nodes in [1.0128, 3.5000]
+  alpha = 1.001 alpha_sym = 1.631714;  exact period-1 set (1.005344, 1.035718)
+    grid  750 x  300  pess: max N = 200 at D = 1.0286; survive 200: 619 nodes in [1.0286, 3.5000]
+                     opt:  max N = 200 at D = 0.9978; survive 200: 651 nodes in [0.9978, 3.5000]
+    grid 1500 x  600  pess: max N = 200 at D = 1.0094; survive 200: 1280 nodes in [1.0094, 3.5000]
+                     opt:  max N = 200 at D = 1.0036; survive 200: 1296 nodes in [1.0036, 3.5000]
+    grid 3000 x 1200  pess: max N = 200 at D = 1.0094; survive 200: 2558 nodes in [1.0094, 3.5000]
+                     opt:  max N = 200 at D = 1.0036; survive 200: 2586 nodes in [1.0036, 3.5000]
+  alpha = 1.01 alpha_sym = 1.646385;  exact period-1 set (0.969847, 1.065612)
+    grid  750 x  300  pess: max N = 200 at D = 0.9738; survive 200: 656 nodes in [0.9738, 3.5000]
+                     opt:  max N = 200 at D = 0.9699; survive 200: 657 nodes in [0.9699, 3.5000]
+    grid 1500 x  600  pess: max N = 200 at D = 0.9719; survive 200: 1312 nodes in [0.9719, 3.5000]
+                     opt:  max N = 200 at D = 0.9699; survive 200: 1313 nodes in [0.9699, 3.5000]
+    grid 3000 x 1200  pess: max N = 200 at D = 0.9709; survive 200: 2624 nodes in [0.9709, 3.5000]
+                     opt:  max N = 200 at D = 0.9699; survive 200: 2625 nodes in [0.9699, 3.5000]
+
+s = 2.0: y* = 1.2140033658, alpha_sym = 1.7806140964
+  alpha = 0.9 alpha_sym = 1.602553;  exact period-1 set empty
+    grid  750 x  300  pess: max N =   3 at D = 3.2573; none survive 200
+                     opt:  max N =   3 at D = 3.2483; none survive 200
+    grid 1500 x  600  pess: max N =   3 at D = 3.2528; none survive 200
+                     opt:  max N =   3 at D = 3.2483; none survive 200
+    grid 3000 x 1200  pess: max N =   3 at D = 3.2494; none survive 200
+                     opt:  max N =   3 at D = 3.2472; none survive 200
+  alpha = 0.99 alpha_sym = 1.762808;  exact period-1 set empty
+    grid  750 x  300  pess: max N =   8 at D = 3.3318; none survive 200
+                     opt:  max N =   9 at D = 3.3226; none survive 200
+    grid 1500 x  600  pess: max N =   8 at D = 3.2883; none survive 200
+                     opt:  max N =   9 at D = 3.3409; none survive 200
+    grid 3000 x 1200  pess: max N =   8 at D = 3.2768; none survive 200
+                     opt:  max N =   9 at D = 3.3455; none survive 200
+  alpha = 0.999 alpha_sym = 1.778833;  exact period-1 set empty
+    grid  750 x  300  pess: max N =  14 at D = 3.2895; none survive 200
+                     opt:  max N = 200 at D = 1.2085; survive 200: 487 nodes in [1.2085, 4.0000]
+    grid 1500 x  600  pess: max N =  18 at D = 3.2826; none survive 200
+                     opt:  max N = 200 at D = 1.2176; survive 200: 953 nodes in [1.2176, 4.0000]
+    grid 3000 x 1200  pess: max N =  21 at D = 3.2803; none survive 200
+                     opt:  max N =  27 at D = 3.3136; none survive 200
+  alpha = 1.0 alpha_sym = 1.780614;  exact period-1 set empty (g touches alpha^-2 at y* only)
+    grid  750 x  300  pess: max N =  17 at D = 3.2848; none survive 200
+                     opt:  max N = 200 at D = 1.1943; survive 200: 500 nodes in [1.1943, 4.0000]
+    grid 1500 x  600  pess: max N =  25 at D = 3.3146; none survive 200
+                     opt:  max N = 200 at D = 1.1989; survive 200: 987 nodes in [1.1989, 4.0000]
+    grid 3000 x 1200  pess: max N =  33 at D = 3.3421; none survive 200
+                     opt:  max N = 200 at D = 1.2046; survive 200: 1952 nodes in [1.2046, 4.0000]
+  alpha = 1.001 alpha_sym = 1.782395;  exact period-1 set (1.196351, 1.231089)
+    grid  750 x  300  pess: max N = 200 at D = 1.2122; survive 200: 480 nodes in [1.2122, 4.0000]
+                     opt:  max N = 200 at D = 1.1938; survive 200: 500 nodes in [1.1938, 4.0000]
+    grid 1500 x  600  pess: max N = 200 at D = 1.2007; survive 200: 981 nodes in [1.2007, 4.0000]
+                     opt:  max N = 200 at D = 1.1892; survive 200: 1004 nodes in [1.1892, 4.0000]
+    grid 3000 x 1200  pess: max N = 200 at D = 1.1995; survive 200: 1967 nodes in [1.1995, 4.0000]
+                     opt:  max N = 200 at D = 1.1938; survive 200: 1991 nodes in [1.1938, 4.0000]
+  alpha = 1.01 alpha_sym = 1.798420;  exact period-1 set (1.156485, 1.265900)
+    grid  750 x  300  pess: max N = 200 at D = 1.1622; survive 200: 525 nodes in [1.1622, 4.0000]
+                     opt:  max N = 200 at D = 1.1576; survive 200: 532 nodes in [1.1576, 4.0000]
+    grid 1500 x  600  pess: max N = 200 at D = 1.1576; survive 200: 1057 nodes in [1.1576, 4.0000]
+                     opt:  max N = 200 at D = 1.1553; survive 200: 1064 nodes in [1.1553, 4.0000]
+    grid 3000 x 1200  pess: max N = 200 at D = 1.1576; survive 200: 2113 nodes in [1.1576, 4.0000]
+                     opt:  max N = 200 at D = 1.1564; survive 200: 2119 nodes in [1.1564, 4.0000]
+

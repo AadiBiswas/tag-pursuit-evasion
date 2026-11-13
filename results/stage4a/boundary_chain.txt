@@ -1,0 +1,6 @@
+s = 1.5: 600 steps from a_0 = 0.01 in 400-digit arithmetic: min (clearance^2 - G) = 1.376e-183 > 0, final a = 2.384e-183, a_(k+1)/a_k in [0.4973, 0.5000]
+  engine, alpha = 1.0 alpha_sym, start y* + 0.01: no capture in 30 periods; final D - y* = 9.213e-12
+  engine, alpha = 0.999 alpha_sym, start y* + 0.01: captured at t = 2.496 periods
+s = 2.0: 600 steps from a_0 = 0.01 in 400-digit arithmetic: min (clearance^2 - G) = 7.925e-184 > 0, final a = 2.398e-183, a_(k+1)/a_k in [0.4987, 0.5000]
+  engine, alpha = 1.0 alpha_sym, start y* + 0.01: no capture in 30 periods; final D - y* = 9.266e-12
+  engine, alpha = 0.999 alpha_sym, start y* + 0.01: captured at t = 2.493 periods
