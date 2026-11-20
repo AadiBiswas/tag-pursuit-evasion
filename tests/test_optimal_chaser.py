@@ -12,25 +12,19 @@ from tagsim.strategies import hybrid_pursuit
 @pytest.mark.parametrize("s", [1.05, 1.5, 3.0])
 @pytest.mark.parametrize("alpha", [5, 50, 500])
 def test_intercept_beats_flee_at_large_alpha(s, alpha):
-    # Proposition 11: a predictive chaser captures a straight-flying runner at
-    # ANY alpha_C, unlike H (which only reads position, not velocity, and so
-    # is pinned at separation alpha_C*eps forever above alpha_C = s).
+    # Proposition 11: reading the runner's velocity catches straight flight at any
+    # alpha_C. H only reads position, and above alpha_C = s it brakes forever here.
     tau = alpha
     res = simulate(AgentSpec(s, tau), AgentSpec(1.0, 10_000), [0, 0], [1.5 * tau, 0], 1.0,
                    2000 * tau, Intercept(), flee)
     assert res.captured
-    # capture time should scale with alpha (the free-flight interception time), not be bounded
-    # by a fixed multiple of tau the way H's guarantee is below alpha_C = s.
     assert res.capture_time < 30 * alpha
 
 
 @pytest.mark.parametrize("s,alpha", [(2.0, 1.801), (2.0, 1.99)])
 def test_intercept_loses_to_symmetric_pass_below_s(s, alpha):
-    # Section 3: strictly inside H's proven guarantee region (alpha_C <= s), the
-    # "natural predictive upgrade" of H still fails against the symmetric-pass
-    # orbit, because it extrapolates a velocity the runner deliberately changes
-    # every period. So Intercept does not dominate H; it is not a route to
-    # beating s.
+    # Inside H's guarantee region Intercept still loses to the symmetric pass: it
+    # extrapolates a velocity the runner changes every period.
     assert alpha <= s
     tau = alpha
     sp = SymmetricPass(s, 1.0, tau)
@@ -43,8 +37,7 @@ def test_intercept_loses_to_symmetric_pass_below_s(s, alpha):
 
 
 def test_symmetric_pass_still_escapes_intercept_above_alpha_sym():
-    # Sanity check: above alpha_sym(s), the symmetric-pass orbit already beats
-    # plain PP (Thm 2); it beats Intercept there too.
+    # Above alpha_sym the orbit beats PP (Thm 2), and Intercept too.
     s = 1.5
     y, g = best_pass(s)
     alpha_sym = 1 / math.sqrt(g)

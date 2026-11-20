@@ -54,10 +54,9 @@ def _grad(f, t1, t2, h=Dc(10) ** -30):
 
 
 def _hess(f, t1, t2, h=Dc(10) ** -15):
-    gx = lambda a, b: _grad(f, a, b)
-    a11 = (gx(t1 + h, t2)[0] - gx(t1 - h, t2)[0]) / (2 * h)
-    a12 = (gx(t1, t2 + h)[0] - gx(t1, t2 - h)[0]) / (2 * h)
-    a22 = (gx(t1, t2 + h)[1] - gx(t1, t2 - h)[1]) / (2 * h)
+    a11 = (_grad(f, t1 + h, t2)[0] - _grad(f, t1 - h, t2)[0]) / (2 * h)
+    a12 = (_grad(f, t1, t2 + h)[0] - _grad(f, t1, t2 - h)[0]) / (2 * h)
+    a22 = (_grad(f, t1, t2 + h)[1] - _grad(f, t1, t2 - h)[1]) / (2 * h)
     return a11, a12, a22
 
 

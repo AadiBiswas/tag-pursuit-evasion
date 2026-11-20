@@ -134,14 +134,12 @@ def run_horizons():
     print("\n".join(lines))
 
 
-# ---------------------------------------------------------------- boundary chain
-
 def chain_decimal(s, a0="0.01", steps=600, prec=400):
     """Theorem 6(c) construction in `prec`-digit Decimal arithmetic: D_k = y* + a_k,
     action y_k = y* + beta a_k. Returns (min clearance^2 - G, final a, contraction ratios)."""
     getcontext().prec = prec
-    s = Decimal(str(Fraction(s).limit_denominator(1000).numerator)) / Decimal(
-        str(Fraction(s).limit_denominator(1000).denominator))
+    q = Fraction(s).limit_denominator(1000)
+    s = Decimal(q.numerator) / Decimal(q.denominator)
     one = Decimal(1)
     gD = lambda y: y * y - y * (s * s - 1) / (4 * (s - y))
     lo, hi = s / 3, s

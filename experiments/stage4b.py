@@ -77,15 +77,16 @@ def counterexample():
     F = Fraction
     s, u1, u2 = F(3, 2), (F(12, 13), F(-5, 13)), (F(-7, 25), F(24, 25))
 
+    def sd(px, py, dx, dy):
+        # seg_dist2 with Fraction clamps, so nothing turns into a float
+        a = dx * dx + dy * dy
+        t = min(max(-(px * dx + py * dy) / a, F(0)), F(1))
+        return (px + t * dx) ** 2 + (py + t * dy) ** 2
+
     def clear2(y):
         d1 = ((u1[0] - s) / 2, u1[1] / 2)
         d2 = ((u2[0] - s) / 2, u2[1] / 2)
         p1 = (y + d1[0], d1[1])
-
-        def sd(px, py, dx, dy):
-            a = dx * dx + dy * dy
-            t = min(max(-(px * dx + py * dy) / a, F(0)), F(1))
-            return (px + t * dx) ** 2 + (py + t * dy) ** 2
         p2 = (p1[0] + d2[0], p1[1] + d2[1])
         return min(sd(y, F(0), *d1), sd(*p1, *d2)), p2[0] ** 2 + p2[1] ** 2 - y * y
     X, Y = (u1[0] + u2[0]) / 2, (u1[1] + u2[1]) / 2
@@ -103,7 +104,7 @@ def engine_check(s, cert_name, factor, periods=200):
     state = {}
 
     def runner(obs):
-        k = obs.k                                  # runner decision index
+        k = obs.k
         if k % 2 == 0:                             # chaser decision: freeze this period's frame
             u = obs.pos_self - obs.pos_opp
             u = u / np.linalg.norm(u)
