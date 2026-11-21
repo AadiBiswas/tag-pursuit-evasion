@@ -8,9 +8,9 @@
 >
 > Details are in `theory/stage4_viability_analysis.md` §8, and that section supersedes the corresponding entries below. Theorem 2 stays *Potentially distinct*, now with the BBH precedent cited.
 
-**Status labels**, for each contribution of ours:
-- **Previously established** — follows from a source we read.
-- **Potentially distinct** — differs from every source we read, but the search is incomplete.
+**Status labels**, for each contribution of this project:
+- **Previously established** — follows from a source I read.
+- **Potentially distinct** — differs from every source I read, but the search is incomplete.
 - **Unresolved** — too little evidence either way.
 
 **Nothing here is labelled novel.** Bibliographic entries are in [`references.bib`](../references.bib). The BibTeX key appears in brackets on first mention.
@@ -121,20 +121,20 @@
 | Krasovskii–Subbotin positional games; step-by-step strategies. | Fixed partitions of time, applied to both players. | Only secondary search hits. |
 | Missile-guidance work on sampling-induced miss distance. | Discrete-time pure pursuit against weaving targets. | Search hits were simulation studies or about proportional navigation. No theorem found. |
 
-## 2. Comparison with our results
+## 2. Comparison with the results here
 
 Each entry is compared only with what was actually read.
 
-| Our result (register ID) | Closest source | What the source gives | Difference | Status |
+| Result (register ID) | Closest source | What the source gives | Difference | Status |
 |---|---|---|---|---|
 | Lemma B(i): $D_{k+1} \le D_k - (L - \rho)$ when $D_k \ge L$ | ANP, App. B | The same bound with their interval $\phi$: separation $\le D_k - (1-\nu)\phi$. | None in substance. | **Previously established** (and elementary). |
 | Prop 1: PP captures if $R_E\tau_C \le \varepsilon$ | Yufereva, Thm 4.1; ANP, Thm 3.2 | Yufereva: discrete simple pursuit with re-planning period equal to the capture radius, **equal speeds**, **compact** space, with the lion stopping at the man's point. ANP: ZOH pure pursuit captures with **pursuer-chosen**, shrinking intervals. | Ours uses a fixed exogenous period, an unbounded space, a faster chaser that does not stop (overshoot), and any runner clock. Neither source implies it: ANP's monotone decrease fails once $D < L$ with a fixed period; Yufereva needs compactness. | **Potentially distinct.** Its elementary nature makes folklore likely. |
-| Thm 1: PP captures if $\alpha_C \le 2s/(1+s)$ (overshoot pairing $D_k + D_{k+1} \le L+\rho$) | none found | No source we read analyses the passes after an overshoot. | — | **Potentially distinct.** Alonso–Goldstein–Reingold and the sampled-guidance literature are unread. |
-| Thm 2 / Thm 4: indefinite periodic evasion of fixed-period PP; exact rational certificates | none found | Every source we read proves capture. Yufereva's setting rules out evasion, by compactness and stop-at-target. BBH's GREEDY fails only through loss of sensing. | — | **Potentially distinct.** No source we read gives periodic evasion of sampled pure pursuit. |
+| Thm 1: PP captures if $\alpha_C \le 2s/(1+s)$ (overshoot pairing $D_k + D_{k+1} \le L+\rho$) | none found | No source I read analyses the passes after an overshoot. | — | **Potentially distinct.** Alonso–Goldstein–Reingold and the sampled-guidance literature are unread. |
+| Thm 2 / Thm 4: indefinite periodic evasion of fixed-period PP; exact rational certificates | none found | Every source I read proves capture. Yufereva's setting rules out evasion, by compactness and stop-at-target. BBH's GREEDY fails only through loss of sensing. | — | **Potentially distinct.** No source I read gives periodic evasion of sampled pure pursuit. |
 | Thm 3: brake onto the observed point while $D > s\varepsilon$, then PP; captures iff $\alpha_C \le s$ | Yufereva (stop at target); BBH GREEDY (step toward the last sensed point) | Landing on the last observed point is an existing ingredient. | The threshold $\alpha_C \le s$, its sharpness, and the switch at $s\varepsilon$ were not found. | **Potentially distinct** as a theorem. The ingredient is **previously established**. |
 | Thm 5: policy separation (PP evaded, $H$ guarantees) at $s = 2$, $\alpha_C = 1.9$ | none found | — | Depends on Theorems 2 and 3. | **Potentially distinct.** |
 | Lemma M: monotonicity in $\varepsilon$ | standard | — | A routine inclusion argument. | **Not claimed** as a contribution. |
-| Linear-closure certificates (exact rationals) | general computer-assisted-proof practice | — | Exact rational verification is standard. Only the observation that closure is linear in $D$ is specific to us. | **Unresolved.** Not claimed. |
+| Linear-closure certificates (exact rationals) | general computer-assisted-proof practice | — | Exact rational verification is standard. Only the observation that closure is linear in $D$ is specific to this work. | **Unresolved.** Not claimed. |
 | Engine: closed-form continuous contact detection, exact rational clocks | standard computational geometry | — | — | Not a mathematical contribution. |
 
 **Asynchronous or unequal update rates with capture guarantees.** Among the sources read, only Pan–Zhu model two clocks, and they have no capture criterion. ANP and Yufereva give the evader continuous control; BBH alternate turns of equal size. So we found no source that analyses capture or evasion with **two fixed, unequal decision periods** and continuous capture checking. Given the gaps in §3, this remains **Unresolved**, not a novelty claim.

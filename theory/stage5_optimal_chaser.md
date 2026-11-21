@@ -63,7 +63,7 @@ particular runner at any $\alpha_C$.
 
 ## 3. But `Intercept` does not dominate $H$ either
 
-This narrows the search, but it does not hand us a better chaser. `Intercept`'s model of the opponent —
+This narrows the search, but it does not yield a better chaser. `Intercept`'s model of the opponent —
 "holds its last committed velocity" — is exactly wrong against a runner that changes heading every
 period, which is what the hard runners in this problem already do (Theorem 2's symmetric-pass orbit).
 Checking `Intercept` against that orbit (`test_intercept_loses_to_symmetric_pass_below_s` below):

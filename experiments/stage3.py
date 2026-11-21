@@ -16,7 +16,7 @@ Orbit problem. A runner whose clock contains the chaser's (a = 1/m, aligned) re-
 at every chaser decision, where PP's future depends only on the separation D. A
 period-P orbit is P consecutive chaser periods, each a "pass" from separation D_i to
 D_{i+1} (indices mod P) with m straight runner legs, every leg clear of the eps-ball.
-Rotation invariance of PP makes any such cycle an exact infinite evasion. We maximize
+Rotation invariance of PP makes any such cycle an exact infinite evasion. The search maximizes
 the worst closest approach M over the cycle; the orbit then escapes iff
 alpha_C > 1/M (eps = R_E tau_C / alpha_C = 1/alpha_C in these units).
 """

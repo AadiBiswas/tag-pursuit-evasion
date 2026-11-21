@@ -125,7 +125,7 @@ So $\Phi$ maps safe runs from $\mathbf r_0$ onto safe runs from $\mathbf r_0'$. 
 
 So every $d$-dimensional action has a planar equivalent and vice versa. ∎
 
-**Reflections.** PP also commutes with reflections. So the side of the line of sight on which the runner passes is irrelevant; below we take $v_y \ge 0$.
+**Reflections.** PP also commutes with reflections. So the side of the line of sight on which the runner passes is irrelevant; below, $v_y \ge 0$ without loss of generality.
 
 **What breaks the reduction.**
 
@@ -424,7 +424,7 @@ has $A_1(0) = 0$ and $A_1'(0) = 1/y^\* > 0$, and the next value satisfies $x'/x 
 3. The same limit argument as in (c) gives a contradiction.
 
 **(b) $y_- \in \mathcal V_n$ for every $n$.**
-- *Monotonicity.* Since $\varepsilon > 1/2$, we have $y_- > s/2$. On $(s/2, (s+1)/2)$, $\varphi(y) := \ln\sin^2\theta_y = \ln g(y) - 2\ln y$ is strictly decreasing, since
+- *Monotonicity.* Since $\varepsilon > 1/2$, $y_- > s/2$. On $(s/2, (s+1)/2)$, $\varphi(y) := \ln\sin^2\theta_y = \ln g(y) - 2\ln y$ is strictly decreasing, since
   $$\frac{d}{dy}\sin^2\theta_y = \frac{(s^2-1)(s-2y)}{4y^2(s-y)^2} < 0.$$
   Write $\mu = -\varphi'(y_-) > 0$.
 - *First step.* From $y_-$, play $y = y_- - \eta$. The log clearance ratio is $\varphi(y_- - \eta) - \varphi(y_-) > 0$.
@@ -527,7 +527,7 @@ So both grid estimates are wrong at the threshold, in opposite directions.
 |---|---|
 | **Theorem 1** (PP captures for $\alpha_C \le 2s/(1+s)$, any runner) | Consistent. For $\mathcal R^{\rm al}_1$ the exact threshold is $\alpha_{\rm sym} \ge 2s/(1+s)$ (Lemma S): 1.6301 vs 1.2 at $s = 1.5$, and 1.7806 vs 1.3333 at $s = 2$. Theorem 1 remains the best bound for general runner classes. |
 | **Theorem 2** (period-1 escape) | It is Theorem 6(a), and is now known to be **sharp** for $\mathcal R^{\rm al}_1$, except at the threshold itself, where (c) applies. |
-| **Theorem 4** (certified $m$-leg orbits) | Runners in $\mathcal R^{\rm al}_m$, $m \ge 2$, lie outside $\mathcal G_1$. Since $\hat\alpha(s,2) < \alpha_{\rm sym}(s)$, we get $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_2) \le \hat\alpha(s,2) < \alpha_{\rm sym}(s) = \kappa_{\rm PP}(s;\mathcal R^{\rm al}_1)$. **A second decision per period strictly lowers PP's threshold.** |
+| **Theorem 4** (certified $m$-leg orbits) | Runners in $\mathcal R^{\rm al}_m$, $m \ge 2$, lie outside $\mathcal G_1$. Since $\hat\alpha(s,2) < \alpha_{\rm sym}(s)$, it follows that $\kappa_{\rm PP}(s;\mathcal R^{\rm al}_2) \le \hat\alpha(s,2) < \alpha_{\rm sym}(s) = \kappa_{\rm PP}(s;\mathcal R^{\rm al}_1)$. **A second decision per period strictly lowers PP's threshold.** |
 | **Theorem 5** (policy separation) | Extends to the endpoint $\alpha_C = \alpha_{\rm sym}(s)$. For $\mathcal R \supseteq \mathcal R^{\rm al}_1$, PP fails there by 6(c2), while $H$ captures whenever $\alpha_{\rm sym}(s) \le s$, e.g. at $s = 2$. |
 | **Lemma M and §2.5 of the review** | The guarantee set is an interval, as Lemma M requires. Theorem 6 shows the case **open at its supremum** really occurs. |
 | **Stage 3 numerics** | The planner and sweeps used random phases or $m \ge 2$, so they are outside $\mathcal G_1$, and there is nothing to reconcile. The phase result (aligned clocks matter) is consistent with $\mathcal G_1$ being the aligned case. |
@@ -551,9 +551,9 @@ This is an update to `theory/literature_review.md`. The labels are as defined th
   - **Theorem III.3 (GREEDY).** If $\kappa > \sqrt{2 + 2\cos\beta_c}$, the pursuer traps the evader, with an explicit trapping-time bound (their eq. 9). Here $\beta_c$ is an explicit function of $\kappa$ and $\mathrm{diam}(Q)/r_{\rm step}$ (their eq. 8).
   - **Proposition III.4 (evasion).** If $\kappa \le \sqrt{2 + 2\cos\beta_c}$ and $Q$ contains a circle of radius $r_{\rm step}/\sqrt{4 - \kappa^2}$, then the evader can step around that circle with the pursuer one step behind, landing exactly on the evader's previous position. GREEDY never traps it.
   - **Model:** alternating moves, equal step radii, capture is coincidence, bounded convex arena.
-- **Relevance to Theorem 2 and Theorem 6(a).** Prop. III.4 is a **circling, periodic evasion of a sampled greedy pursuer**: the closest prior construction to our symmetric pass. The differences are:
-  - our chaser is faster, and overshoots;
-  - our moves are simultaneous, with continuous capture checking and a capture radius;
+- **Relevance to Theorem 2 and Theorem 6(a).** Prop. III.4 is a **circling, periodic evasion of a sampled greedy pursuer**: the closest prior construction to the symmetric pass here. The differences are:
+  - here the chaser is faster, and overshoots;
+  - here the moves are simultaneous, with continuous capture checking and a capture radius;
   - their evasion defeats *trapping within sensing range*, not capture.
 
   Theorem 2 stays **Potentially distinct**, with this precedent cited.

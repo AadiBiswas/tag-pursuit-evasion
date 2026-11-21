@@ -3,7 +3,7 @@
 Pure pursuit is deterministic and depends only on positions, so once the
 runner knows the chaser plays it, the chaser's whole future is a function of
 the runner's own future path. Best response is then a single-agent planning
-problem. We solve it approximately with a beam search over the runner's next
+problem. It is solved approximately with a beam search over the runner's next
 `depth` decisions, re-planned at every decision (receding horizon).
 
 Information: everything comes from the Observation -- positions, the chaser's

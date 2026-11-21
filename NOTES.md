@@ -18,13 +18,13 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
   Positions and capture offsets stay float64.
 - **Capture check.** Closed-form earliest root of `|r0 + s w| = eps` on each inter-event interval.
   The textbook discriminant is unusable at large scale: `|r0|^2 - eps^2` rounds to `|r0|^2` once
-  `|r0|/eps` is ~1e8 (caught by a test at 1e9). We go through the closest approach instead, whose
+  `|r0|/eps` is ~1e8 (caught by a test at 1e9). The code goes through the closest approach instead, whose
   perpendicular distance is accurate to ~ulp(|r0|), and get the entry root as `(n-eps)(n+eps) / (a(s_min+h))`
   so near-immediate contact doesn't cancel either. Grazing contact (closest approach exactly eps) counts
   as capture in exact arithmetic but is floating-point sensitive — measure zero, accepted.
 - **Simultaneous moves.** All deciders' observations are frozen (read-only array copies) from the t^- state
   before any policy is called; then chaser is queried, then runner; then both velocities are applied.
-  Policies that share hidden mutable state could still collude — not guarded against, not our threat model.
+  Policies that share hidden mutable state could still collude — not guarded against, not the threat model here.
 - **Position anchoring.** Each agent's position is `anchor + v * (t - t_anchor)` with the anchor reset at its
   own decisions; error accumulates per decision, not per event.
 - **Speed validation.** Velocities above `R` by more than `1e-12 * max(1, R)` raise (no silent clipping —
@@ -74,7 +74,7 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
 - **Hand-checkable example.** At s = 4/3, a perpendicular runner from D = 25/24 has closest approach exactly 5/8, so it escapes PP iff alpha > 8/5. It doubles as the "touch" negative test.
 - **Monotonicity.** It was easy once phrased right: if the runner class is closed under open-loop replay, replay the eps-run's controls in the eps'-game. The sweeps are NOT such a family: D(0) = 10 eps moves with alpha in normalised units.
 - **Policy separation.** At s = 2, alpha = 1.9, the symmetric pass beats PP while the hybrid captures everyone. alpha_sym < 2 always (g(s/2) = 1/4 and g'(s/2) = 1/s), so the separation interval is non-empty for all s >= 2.
-- **Literature.** ANP (self-triggered ZOH PP) has endogenous sampling, so it never meets overshoot. Its App. B is our Lemma B(i). BBH: turn-based, equal steps, point capture. Yufereva: sampled simple pursuit with period = capture radius, but equal speeds and compact space. Alonso–Goldstein–Reingold is unread and is the top priority.
+- **Literature.** ANP (self-triggered ZOH PP) has endogenous sampling, so it never meets overshoot. Its App. B is Lemma B(i) here. BBH: turn-based, equal steps, point capture. Yufereva: sampled simple pursuit with period = capture radius, but equal speeds and compact space. Alonso–Goldstein–Reingold is unread and is the top priority.
 
 ## 2026-11-12 — Stage 4A (viability, aligned one-decision game)
 
@@ -87,7 +87,7 @@ Theory lives in `stage0_spec.md`; this file records the *why* behind code and pr
 - **Finite vs infinite horizon really differ**, with explicit points: y* at alpha_sym, and y_- for alpha_sym < alpha < 2. Survival time from y_- grows like log(1/first step).
 - **The grid DP is unreliable near the threshold**, in both directions. It is kept in the write-up as a cautionary result, not hidden.
 - **Literature.**
-  - BBH Prop III.4 is a circling evasion of greedy discrete pursuit: the nearest precedent for our periodic orbits. It is cited.
+  - BBH Prop III.4 is a circling evasion of greedy discrete pursuit: the nearest precedent for the periodic orbits here. It is cited.
   - The AGR full text is blocked by bot protection. Someone needs to open RR-1700 in a browser.
 
 ## 2026-11-12 — Stage 4B (two runner decisions per chaser period)

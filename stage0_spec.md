@@ -11,7 +11,7 @@ Status legend used throughout:
 **Rev 1 (2026-11-11).** Decisions after review. Each affected section carries a marked **Rev 1** note, and the original reasoning is left in place.
 
 1. **Speed model.** The primary model is now $\|\mathbf v_i\| \le R_i$. At each decision time the agent chooses a full velocity vector, direction and magnitude, and holds it until its next decision. Exact speed $\|\mathbf v_i\| = R_i$ is kept as a variant (`speed_mode="exact"`).
-2. **Case 4 is retained.** We document that it is degenerate in unbounded space. Added: an interception lemma (§B.1a), a full outcome characterization for $s \le 1$ (§B.1b), and reachable sets. The bounded arena is deferred and not implemented.
+2. **Case 4 is retained.** I document that it is degenerate in unbounded space. Added: an interception lemma (§B.1a), a full outcome characterization for $s \le 1$ (§B.1b), and reachable sets. The bounded arena is deferred and not implemented.
 3. **Agility is a fixed periodic cadence for now.** The distinction between a fixed schedule and a maximum available frequency is now explicit (§A.4 note, H3).
 4. **Qualifications on the hypotheses.**
    - H1: surviving one interval does not imply indefinite evasion.
@@ -174,7 +174,7 @@ $\alpha_C$ is "how many capture radii the runner can drift during one chaser bli
 
 ### B.1 Escape lemma: $s \le 1$ is decided in the runner's first commitment window **[Proved]**
 
-*Claim.* Let $R_E \ge R_C$. Suppose that at some runner decision time $t_0$ we have $D := |\mathbf{r}(t_0)| > \varepsilon$. Then the runner strategy "point directly away from the chaser's current position at every decision" avoids capture forever, against **every** chaser strategy, with any agility and any information.
+*Claim.* Let $R_E \ge R_C$. Suppose that at some runner decision time $t_0$, $D := |\mathbf{r}(t_0)| > \varepsilon$. Then the runner strategy "point directly away from the chaser's current position at every decision" avoids capture forever, against **every** chaser strategy, with any agility and any information.
 
 *Proof.* Let $\hat{\mathbf{u}} = \mathbf{r}(t_0)/D$. For $\sigma \in [0, \tau_E]$:
 
@@ -288,7 +288,7 @@ The original triangle-inequality idea works. What it was missing is the overshoo
 >   - *Boundary $D_k = R_C\tau_C$:* then $D_{k+1} \le R_E\tau_C \le \varepsilon$, so capture is detected at or before $t_{k+1}$. That is consistent with the bound.
 > - **(ii) $\varepsilon < D_k < R_C\tau_C$.** Set $\sigma^\* = D_k/R_C \in (0, \tau_C)$. Then $\mathbf x_C(t_k + \sigma^\*) = \mathbf e$, and $\|\mathbf r(t_k+\sigma^\*)\| \le R_E\sigma^\* = D_k R_E/R_C < R_E\tau_C \le \varepsilon$.
 >   - The final inequality is where the hypothesis enters. It is strict in the middle step, so capture happens strictly inside the interval.
-> - **Termination.** Each case-(i) step lowers $D$ by $\delta = (R_C - R_E)\tau_C > 0$. So after at most $K = \lceil (D_1 - R_C\tau_C)^+/\delta\rceil$ such steps we have $D_K \le R_C\tau_C$, and the next interval captures. This gives the same bound as before.
+> - **Termination.** Each case-(i) step lowers $D$ by $\delta = (R_C - R_E)\tau_C > 0$. So after at most $K = \lceil (D_1 - R_C\tau_C)^+/\delta\rceil$ such steps $D_K \le R_C\tau_C$, and the next interval captures. This gives the same bound as before.
 >
 > *Gaps checked:*
 > - Capture occurring *before* $\varphi_C$ makes the statement vacuous.
@@ -483,7 +483,7 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 4. **Simultaneous moves.** I use the conservative pure-strategy convention (§A.5). Exact small-game solvers may need mixed strategies at simultaneous nodes; I'll flag it wherever it matters.
 
 > **Rev 1 — resolutions.**
-> 1. Case 4 is retained in the paper. We document the unrestricted-space escape (B.1) and the finite-commitment interception (B.1a/b). The bounded arena is a future option and is not implemented.
+> 1. Case 4 is retained in the paper. I document the unrestricted-space escape (B.1) and the finite-commitment interception (B.1a/b). The bounded arena is a future option and is not implemented.
 > 2. The primary speed model is $\|\mathbf v\| \le R$, with exact speed kept as a variant.
 > 3. The opponent's clock is observable. Perfect information is unchanged.
 > 4. Simultaneous moves: both agents observe the state at $t^-$, and neither sees the other's new choice. The engine enforces this by freezing all observations before any policy is queried.
@@ -555,18 +555,18 @@ This is the precise reason I suspect Proposition 1 is sharp for PP (H1 below). I
 
 **Nothing below has been verified yet.** These are works I recall and believe to be relevant. Every entry must be checked against the primary source before it enters the BibTeX file. Stage L, below, does this.
 
-### D.1 Closest frameworks, and how we likely differ
+### D.1 Closest frameworks, and how this model likely differs
 
-| Framework | Recalled anchor(s), to verify | Likely relation to our model |
+| Framework | Recalled anchor(s), to verify | Likely relation to this model |
 |---|---|---|
 | Positional differential games with **step-by-step / piecewise-constant controls on a time partition** | Krasovskii & Subbotin, *Game-Theoretical Control Problems* (Springer, 1988) | **Probably the closest formal ancestor.** Their partitions are a proof device that is refined to zero. Ours are *fixed, player-specific, asynchronous* and are the object of study. We must check whether fixed unequal partitions are already analyzed. |
 | Value of differential games via discretization; nonanticipative strategies | Friedman, *Differential Games* (1971); Elliott & Kalton, Mem. AMS (1972) | Upper/lower value via time discretization with one player moving first. This is related to our last-mover structure. |
-| Classical simple-motion pursuit, isotropic rocket, homicidal chauffeur | Isaacs, *Differential Games* (1965); Merz, PhD thesis on the homicidal chauffeur (Stanford, 1971) | Continuous control, plus the curvature constraint for our secondary model. Our $\tau\to0$ limit should recover simple motion. |
-| Lion and man (bounded arena, equal speed) | Littlewood's *Miscellany* (Besicovitch's solution); Sgall, TCS 2001 (discrete-time lion and man); Alonso, Goldstein & Reingold (1992, lion-and-man bounds) | Relevant if we adopt arena option (b). Discrete-time versions are close cousins, but they are synchronous and turn-based. |
+| Classical simple-motion pursuit, isotropic rocket, homicidal chauffeur | Isaacs, *Differential Games* (1965); Merz, PhD thesis on the homicidal chauffeur (Stanford, 1971) | Continuous control, plus the curvature constraint for the secondary model. The $\tau\to0$ limit should recover simple motion. |
+| Lion and man (bounded arena, equal speed) | Littlewood's *Miscellany* (Besicovitch's solution); Sgall, TCS 2001 (discrete-time lion and man); Alonso, Goldstein & Reingold (1992, lion-and-man bounds) | Relevant if arena option (b) is adopted. Discrete-time versions are close cousins, but they are synchronous and turn-based. |
 | Discrete-time pursuit-evasion with sensing limits | Bopardikar, Bullo & Hespanha, IEEE T-RO (~2008) | Discrete time, but synchronous. Check for capture-radius-vs-step-length conditions resembling Proposition 1. **High risk of overlap with Proposition 1.** |
 | Pursuit in $\mathbb{R}^n$ / multi-dimensional | Kopparty & Ravishankar, IPL (~2005); Pshenichnyi (simple pursuit, 1970s) | RQ5 baselines. |
 | Reachability / HJI | Mitchell, Bayen & Tomlin, IEEE TAC (2005) | Numerical capture regions in continuous time. Possibly a validation tool for the $\tau\to0$ limit only. |
-| Information patterns / leader–follower | Başar & Olsder, *Dynamic Noncooperative Game Theory* (SIAM, 2nd ed. 1999) | The formal language for our "agility = information advantage" framing. |
+| Information patterns / leader–follower | Başar & Olsder, *Dynamic Noncooperative Game Theory* (SIAM, 2nd ed. 1999) | The formal language for the "agility = information advantage" framing. |
 | Surveys | Chung, Hollinger & Isler, *Autonomous Robots* (2011); Nahin, *Chases and Escapes* (2007) | Map the field and fix the narrative framing. |
 
 ### D.2 Required searches
@@ -592,7 +592,7 @@ The candidate niche is that **unequal, asynchronous, fixed decision periods are 
 - the degeneracy of Case 4;
 - the 2D/3D projection relation.
 
-If D.2 turns up Proposition 1 in a sampled-data paper, which is plausible, we cite it and move the contribution to H1–H3.
+If D.2 turns up Proposition 1 in a sampled-data paper, which is plausible, I cite it and move the contribution to H1–H3.
 
 ---
 

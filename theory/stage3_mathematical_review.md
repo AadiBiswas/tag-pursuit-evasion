@@ -352,7 +352,7 @@ The construction needs the specific start $D(0) \in (s\varepsilon, L]$. From a f
 
 *Proof.*
 - **Upper bound on $\alpha_{\rm sym}$.**
-  - Since $\frac{d}{dy}\frac{y}{s-y} = \frac{s}{(s-y)^2}$, we have $g'(y) = 2y - \frac{s(s^2-1)}{4(s-y)^2}$.
+  - Since $\frac{d}{dy}\frac{y}{s-y} = \frac{s}{(s-y)^2}$, it follows that $g'(y) = 2y - \frac{s(s^2-1)}{4(s-y)^2}$.
   - At $y = s/2 \in (0,s)$: $g(s/2) = \frac{s^2}{4} - \frac{s}{2}\cdot\frac{s^2-1}{2s} = \frac14$ and $g'(s/2) = s - \frac{s^2-1}{s} = \frac1s > 0$.
   - So $g > \frac14$ just to the right of $s/2$. Hence $G(s) > \frac14$, i.e. $\alpha_{\rm sym}(s) < 2$.
 - **Lower bound.** Suppose $\alpha_{\rm sym}(s) < 2s/(1+s)$. Pick $\alpha_C$ strictly between the two. Theorem 2 then gives an escape from PP at $\alpha_C \le 2s/(1+s)$, which contradicts Theorem 1. ∎
@@ -457,7 +457,7 @@ $$g(y) = y^2 - \frac{y\,(s^2-1)}{4(s-y)}, \quad 0 < y < s, \qquad G(s) = \max_{0
 $$\mathbf w = \mathbf v_E - \mathbf v_C = |\mathbf w|(-\cos\theta, \sin\theta), \qquad |\mathbf w| = 2D\cos\theta/\tau_C.$$
 The relative position is $\mathbf r(\sigma) = (D_k, 0) + \sigma\mathbf w$ for $\sigma \in [0, \tau_C]$.
 
-2. **Speed.** We have
+2. **Speed.** One has
 $$\|\mathbf v_E\|^2 = |\mathbf w|^2 - 2R_C|\mathbf w|\cos\theta + R_C^2 = R_C^2 - \frac{4D\cos^2\theta}{\tau_C}\left(R_C - \frac{D}{\tau_C}\right) = R_E^2\left(s^2 - 4\cos^2\theta\, y(s - y)\right).$$
 The choice of $\cos^2\theta$ makes this exactly $R_E^2$. Consistency requires $\cos^2\theta \in (0,1)$:
    - $\cos^2\theta > 0$ because $s > 1$ and $0 < y < s$;
@@ -500,7 +500,7 @@ The rule does not even need to know the chaser plays PP. However, its *success* 
 
 **Exact versus bounded speed.**
 - As stated, the runner moves at exactly $R_E$, so the orbit is admissible in **both** speed models.
-- Slower runners also work. With $\cos^2\theta$ above its minimum, we get $\|\mathbf v_E\|^2 = R_E^2(s^2 - 4\cos^2\theta\,y(s-y)) < R_E^2$, and the miss $D\sin\theta$ decreases continuously. So whenever $\alpha_C > \alpha_{\rm sym}$, there are orbits with $\|\mathbf v_E\| < R_E$, though only in the bounded-speed model.
+- Slower runners also work. With $\cos^2\theta$ above its minimum, $\|\mathbf v_E\|^2 = R_E^2(s^2 - 4\cos^2\theta\,y(s-y)) < R_E^2$, and the miss $D\sin\theta$ decreases continuously. So whenever $\alpha_C > \alpha_{\rm sym}$, there are orbits with $\|\mathbf v_E\| < R_E$, though only in the bounded-speed model.
 
 **Higher dimensions.**
 - All motion lies in the plane spanned by the initial line of sight and $\hat{\mathbf n}_0$. PP keeps the chaser on the line of sight, so it never leaves that plane.
